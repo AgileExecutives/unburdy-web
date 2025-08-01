@@ -1,0 +1,205 @@
+<template>
+  <div class="bg-background min-h-screen">
+    <!-- Fortschrittsanzeige -->
+    <OnboardingFortschritt />
+
+    <div class="max-w-2xl mx-auto px-6 py-16">
+      <div class="mb-12">
+        <h1 class="text-3xl font-bold text-primary mb-4">
+          Grundeinstellungen konfigurieren
+        </h1>
+        <p class="text-lg text-secondary">
+          Lass uns deine Praxis-Einstellungen einrichten. Du kannst alles später jederzeit anpassen.
+        </p>
+      </div>
+
+      <form @submit.prevent="saveAndContinue" class="space-y-8">
+        <!-- Therapeut/in Informationen -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+          <h2 class="text-xl font-semibold text-primary mb-6">Deine Informationen</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="title" class="block text-sm font-medium text-secondary mb-2">
+                Titel (optional)
+              </label>
+              <InputField 
+                type="text" 
+                id="title" 
+                v-model="settings.title"
+                placeholder="Dr., M.A., etc."
+              />
+            </div>
+            <div>
+              <label for="profession" class="block text-sm font-medium text-secondary mb-2">
+                Berufsbezeichnung
+              </label>
+              <SelectField 
+                id="profession" 
+                v-model="settings.profession"
+              >
+                <option value="">Bitte wählen</option>
+                <option value="logopaedin">Logopädin/Logopäde</option>
+                <option value="ergotherapeutin">Ergotherapeutin/Ergotherapeut</option>
+                <option value="physiotherapeutin">Physiotherapeutin/Physiotherapeut</option>
+                <option value="psychotherapeutin">Psychotherapeutin/Psychotherapeut</option>
+                <option value="heilpaedagogin">Heilpädagogin/Heilpädagoge</option>
+                <option value="andere">Andere</option>
+              </SelectField>
+            </div>
+          </div>
+        </div>
+
+        <!-- Abrechnungseinstellungen -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+          <h2 class="text-xl font-semibold text-primary mb-6">Abrechnungseinstellungen</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="hourlyRate" class="block text-sm font-medium text-secondary mb-2">
+                Standard-Stundensatz (€)
+              </label>
+              <input 
+                type="number" 
+                id="hourlyRate" 
+                v-model.number="settings.hourlyRate"
+                placeholder="85"
+                min="0"
+                step="0.01"
+                class="w-full px-3 py-2 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+              >
+              <p class="mt-1 text-sm text-tertiary">Standardwert für neue Termine</p>
+            </div>
+            <div>
+              <label for="sessionDuration" class="block text-sm font-medium text-secondary mb-2">
+                Standard-Sitzungsdauer (Min.)
+              </label>
+              <select 
+                id="sessionDuration" 
+                v-model.number="settings.sessionDuration"
+                class="w-full px-3 py-2 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+              >
+                <option :value="30">30 Minuten</option>
+                <option :value="45">45 Minuten</option>
+                <option :value="60">60 Minuten</option>
+                <option :value="90">90 Minuten</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Praxis-Einstellungen -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+          <h2 class="text-xl font-semibold text-primary mb-6">Praxis-Einstellungen</h2>
+          <div class="space-y-6">
+            <div>
+              <label for="practiceHours" class="block text-sm font-medium text-secondary mb-3">
+                Übliche Arbeitszeiten
+              </label>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-tertiary mb-1">Von</label>
+                  <input 
+                    type="time" 
+                    v-model="settings.workingHours.start"
+                    class="w-full px-3 py-2 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+                  >
+                </div>
+                <div>
+                  <label class="block text-xs text-tertiary mb-1">Bis</label>
+                  <input 
+                    type="time" 
+                    v-model="settings.workingHours.end"
+                    class="w-full px-3 py-2 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-secondary mb-3">
+                Arbeitstage
+              </label>
+              <div class="flex flex-wrap gap-2">
+                <label v-for="day in weekDays" :key="day.value" class="inline-flex items-center">
+                  <input 
+                    type="checkbox" 
+                    :value="day.value"
+                    v-model="settings.workingDays"
+                    class="rounded border-default text-accent shadow-sm focus:border-accent focus:ring focus:ring-accent focus:ring-opacity-50"
+                  >
+                  <span class="ml-2 text-sm text-secondary">{{ day.label }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center pt-8">
+          <NuxtLink 
+            to="/onboarding/schritt-1" 
+            class="inline-flex items-center px-6 py-3 border border-default rounded-lg font-medium text-secondary bg-surface hover:bg-surface-secondary transition-colors duration-200"
+          >
+            <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+            </svg>
+            Zurück
+          </NuxtLink>
+          
+          <button 
+            type="submit" 
+            class="inline-flex items-center px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-hover transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Weiter
+            <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script setup>
+// Meta-Tags für SEO
+useHead({
+  title: 'Standard-Einstellungen - Unburdy Onboarding',
+  meta: [
+    { name: 'description', content: 'Konfigurieren Sie Ihre Grundeinstellungen für Ihre Therapie-Praxis.' }
+  ]
+})
+
+// Store verwenden
+const store = useOnboardingAutoSave()
+
+// Reactive state aus dem Store
+const settings = computed({
+  get: () => store.settings,
+  set: (value) => store.updateSettings(value)
+})
+
+const weekDays = [
+  { value: 'mo', label: 'Montag' },
+  { value: 'di', label: 'Dienstag' },
+  { value: 'mi', label: 'Mittwoch' },
+  { value: 'do', label: 'Donnerstag' },
+  { value: 'fr', label: 'Freitag' },
+  { value: 'sa', label: 'Samstag' },
+  { value: 'so', label: 'Sonntag' }
+]
+
+// Beim Laden der Seite
+onMounted(() => {
+  store.goToStep(2)
+})
+
+// Form submission
+const saveAndContinue = async () => {
+  // Daten sind bereits über das computed automatisch im Store gespeichert
+  console.log('Einstellungen gespeichert:', store.settings)
+  
+  // Zum nächsten Schritt navigieren
+  store.nextStep()
+  await navigateTo('/onboarding/schritt-3')
+}
+</script>
