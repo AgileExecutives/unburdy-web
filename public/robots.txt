@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /intern/
+Disallow: /api/
+Disallow: /dashboard/
+Allow: /
+
+Sitemap: https://unburdy.de/sitemap.xml

@@ -54,10 +54,12 @@
 
 <script setup>
 // Meta-Tags für SEO
-useHead({
-  title: 'Preise - Unburdy Therapie-Software',
-  meta: [
-    { name: 'description', content: 'Transparente Preise für Unburdy Therapie-Software. Alle Pläne mit 30 Tagen kostenlos testen.' }
-  ]
+useSeoMeta({
+  title: 'Faire Preise für Lerntherapeut:innen | Unburdy',
+  description: 'Ab 29 €/Monat. Keine versteckten Kosten. DSGVO-konforme Software für Lerntherapie – ideal für Einzelpraxen.',
+  ogTitle: 'Faire Preise für Lerntherapeut:innen | Unburdy',
+  ogDescription: 'Ab 29 €/Monat. Keine versteckten Kosten. DSGVO-konforme Software für Lerntherapie – ideal für Einzelpraxen.',
+  twitterTitle: 'Faire Preise für Lerntherapeut:innen | Unburdy',
+  twitterDescription: 'Ab 29 €/Monat. Keine versteckten Kosten. DSGVO-konforme Software für Lerntherapie – ideal für Einzelpraxen.'
 })
 </script>
