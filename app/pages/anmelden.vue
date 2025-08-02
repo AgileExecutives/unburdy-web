@@ -21,17 +21,17 @@
           Kostenlosen Account erstellen
         </h2>
         <p class="mt-2 text-center text-sm text-secondary">
-          Oder 
-          <button @click="isLogin = !isLogin" class="font-medium text-accent hover:bg-accent-hover">
-            {{ isLogin ? 'neuen Account erstellen' : 'hier anmelden' }}
-          </button>
+          Bereits registriert? 
+          <a :href="config.public.unburdyApp" class="font-medium text-accent hover:bg-accent-hover">
+            Hier anmelden
+          </a>
         </p>
       </div>
 
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-background-secondary py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-default">
           <form class="space-y-6" @submit.prevent="handleSubmit">
-            <div v-if="!isLogin">
+            <div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label for="firstName" class="block text-sm font-medium text-secondary">Vorname</label>
@@ -77,14 +77,14 @@
                 id="password" 
                 name="password" 
                 type="password" 
-                autocomplete="current-password" 
+                autocomplete="new-password" 
                 required 
                 v-model="form.password"
                 class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
               >
             </div>
 
-            <div v-if="!isLogin">
+            <div>
               <label for="confirmPassword" class="block text-sm font-medium text-secondary">Passwort bestätigen</label>
               <input 
                 id="confirmPassword" 
@@ -96,7 +96,7 @@
               >
             </div>
 
-            <div v-if="!isLogin" class="flex items-center">
+            <div class="flex items-center">
               <input 
                 id="agb" 
                 name="agb" 
@@ -107,6 +107,20 @@
               >
               <label for="agb" class="ml-2 block text-sm text-secondary">
                 Ich akzeptiere die <a href="#" class="text-accent hover:bg-accent-hover">AGB</a> und <a href="#" class="text-accent hover:bg-accent-hover">Datenschutzerklärung</a>
+              </label>
+            </div>
+
+            <div class="flex items-start">
+              <input 
+                id="marketing" 
+                name="marketing" 
+                type="checkbox" 
+                v-model="form.marketingConsent"
+                class="h-4 w-4 text-accent focus:ring-accent border-default rounded"
+              >
+              <label for="marketing" class="ml-2 block text-sm text-secondary">
+                <span class="font-medium">Optional:</span> Ich möchte per E-Mail informiert werden (Produktneuigkeiten, Leurntherapie-Tipps, neue Funktionen).
+                <span class="text-tertiary block mt-1">Du kannst dich jederzeit abmelden.</span>
               </label>
             </div>
 
@@ -122,7 +136,7 @@
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </span>
-                {{ isLogin ? 'Anmelden' : 'Kostenlosen Account erstellen' }}
+                Kostenlosen Account erstellen
               </button>
             </div>
           </form>
@@ -167,12 +181,14 @@
 useHead({
   title: 'Anmelden - Unburdy Therapie-Software',
   meta: [
-    { name: 'description', content: 'Melden Sie sich bei Unburdy an oder erstellen Sie einen kostenlosen Account für Ihre Therapie-Praxis.' }
+    { name: 'description', content: 'Erstellen Sie einen kostenlosen Account für Ihre Therapie-Praxis bei Unburdy.' }
   ]
 })
 
+// Get runtime config for external URLs
+const config = useRuntimeConfig()
+
 // Reactive state
-const isLogin = ref(false)
 const isLoading = ref(false)
 const form = ref({
   firstName: '',
@@ -180,7 +196,8 @@ const form = ref({
   email: '',
   password: '',
   confirmPassword: '',
-  agb: false
+  agb: false,
+  marketingConsent: false
 })
 
 // Form submission handler
@@ -188,14 +205,30 @@ const handleSubmit = async () => {
   isLoading.value = true
   
   try {
-    // Hier würde die Authentifizierung stattfinden
-    // Für Demo-Zwecke simulieren wir eine erfolgreiche Anmeldung
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    const { api } = useApi()
     
-    // Nach erfolgreicher Anmeldung/Registrierung zum Onboarding weiterleiten
+    // Register new user
+    const response = await api.register({
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      email: form.value.email,
+      password: form.value.password,
+      agb: form.value.agb,
+      marketingConsent: form.value.marketingConsent
+    })
+    
+    // Handle successful registration
+    console.log('Registration successful:', response)
+    
+    // Nach erfolgreicher Registrierung zum Onboarding weiterleiten
     await navigateTo('/onboarding/schritt-1')
+    
   } catch (error) {
-    console.error('Fehler bei der Anmeldung:', error)
+    console.error('Fehler bei der Registrierung:', error)
+    
+    // Here you could show user-friendly error messages
+    // For example, using a toast notification or error state
+    
   } finally {
     isLoading.value = false
   }

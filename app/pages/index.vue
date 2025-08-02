@@ -67,8 +67,8 @@ useSeoMeta({
             </div>
           </div>
 
-          <p class="mt-6 text-sm text-accent font-medium">
-            <Icon name="lucide:target" class="inline w-4 h-4 mr-1" /> Entwickelt für Einzelpraxen in Deutschland – keine IT-Kenntnisse nötig.
+          <p class="mt-6 text-sm text-primary font-medium">
+            <Icon name="lucide:target" class="inline w-4 h-4 mr-1 text-accent" /> Entwickelt für Einzelpraxen in Deutschland – keine IT-Kenntnisse nötig.
           </p>
           
           <div class="mt-10 flex items-center justify-center gap-x-6">
@@ -82,70 +82,12 @@ useSeoMeta({
         </div>
       </div>
 
-      <!-- Functions Section -->
-      <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Alles, was du für deine Lerntherapiepraxis brauchst
-          </h2>
-          <p class="mt-4 text-lg text-secondary">
-            Entwickelt speziell für selbstständige Lerntherapeut:innen in Deutschland
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Klientenverwaltung -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4">
-              <Icon name="lucide:users" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Klientenverwaltung</h3>
-            <p class="text-sm text-secondary">
-              Behalte den Überblick über alle wichtigen Klientendaten: Name, Geburtsdatum, Diagnosen, Elternkontakte und Kostenträger – einfach und strukturiert.
-            </p>
-          </div>
-
-          <!-- Therapieplanung -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4">
-              <Icon name="lucide:clipboard-list" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Therapieplanung & Verlauf</h3>
-            <p class="text-sm text-secondary">
-              Dokumentiere Therapieziele, Sitzungsverlauf und Fortschritte. Unburdy hilft dir dabei, deine Förderplanung systematisch umzusetzen.
-            </p>
-          </div>
-
-          <!-- Abrechnung -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4">
-              <Icon name="lucide:calculator" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Abrechnung & Kostenträger</h3>
-            <p class="text-sm text-secondary">
-              Rechnungen schreiben mit nur wenigen Klicks – egal ob privat oder über Krankenkassen. Du wählst den Kostenträger, Unburdy kümmert sich um das Layout.
-            </p>
-          </div>
-
-          <!-- DSGVO -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4">
-              <Icon name="lucide:shield-check" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">DSGVO & Datenschutz</h3>
-            <p class="text-sm text-secondary">
-              Wir hosten ausschließlich in Deutschland und verschlüsseln alle Daten – damit deine Praxis auch digital rechtssicher bleibt.
-            </p>
-          </div>
-        </div>
-      </div>
-
       <!-- Why Unburdy Section -->
       <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div class="bg-accent-light dark:bg-accent-dark/20 rounded-2xl p-8 lg:p-12">
+        <div class="bg-secondary dark:bg-secondary rounded-2xl p-8 lg:p-12">
           <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
-              Die beste Software für selbstständige Lerntherapeut:innen
+            <h2 class="text-3xl font-bold tracking-tight text-primary mb-4">
+              Die beste Software für selbstständige Lerntherapeutinnen
             </h2>
             <p class="text-lg text-secondary max-w-3xl mx-auto">
               Andere Tools sind zu komplex, zu teuer oder nicht auf deine Arbeit zugeschnitten. Unburdy ist anders:
@@ -157,70 +99,30 @@ useSeoMeta({
               <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <Icon name="lucide:focus" class="w-6 h-6 text-accent" />
               </div>
-              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Keine überflüssigen Funktionen</h3>
+              <h3 class="font-semibold text-primary mb-2">Keine überflüssigen Funktionen</h3>
               <p class="text-sm text-secondary">Fokus auf das, was du wirklich brauchst</p>
             </div>
             <div>
               <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <Icon name="lucide:zap" class="w-6 h-6 text-accent" />
               </div>
-              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Intuitive Bedienung</h3>
+              <h3 class="font-semibold text-primary mb-2">Intuitive Bedienung</h3>
               <p class="text-sm text-secondary">Einfach zu verstehen und zu verwenden</p>
             </div>
             <div>
               <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <Icon name="lucide:headphones" class="w-6 h-6 text-accent" />
               </div>
-              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Direkter Support</h3>
+              <h3 class="font-semibold text-primary mb-2">Direkter Support</h3>
               <p class="text-sm text-secondary">Persönliche Hilfe, wenn du sie brauchst</p>
             </div>
             <div>
               <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <Icon name="lucide:refresh-cw" class="w-6 h-6 text-accent" />
               </div>
-              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Regelmäßig weiterentwickelt</h3>
+              <h3 class="font-semibold text-primary mb-2">Regelmäßig weiterentwickelt</h3>
               <p class="text-sm text-secondary">Mit echten Lerntherapeut:innen</p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Target Groups Section -->
-      <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Für wen ist Unburdy gemacht?
-          </h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="text-center">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Icon name="lucide:graduation-cap" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Lerntherapeut:innen</h3>
-            <p class="text-sm text-secondary">in Einzelpraxen</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Icon name="lucide:rocket" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Praxisgründer:innen</h3>
-            <p class="text-sm text-secondary">die einfach starten wollen</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Icon name="lucide:clock" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Freie Therapeut:innen</h3>
-            <p class="text-sm text-secondary">mit wenig Zeit für Verwaltung</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Icon name="lucide:clipboard-check" class="w-6 h-6 text-accent" />
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Heilpädagog:innen</h3>
-            <p class="text-sm text-secondary">mit Förderbedarf-Management</p>
           </div>
         </div>
       </div>
