@@ -5,7 +5,7 @@ export const useApi = () => {
   const config = useRuntimeConfig()
   
   const apiConfig = {
-    baseURL: config.public.apiBaseUrl || 'https://api.unburdy.com',
+    baseURL: config.public.apiBaseUrl || 'http://localhost:8080/api/v1',
     headers: {
       'Authorization': `Bearer ${config.apiToken}`,
       'Content-Type': 'application/json',
