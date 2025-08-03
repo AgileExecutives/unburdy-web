@@ -1,54 +1,84 @@
 <script setup>
 useSeoMeta({
-  title: 'Lerntherapie Software für selbstständige Therapeut:innen | Unburdy',
-  description: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeut:innen. Jetzt 14 Tage kostenlos testen!',
-  ogTitle: 'Lerntherapie Software für selbstständige Therapeut:innen | Unburdy',
-  ogDescription: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeut:innen. Jetzt 14 Tage kostenlos testen!',
-  twitterTitle: 'Lerntherapie Software für selbstständige Therapeut:innen | Unburdy',
-  twitterDescription: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeut:innen. Jetzt 14 Tage kostenlos testen!'
+  title: 'Lerntherapie Software für selbstständige Therapeutinnen und Therapeuten | Unburdy',
+  description: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeutinen und Lerntherapeuten. Jetzt 14 Tage kostenlos testen!',
+  ogTitle: 'Lerntherapie Software für selbstständige Therapeutinnen und Therapeuten | Unburdy',
+  ogDescription: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeutinen und Lerntherapeuten. Jetzt 14 Tage kostenlos testen!',
+  twitterTitle: 'Lerntherapie Software für selbstständige Therapeutinnen und Therapeuten | Unburdy',
+  twitterDescription: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeutinen und Lerntherapeuten. Jetzt 14 Tage kostenlos testen!'
 })
+
+// Animation setup
+onMounted(() => {
+  // Create intersection observer for scroll-triggered animations
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view')
+        }
+      })
+    },
+    {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    }
+  )
+
+  // Observe all testimonial elements
+  const testimonials = document.querySelectorAll('.animate-slide-in-left, .animate-slide-in-right')
+  testimonials.forEach((testimonial) => {
+    observer.observe(testimonial)
+  })
+
+  // Cleanup observer on unmount
+  onUnmounted(() => {
+    observer.disconnect()
+  })
+})
+
+// Smooth scroll to testimonials section
+const scrollToTestimonials = () => {
+  const testimonialsSection = document.getElementById('testimonials')
+  if (testimonialsSection) {
+    testimonialsSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-    <header class="absolute inset-x-0 top-0 z-50">
-      <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div class="flex lg:flex-1">
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">Unburdy</span>
-            <UnburdyLogo size="md" />
-          </a>
-        </div>
-        <div class="hidden lg:flex lg:gap-x-12">
-          <NuxtLink to="/funktionen" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Funktionen</NuxtLink>
-          <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Preise</NuxtLink>
-        </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <NuxtLink to="/anmelden" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
-        </div>
-      </nav>
-    </header>
+  <div class="min-h-screen relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 bg-gradient-animated"></div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="floating-circle floating-circle-1"></div>
+      <div class="floating-circle floating-circle-2"></div>
+      <div class="floating-circle floating-circle-3"></div>
+      <div class="floating-circle floating-circle-4"></div>
+      <div class="floating-circle floating-circle-5"></div>
+    </div>
 
-    <div class="relative isolate px-6 pt-14 lg:px-8">
-      <!-- Decorative background elements -->
-      <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-accent/20 to-accent-hover/30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-      </div>
+    <div class="relative isolate px-6 pt-14 lg:px-8 z-10">
       
       <!-- Hero Section -->
-      <div class="mx-auto max-w-4xl py-32 sm:py-48 lg:py-56">
+      <div class="mx-auto max-w-4xl py-12 md:py-32 sm:py-48 lg:py-56">
         <div class="text-center">
           <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
             Lerntherapie einfach verwalten – mit Unburdy
           </h1>
           <p class="mt-6 text-lg leading-8 text-secondary max-w-3xl mx-auto">
-            Unburdy ist die intuitive Software für selbstständige Lerntherapeut:innen. 
-            Verwalte Klienten, plane Therapien, dokumentiere Fortschritte und erstelle Abrechnungen – 
+            Unburdy ist die intuitive Software für selbstständige Lerntherapeuten und Lerntherapeutinnen. 
+            Verwalte Klienten, plane Sitzungen und Lerntherapien, dokumentiere Fortschritte und erstelle Abrechnungen – 
             alles an einem Ort, 100% DSGVO-konform.
           </p>
           
           <!-- Benefits -->
-          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+          <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div class="flex items-center justify-center space-x-2">
               <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
               <span class="text-secondary">Keine medizinische Bürokratie</span>
@@ -67,7 +97,7 @@ useSeoMeta({
             </div>
           </div>
 
-          <p class="mt-6 text-sm text-primary font-medium">
+          <p class="mt-12 text-sm text-primary font-medium">
             <Icon name="lucide:target" class="inline w-4 h-4 mr-1 text-accent" /> Entwickelt für Einzelpraxen in Deutschland – keine IT-Kenntnisse nötig.
           </p>
           
@@ -79,12 +109,144 @@ useSeoMeta({
               Funktionen ansehen <span aria-hidden="true">→</span>
             </NuxtLink>
           </div>
+
+          <!-- Scroll to testimonials indicator -->
+          <div id="testimonials" class="mt-16 flex justify-center">
+            <button 
+              @click="scrollToTestimonials"
+              class="group flex flex-col items-center space-y-2 text-secondary hover:text-primary transition-colors duration-200"
+              aria-label="Scroll to testimonials"
+            >
+              <span class="text-sm font-medium">Mehr entdecken</span>
+              <Icon 
+                name="lucide:chevron-down" 
+                class="w-6 h-6 animate-bounce group-hover:text-accent transition-colors duration-200" 
+              />
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Why Unburdy Section -->
+
+      <!-- Testimonials Section -->
       <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div class="bg-secondary dark:bg-secondary rounded-2xl p-8 lg:p-12">
+        <div class="space-y-20">
+          <!-- Testimonial 1 - Image Left -->
+          <div class="flex flex-col md:flex-row items-center gap-8 animate-slide-in-left">
+            <div class="md:w-1/3 flex-shrink-0">
+              <img 
+                src="/images/pexels-cottonbro-4098274.jpg" 
+                alt="Lerntherapeutin" 
+                class="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
+              >
+            </div>
+            <div class="md:w-2/3 relative">
+              <div class="text-6xl text-accent/20 font-bold absolute -top-4 -left-4">"</div>
+              <blockquote class="text-xl md:text-2xl text-primary leading-relaxed italic pl-8">
+                Endlich eine Software, die wirklich für Lerntherapie gemacht ist! 
+                Als IT-Laie war ich skeptisch, aber Unburdy ist wirklich kinderleicht. 
+                Nach 10 Minuten kann man direkt loslegen.
+               </blockquote>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 - Image Right -->
+          <div class="flex flex-col md:flex-row-reverse items-center gap-8 animate-slide-in-right">
+            <div class="md:w-1/3 flex-shrink-0">
+              <img 
+                src="/images/pexels-olly-914931.jpg" 
+                alt="Lerntherapeut" 
+                class="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
+              >
+            </div>
+            <div class="md:w-2/3 relative text-right">
+              <div class="text-6xl text-accent/20 font-bold absolute -top-4 -right-4">"</div>
+              <blockquote class="text-xl md:text-2xl text-primary leading-relaxed italic pr-8">
+                Die Therapieplanung ist so viel einfacher geworden. Zeitersparnis bis zu 2 Stunden pro Woche. Und alles geht am Notebook oder mit einem Touch am Mobilgerät.
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 - Image Left -->
+          <div class="flex flex-col md:flex-row items-center gap-8 animate-slide-in-left">
+            <div class="md:w-1/3 flex-shrink-0">
+              <img 
+                src="/images/pexels-olly-859265.jpg" 
+                alt="Lerntherapeutin" 
+                class="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
+              >
+            </div>
+            <div class="md:w-2/3 relative">
+              <div class="text-6xl text-accent/20 font-bold absolute -top-4 -left-4">"</div>
+              <blockquote class="text-xl md:text-2xl text-primary leading-relaxed italic pl-8">
+                Die DSGVO-Konformität war mir sehr wichtig. Mit Unburdy kann ich entspannt arbeiten, weil ich weiß, dass alles rechtssicher ist. 
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- Testimonial 4 - Image Right -->
+          <div class="flex flex-col md:flex-row-reverse items-center gap-8 animate-slide-in-right">
+            <div class="md:w-1/3 flex-shrink-0">
+              <img 
+                src="/images/pexels-shvets-production-7176288.jpg" 
+                alt="Lerntherapeutin" 
+                class="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
+              >
+            </div>
+            <div class="md:w-2/3 relative text-right">
+              <div class="text-6xl text-accent/20 font-bold absolute -top-4 -right-4">"</div>
+              <blockquote class="text-xl md:text-2xl text-primary leading-relaxed italic pr-8">
+                Die Abrechnung war früher ein Alptraum. Mit Unburdy erstelle ich Rechnungen in Sekunden und behalte den Überblick über alle Zahlungen.
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- Testimonial 5 - Image Left -->
+          <div class="flex flex-col md:flex-row items-center gap-8 animate-slide-in-left">
+            <div class="md:w-1/3 flex-shrink-0">
+              <img 
+                src="/images/pexels-pixabay-207756.jpg" 
+                alt="Lerntherapeut" 
+                class="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
+              >
+            </div>
+            <div class="md:w-2/3 relative">
+              <div class="text-6xl text-accent/20 font-bold absolute -top-4 -left-4">"</div>
+              <blockquote class="text-xl md:text-2xl text-primary leading-relaxed italic pl-8">
+                In der Lerntherapie ist Zeit kostbar. Unburdy hilft mir, mich auf das Wesentliche zu konzentrieren – die Arbeit mit meinen Klienten.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full-width CTA Band -->
+      <div class="bg-accent py-16">
+        <div class="mx-auto max-w-4xl px-6 lg:px-8 text-center">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+            Bereit für den nächsten Schritt?
+          </h2>
+          <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+             Starte jetzt deine digitale Lerntherapie-Praxis mit Unburdy – 14 Tage kostenlos testen, keine Kreditkarte nötig.
+         </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <NuxtLink 
+              to="/anmelden" 
+              class="inline-flex items-center rounded-md bg-white px-8 py-4 text-lg font-semibold text-accent shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-colors duration-200"
+            >
+              <Icon name="lucide:rocket" class="w-5 h-5 mr-3" />
+              14 Tage kostenlos testen
+            </NuxtLink>
+            <p class="text-white/80 text-sm">
+              Keine Kreditkarte erforderlich
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Why Unburdy Section -->
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 py-24">
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 lg:p-12">
           <div class="text-center mb-12">
             <h2 class="text-3xl font-bold tracking-tight text-primary mb-4">
               Die beste Software für selbstständige Lerntherapeutinnen
@@ -121,15 +283,288 @@ useSeoMeta({
                 <Icon name="lucide:refresh-cw" class="w-6 h-6 text-accent" />
               </div>
               <h3 class="font-semibold text-primary mb-2">Regelmäßig weiterentwickelt</h3>
-              <p class="text-sm text-secondary">Mit echten Lerntherapeut:innen</p>
+              <p class="text-sm text-secondary">Mit echten Lerntherapeutinen und Lerntherapeuten</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-        <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-cyan-200/20 to-blue-200/30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+          <!-- Image Credits Section (moved above footer) -->
+    <div class=" text-center py-4 ">
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Bildquelle: Pexels (by cottonbro studio, Olly, Pixabay, SHVETS production)
+      </p>
+    </div>
+      <!-- Bottom decorative elements -->
+      <div class="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl">
+        <div class="floating-circle floating-circle-6"></div>
+        <div class="floating-circle floating-circle-7"></div>
       </div>
     </div>
+
+
   </div>
 </template>
+
+<style scoped>
+/* Animated Background Gradient */
+@keyframes gradientShift {
+  0% {
+    background: linear-gradient(-45deg, #f8fafc, #ffffff, #f1f5f9, #f8fafc);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+  50% {
+    background: linear-gradient(-45deg, #f1f5f9, #f8fafc, #ffffff, #f1f5f9);
+    background-size: 200% 200%;
+    background-position: 100% 50%;
+  }
+  100% {
+    background: linear-gradient(-45deg, #f8fafc, #ffffff, #f1f5f9, #f8fafc);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientShiftDark {
+  0% {
+    background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+  50% {
+    background: linear-gradient(-45deg, #1f2937, #1e293b, #111827, #1f2937);
+    background-size: 200% 200%;
+    background-position: 100% 50%;
+  }
+  100% {
+    background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-animated {
+  animation: gradientShift 20s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-gradient-animated {
+    animation: gradientShiftDark 20s ease-in-out infinite;
+  }
+}
+
+/* Floating Elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(20px) rotate(-180deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  33% {
+    transform: translateX(30px) translateY(-30px);
+  }
+  66% {
+    transform: translateX(-20px) translateY(20px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+.floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  filter: blur(1px);
+}
+
+.floating-circle-1 {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  top: 10%;
+  left: 10%;
+  animation: float 8s ease-in-out infinite, drift 12s ease-in-out infinite;
+}
+
+.floating-circle-2 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #06b6d4, #0891b2);
+  top: 20%;
+  right: 15%;
+  animation: floatReverse 10s ease-in-out infinite, drift 15s ease-in-out infinite reverse;
+  animation-delay: -2s;
+}
+
+.floating-circle-3 {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(45deg, #0891b2, #3b82f6);
+  top: 60%;
+  left: 5%;
+  animation: float 12s ease-in-out infinite, drift 18s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+.floating-circle-4 {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  top: 40%;
+  right: 8%;
+  animation: floatReverse 9s ease-in-out infinite, drift 14s ease-in-out infinite reverse;
+  animation-delay: -1s;
+}
+
+.floating-circle-5 {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #06b6d4, #0891b2);
+  top: 80%;
+  left: 40%;
+  animation: float 7s ease-in-out infinite, drift 11s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.floating-circle-6 {
+  width: 110px;
+  height: 110px;
+  background: linear-gradient(45deg, #0891b2, #3b82f6);
+  bottom: 20%;
+  right: 30%;
+  animation: floatReverse 11s ease-in-out infinite, drift 16s ease-in-out infinite reverse;
+  animation-delay: -5s;
+}
+
+.floating-circle-7 {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  bottom: 10%;
+  left: 60%;
+  animation: float 13s ease-in-out infinite, drift 20s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+
+/* Testimonial Animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+/* Add staggered animation delays for each testimonial */
+.animate-slide-in-left:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.animate-slide-in-right:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.animate-slide-in-left:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.animate-slide-in-right:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+.animate-slide-in-left:nth-child(5) {
+  animation-delay: 1.0s;
+}
+
+/* Intersection Observer Animation (for scroll-triggered animations) */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    opacity: 0;
+    animation-play-state: paused;
+  }
+  
+  .animate-slide-in-left.in-view {
+    animation-play-state: running;
+  }
+  
+  .animate-slide-in-right.in-view {
+    animation-play-state: running;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .bg-gradient-animated,
+  .floating-circle,
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    animation: none !important;
+  }
+  
+  .bg-gradient-animated {
+    background: linear-gradient(-45deg, #f8fafc, #ffffff, #f1f5f9, #f8fafc);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .bg-gradient-animated {
+      background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+    }
+  }
+  
+  .floating-circle {
+    display: none;
+  }
+  
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>

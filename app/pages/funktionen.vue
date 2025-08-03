@@ -1,23 +1,5 @@
 <template>
   <div class="min-h-screen bg-background">
-    <header class="absolute inset-x-0 top-0 z-50">
-      <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div class="flex lg:flex-1">
-          <NuxtLink to="/" class="-m-1.5 p-1.5">
-            <span class="sr-only">Unburdy</span>
-            <UnburdyLogo size="md" />
-          </NuxtLink>
-        </div>
-        <div class="hidden lg:flex lg:gap-x-12">
-          <NuxtLink to="/funktionen" class="text-sm font-semibold leading-6 text-accent">Funktionen</NuxtLink>
-          <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-primary">Preise</NuxtLink>
-        </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <NuxtLink to="/anmelden" class="text-sm font-semibold leading-6 text-primary">Anmelden <span
-              aria-hidden="true">&rarr;</span></NuxtLink>
-        </div>
-      </nav>
-    </header>
 
     <div class="relative isolate px-6 pt-24 lg:px-8">
       <!-- Hero Section -->
@@ -28,7 +10,7 @@
           </h1>
           <p class="mt-6 text-lg leading-8 text-secondary max-w-3xl mx-auto">
             Unburdy bietet alle Werkzeuge, die du für eine erfolgreiche Lerntherapie-Praxis brauchst –
-            intuitiv, sicher und speziell für selbstständige Lerntherapeut:innen entwickelt.
+            intuitiv, sicher und speziell für selbstständige Lerntherapeutinen und Lerntherapeuten entwickelt.
           </p>
         </div>
       </div>

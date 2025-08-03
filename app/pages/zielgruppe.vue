@@ -1,24 +1,5 @@
 <template>
   <div class="min-h-screen bg-background">
-    <header class="absolute inset-x-0 top-0 z-50">
-      <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div class="flex lg:flex-1">
-          <NuxtLink to="/" class="-m-1.5 p-1.5">
-            <span class="sr-only">Unburdy</span>
-            <UnburdyLogo size="md" />
-          </NuxtLink>
-        </div>
-        <div class="hidden lg:flex lg:gap-x-12">
-          <NuxtLink to="/funktionen" class="text-sm font-semibold leading-6 text-primary">Funktionen</NuxtLink>
-          <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-primary">Preise</NuxtLink>
-          <NuxtLink to="/zielgruppe" class="text-sm font-semibold leading-6 text-accent">Zielgruppe</NuxtLink>
-        </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <NuxtLink to="/anmelden" class="text-sm font-semibold leading-6 text-primary">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
-        </div>
-      </nav>
-    </header>
-
     <div class="relative isolate px-6 pt-24 lg:px-8">
       <!-- Hero Section -->
       <div class="mx-auto max-w-4xl py-16 sm:py-24">
@@ -27,7 +8,7 @@
             Für wen ist Unburdy gemacht?
           </h1>
           <p class="mt-6 text-lg leading-8 text-secondary max-w-3xl mx-auto">
-            Unburdy wurde speziell für selbstständige Lerntherapeut:innen und Heilpädagog:innen entwickelt. 
+            Unburdy wurde speziell für selbstständige Lerntherapeutinen und Lerntherapeuten entwickelt. 
             Egal ob du gerade startest oder bereits eine etablierte Praxis führst – wir unterstützen dich im Alltag.
           </p>
         </div>
@@ -40,7 +21,7 @@
             <div class="w-16 h-16 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-6 mx-auto">
               <Icon name="lucide:graduation-cap" class="w-8 h-8 text-accent" />
             </div>
-            <h3 class="text-xl font-semibold text-primary mb-3">Lerntherapeut:innen</h3>
+            <h3 class="text-xl font-semibold text-primary mb-3">Lerntherapeutinen und Lerntherapeuten</h3>
             <p class="text-secondary mb-4">in Einzelpraxen</p>
             <p class="text-sm text-tertiary">
               Du arbeitest selbstständig und brauchst eine einfache, aber vollständige Lösung für deine Praxisverwaltung ohne medizinische Komplexität.
@@ -51,7 +32,7 @@
             <div class="w-16 h-16 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-6 mx-auto">
               <Icon name="lucide:rocket" class="w-8 h-8 text-accent" />
             </div>
-            <h3 class="text-xl font-semibold text-primary mb-3">Praxisgründer:innen</h3>
+            <h3 class="text-xl font-semibold text-primary mb-3">Praxisgründer und -gründerinnen</h3>
             <p class="text-secondary mb-4">die einfach starten wollen</p>
             <p class="text-sm text-tertiary">
               Du planst den Schritt in die Selbstständigkeit und suchst eine Software, die von Anfang an mitwächst und dir hilft, professionell aufzutreten.
@@ -62,7 +43,7 @@
             <div class="w-16 h-16 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-6 mx-auto">
               <Icon name="lucide:clock" class="w-8 h-8 text-accent" />
             </div>
-            <h3 class="text-xl font-semibold text-primary mb-3">Freie Therapeut:innen</h3>
+            <h3 class="text-xl font-semibold text-primary mb-3">Freie Therapeutinnen und Therapeuten</h3>
             <p class="text-secondary mb-4">mit wenig Zeit für Verwaltung</p>
             <p class="text-sm text-tertiary">
               Du möchtest dich auf die Therapie konzentrieren und administrative Aufgaben so effizient wie möglich erledigen.
@@ -73,7 +54,7 @@
             <div class="w-16 h-16 bg-accent-light dark:bg-accent-dark/50 rounded-lg flex items-center justify-center mb-6 mx-auto">
               <Icon name="lucide:clipboard-check" class="w-8 h-8 text-accent" />
             </div>
-            <h3 class="text-xl font-semibold text-primary mb-3">Heilpädagog:innen</h3>
+            <h3 class="text-xl font-semibold text-primary mb-3">Heilpädagoginnen und Heilpädagogen</h3>
             <p class="text-secondary mb-4">mit Förderbedarf-Management</p>
             <p class="text-sm text-tertiary">
               Du arbeitest mit Kindern mit besonderen Bedürfnissen und brauchst eine strukturierte Dokumentation für Förderplanung und Verlaufskontrolle.
@@ -148,11 +129,11 @@
 <script lang="ts" setup>
 useSeoMeta({
   title: 'Für wen Unburdy ideal ist | Lerntherapie & Heilpädagogik',
-  description: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeut:innen und Heilpädagog:innen im Alltag.',
+  description: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeutinen und Lerntherapeuten im Alltag.',
   ogTitle: 'Für wen Unburdy ideal ist | Lerntherapie & Heilpädagogik',
-  ogDescription: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeut:innen und Heilpädagog:innen im Alltag.',
+  ogDescription: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeutinen und Lerntherapeuten im Alltag.',
   twitterTitle: 'Für wen Unburdy ideal ist | Lerntherapie & Heilpädagogik',
-  twitterDescription: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeut:innen und Heilpädagog:innen im Alltag.'
+  twitterDescription: 'Egal ob Einzelpraxis oder Neustart – Unburdy unterstützt selbstständige Lerntherapeutinen und Lerntherapeuten  im Alltag.'
 })
 </script>
 

@@ -213,10 +213,17 @@ export const useOnboardingStore = defineStore('onboarding', {
       this.$reset()
     },
 
-    // Hilfsfunktion zum Speichern der Daten (später für API-Calls)
+    // Hilfsfunktion zum Speichern der Daten (mit API-Calls)
     async saveData() {
       try {
-        // Hier würde normalerweise ein API-Call stattfinden
+        const { onboarding } = useApi()
+        const { isAuthenticated } = useAuth()
+
+        // Prüfen ob User authentifiziert ist
+        if (!isAuthenticated.value) {
+          throw new Error('User must be authenticated to save onboarding data')
+        }
+        
         console.log('Onboarding-Daten speichern:', {
           settings: this.settings,
           client: this.client,
@@ -225,13 +232,86 @@ export const useOnboardingStore = defineStore('onboarding', {
           notes: this.notes
         })
         
-        // Simuliere API-Call
-        await new Promise(resolve => setTimeout(resolve, 500))
+        // API-Call über authenticated onboarding endpoint
+        const result = await onboarding.saveBasicSettings(this.settings)
         
-        return { success: true }
-      } catch (error) {
+        return { success: true, data: result }
+      } catch (error: any) {
         console.error('Fehler beim Speichern:', error)
-        return { success: false, error }
+        return { success: false, error: error?.message || 'Unbekannter Fehler' }
+      }
+    },
+
+    // Ersten Klienten über API speichern
+    async saveFirstClient() {
+      try {
+        const { onboarding } = useApi()
+        const { isAuthenticated } = useAuth()
+
+        if (!isAuthenticated.value) {
+          throw new Error('User must be authenticated to create client')
+        }
+
+        console.log('Ersten Klienten erstellen:', this.client)
+        
+        const result = await onboarding.createFirstClient(this.client)
+        
+        return { success: true, data: result }
+      } catch (error: any) {
+        console.error('Fehler beim Erstellen des Klienten:', error)
+        return { success: false, error: error?.message || 'Unbekannter Fehler' }
+      }
+    },
+
+    // Kontakte und Versicherung über API speichern
+    async saveContactsAndInsurance() {
+      try {
+        const { onboarding } = useApi()
+        const { isAuthenticated } = useAuth()
+
+        if (!isAuthenticated.value) {
+          throw new Error('User must be authenticated to save contacts')
+        }
+
+        const contactsData = {
+          hasParents: this.hasParents,
+          contacts: this.hasParents ? this.contacts : null,
+          insurance: this.insurance
+        }
+
+        console.log('Kontakte und Versicherung speichern:', contactsData)
+        
+        const result = await onboarding.saveContacts(contactsData)
+        
+        return { success: true, data: result }
+      } catch (error: any) {
+        console.error('Fehler beim Speichern der Kontakte:', error)
+        return { success: false, error: error?.message || 'Unbekannter Fehler' }
+      }
+    },
+
+    // Onboarding abschließen
+    async finalizeOnboarding() {
+      try {
+        const { onboarding } = useApi()
+        const { isAuthenticated } = useAuth()
+
+        if (!isAuthenticated.value) {
+          throw new Error('User must be authenticated to complete onboarding')
+        }
+
+        console.log('Onboarding abschließen')
+        
+        const result: any = await onboarding.completeOnboarding()
+        
+        if (result?.success) {
+          this.completeOnboarding()
+        }
+        
+        return { success: true, data: result }
+      } catch (error: any) {
+        console.error('Fehler beim Abschließen des Onboardings:', error)
+        return { success: false, error: error?.message || 'Unbekannter Fehler' }
       }
     },
 

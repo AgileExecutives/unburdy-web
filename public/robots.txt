@@ -3,6 +3,7 @@ Disallow: /admin/
 Disallow: /intern/
 Disallow: /api/
 Disallow: /dashboard/
+Allow: /legal/
 Allow: /
 
 Sitemap: https://unburdy.de/sitemap.xml

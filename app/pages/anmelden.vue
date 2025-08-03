@@ -1,27 +1,11 @@
 <template>
     <div class="bg-background min-h-screen">
-        <header class="absolute inset-x-0 top-0 z-50">
-            <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-                <div class="flex lg:flex-1">
-                    <NuxtLink to="/" class="-m-1.5 p-1.5">
-                        <span class="sr-only">Unburdy</span>
-                        <UnburdyLogo size="md" />
-                    </NuxtLink>
-                </div>
-                <div class="hidden lg:flex lg:gap-x-12">
-                    <NuxtLink to="/funktionen" class="text-sm font-semibold leading-6 text-primary">Funktionen
-                    </NuxtLink>
-                    <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-primary">Preise</NuxtLink>
-                </div>
-            </nav>
-        </header>
-
         <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
                 <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-primary">
                     Kostenlosen Account erstellen
                 </h2>
-                <p class="mt-2 text-center text-sm text-secondary">
+                <p class="sm:mt-2 text-center text-sm text-secondary">
                     Bereits registriert?
                     <a :href="config.public.unburdyApp" class="font-medium text-accent hover:bg-accent-hover">
                         Hier anmelden
@@ -29,8 +13,8 @@
                 </p>
             </div>
 
-            <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div class="bg-background-secondary py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-default">
+            <div class="sm:mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div class="sm:bg-background-secondary sm:py-8 px-4 shadow sm:rounded-lg sm:px-10 sm:border border-default">
                     <form class="space-y-6" @submit.prevent="handleSubmit">
                         <div>
                             <div class="grid grid-cols-2 gap-4">
@@ -171,7 +155,20 @@ const form = ref({
     password: '',
     confirmPassword: '',
     agb: false,
-    marketingConsent: false
+    marketingConsent: false,
+    organizationId: 0
+})
+
+const csrfToken = ref('')
+
+// Get CSRF token on page load
+onMounted(async () => {
+  try {
+    const response = await $fetch('/api/csrf-token')
+    csrfToken.value = response.csrfToken
+  } catch (error) {
+    console.error('Failed to get CSRF token:', error)
+  }
 })
 
 // Form submission handler
@@ -179,29 +176,71 @@ const handleSubmit = async () => {
     isLoading.value = true
 
     try {
-        const { api } = useApi()
+        // Validate password confirmation
+        if (form.value.password !== form.value.confirmPassword) {
+            throw new Error('Passwörter stimmen nicht überein')
+        }
 
-        // Register new user
-        const response = await api.register({
-            firstName: form.value.firstName,
-            lastName: form.value.lastName,
-            email: form.value.email,
-            password: form.value.password,
-            agb: form.value.agb,
-            marketingConsent: form.value.marketingConsent
+        // Get fresh CSRF token if needed
+        if (!csrfToken.value) {
+            const tokenResponse = await $fetch('/api/csrf-token')
+            csrfToken.value = tokenResponse.csrfToken
+        }
+
+        // Register new user through server API route
+        const response = await $fetch('/api/register', {
+            method: 'POST',
+            body: {
+                firstName: form.value.firstName,
+                lastName: form.value.lastName,
+                email: form.value.email,
+                username: form.value.email, // Use email as username
+                password: form.value.password,
+                agb: form.value.agb,
+                marketingConsent: form.value.marketingConsent,
+                organizationId: form.value.organizationId,
+                csrfToken: csrfToken.value
+            }
         })
 
         // Handle successful registration
         console.log('Registration successful:', response)
 
-        // Nach erfolgreicher Registrierung zum Onboarding weiterleiten
-        await navigateTo('/onboarding/schritt-1')
+        // Set authentication state using useAuth composable
+        const { setAuth } = useAuth()
+        if (response.token && response.user) {
+            setAuth(response.token, response.user)
+        } else if (response.token) {
+            // Fallback: extract user info from token or use basic info
+            setAuth(response.token, {
+                firstName: form.value.firstName,
+                lastName: form.value.lastName,
+                email: form.value.email,
+                username: form.value.email
+            })
+        }
+
+        // Get redirect URL from query params
+        const route = useRoute()
+        const redirectTo = route.query.redirect || '/onboarding/schritt-1'
+
+        // Nach erfolgreicher Registrierung zum gewünschten Ziel weiterleiten
+        await navigateTo(redirectTo)
 
     } catch (error) {
         console.error('Fehler bei der Registrierung:', error)
 
-        // Here you could show user-friendly error messages
-        // For example, using a toast notification or error state
+        // Show user-friendly error messages
+        let errorMessage = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
+        
+        if (error.statusMessage) {
+            errorMessage = error.statusMessage
+        } else if (error.message) {
+            errorMessage = error.message
+        }
+
+        // Here you could show a toast notification or set an error state
+        alert(errorMessage) // For now, simple alert - replace with proper error handling
 
     } finally {
         isLoading.value = false

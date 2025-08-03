@@ -17,6 +17,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (only available on server-side)
     apiToken: process.env.NUXT_API_TOKEN,
+    csrfSecret: process.env.NUXT_CSRF_SECRET || 'fallback-secret-change-in-production',
     
     // Public keys (exposed to client-side)
     public: {

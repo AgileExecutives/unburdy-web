@@ -88,6 +88,11 @@
 </template>
 
 <script setup>
+// Authentifizierung erforderlich
+definePageMeta({
+  middleware: 'auth'
+})
+
 // Meta-Tags für SEO
 useHead({
   title: 'Willkommen - Unburdy Onboarding',
