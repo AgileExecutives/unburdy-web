@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (process.server) return
 
   // Skip auth check for public pages
-  const publicPages = ['/anmelden', '/', '/funktionen', '/preise', '/legal/impressum', '/legal/agb', '/legal/datenschutz', '/legal/kontakt']
+  const publicPages = ['/anmelden', '/', '/idee-hinter-unburdy', '/preise', '/legal/impressum', '/legal/agb', '/legal/datenschutz', '/legal/kontakt']
   if (publicPages.includes(to.path)) {
     return
   }

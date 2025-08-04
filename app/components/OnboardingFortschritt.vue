@@ -1,10 +1,5 @@
 <template>
-  <div :class="[
-    'px-6 py-4',
-    isCompleted 
-      ? 'bg-background-secondary' 
-      : 'bg-surface'
-  ]">
+  <div class="px-6 py-4">
     <div class="max-w-2xl mx-auto">
       <!-- Logo und Titel -->
       <div class="flex items-center justify-between mb-4">

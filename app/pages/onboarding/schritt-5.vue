@@ -1,9 +1,8 @@
 <template>
-  <div class="bg-background min-h-screen">
-    <!-- Fortschrittsanzeige -->
-    <OnboardingFortschritt />
+  <!-- Fortschrittsanzeige -->
+  <OnboardingFortschritt />
 
-    <div class="max-w-2xl mx-auto px-6 py-16">
+  <div class="max-w-2xl mx-auto px-6 py-16">
       <div class="text-center mb-12">
         <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900/50 mb-8">
           <svg class="h-12 w-12 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,13 +178,13 @@
         </p>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>
 // Authentifizierung erforderlich
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
+  layout: 'onboarding'
 })
 
 // Meta-Tags für SEO

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900 mt-16">
+  <div class="mt-16">
     <div class="mx-auto max-w-4xl px-6 py-16 lg:px-8">
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">

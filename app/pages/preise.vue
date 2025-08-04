@@ -1,5 +1,4 @@
 <template>
-  <div class="bg-background min-h-screen">
   <div class="relative isolate px-6 pt-32 lg:px-8">
       <div class="mx-auto max-w-5xl py-16">
         <div class="text-center mb-16">
@@ -31,7 +30,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>

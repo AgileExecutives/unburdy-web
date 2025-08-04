@@ -30,7 +30,7 @@
         :class="[
           'inline-block w-full px-6 py-3 rounded-lg font-semibold transition-colors duration-200',
           highlight 
-            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg' 
+            ? 'bg-blue-600 text-white hover:bg-blue-800 shadow-lg' 
             : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100'
         ]"
       >

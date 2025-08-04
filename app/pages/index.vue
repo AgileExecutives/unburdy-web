@@ -51,9 +51,6 @@ const scrollToTestimonials = () => {
 
 <template>
   <div class="min-h-screen relative overflow-hidden">
-    <!-- Animated Background -->
-    <div class="absolute inset-0 bg-gradient-animated"></div>
-    
     <!-- Floating Elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="floating-circle floating-circle-1"></div>
@@ -66,64 +63,97 @@ const scrollToTestimonials = () => {
     <div class="relative isolate px-6 pt-14 lg:px-8 z-10">
       
       <!-- Hero Section -->
-      <div class="mx-auto max-w-4xl py-12 md:py-32 sm:py-48 lg:py-56">
-        <div class="text-center">
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
-            Lerntherapie einfach verwalten – mit Unburdy
-          </h1>
-          <p class="mt-6 text-lg leading-8 text-secondary max-w-3xl mx-auto">
-            Unburdy ist die intuitive Software für selbstständige Lerntherapeuten und Lerntherapeutinnen. 
-            Verwalte Klienten, plane Sitzungen und Lerntherapien, dokumentiere Fortschritte und erstelle Abrechnungen – 
-            alles an einem Ort, 100% DSGVO-konform.
-          </p>
-          
-          <!-- Benefits -->
-          <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-            <div class="flex items-center justify-center space-x-2">
-              <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
-              <span class="text-secondary">Keine medizinische Bürokratie</span>
+      <div class="mx-auto max-w-7xl py-12 md:py-32 sm:py-48 lg:py-56">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Hero Content -->
+          <div class="text-center lg:text-left">
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
+                    Zeit für Menschen.<br />
+        Zeit für Entwicklung.<br />
+        Zeit für das Wesentliche.<br />
+              Lerntherapie einfach verwalten – mit Unburdy
+            </h1>
+            <p class="mt-6 text-lg leading-8 text-secondary">
+              Unburdy ist die intuitive Software für selbstständige Lerntherapeuten und Lerntherapeutinnen. 
+              Verwalte Klienten, plane Sitzungen und Lerntherapien, dokumentiere Fortschritte und erstelle Abrechnungen – 
+              alles an einem Ort, 100% DSGVO-konform.
+            </p>
+            
+            <!-- Benefits -->
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div class="flex items-center justify-center lg:justify-start space-x-2">
+                <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
+                <span class="text-secondary">Keine medizinische Bürokratie</span>
+              </div>
+              <div class="flex items-center justify-center lg:justify-start space-x-2">
+                <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
+                <span class="text-secondary">Hosting in Deutschland</span>
+              </div>
+              <div class="flex items-center justify-center lg:justify-start space-x-2">
+                <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
+                <span class="text-secondary">Klarer Fokus auf Lerntherapie</span>
+              </div>
+              <div class="flex items-center justify-center lg:justify-start space-x-2">
+                <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
+                <span class="text-secondary">Ab 29 € im Monat</span>
+              </div>
             </div>
-            <div class="flex items-center justify-center space-x-2">
-              <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
-              <span class="text-secondary">Hosting in Deutschland</span>
+
+            
+            <div class="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
+              <NuxtLink to="/anmelden" class="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                14 Tage kostenlos testen
+              </NuxtLink>
+              <NuxtLink to="/idee-hinter-unburdy" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+                Mehr über Unburdy <span aria-hidden="true">→</span>
+              </NuxtLink>
             </div>
-            <div class="flex items-center justify-center space-x-2">
-              <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
-              <span class="text-secondary">Klarer Fokus auf Lerntherapie</span>
-            </div>
-            <div class="flex items-center justify-center space-x-2">
-              <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
-              <span class="text-secondary">Ab 29 € im Monat</span>
+
+            <!-- Scroll to testimonials indicator - Mobile only -->
+            <div class="mt-12 flex justify-center lg:hidden">
+              <button 
+                @click="scrollToTestimonials"
+                class="group flex flex-col items-center space-y-2 text-secondary hover:text-primary transition-colors duration-200"
+                aria-label="Scroll to testimonials"
+              >
+                <span class="text-sm font-medium">Mehr entdecken</span>
+                <Icon 
+                  name="lucide:chevron-down" 
+                  class="w-6 h-6 animate-bounce group-hover:text-accent transition-colors duration-200" 
+                />
+              </button>
             </div>
           </div>
 
-          <p class="mt-12 text-sm text-primary font-medium">
-            <Icon name="lucide:target" class="inline w-4 h-4 mr-1 text-accent" /> Entwickelt für Einzelpraxen in Deutschland – keine IT-Kenntnisse nötig.
-          </p>
-          
-          <div class="mt-10 flex items-center justify-center gap-x-6">
-            <NuxtLink to="/anmelden" class="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-              14 Tage kostenlos testen
-            </NuxtLink>
-            <NuxtLink to="/funktionen" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-              Funktionen ansehen <span aria-hidden="true">→</span>
-            </NuxtLink>
-          </div>
-
-          <!-- Scroll to testimonials indicator -->
-          <div id="testimonials" class="mt-16 flex justify-center">
-            <button 
-              @click="scrollToTestimonials"
-              class="group flex flex-col items-center space-y-2 text-secondary hover:text-primary transition-colors duration-200"
-              aria-label="Scroll to testimonials"
-            >
-              <span class="text-sm font-medium">Mehr entdecken</span>
-              <Icon 
-                name="lucide:chevron-down" 
-                class="w-6 h-6 animate-bounce group-hover:text-accent transition-colors duration-200" 
+          <!-- Hero Image - Desktop only -->
+          <div class="hidden lg:flex justify-center lg:justify-end relative">
+            <div class="relative">
+              <img 
+                src="/images/pexels-olly-3768129.jpg" 
+                alt="Zeit für Menschen - Lerntherapie mit Kindern" 
+                class="w-64 h-64 rounded-full object-cover shadow-2xl"
               />
-            </button>
+              <!-- Overlay text connecting to the claim -->
+              <div class="absolute -bottom-4 -right-4 bg-accent text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                Zeit für Menschen
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- Scroll to testimonials indicator - Desktop only -->
+        <div id="testimonials" class="mt-16 hidden lg:flex justify-center">
+          <button 
+            @click="scrollToTestimonials"
+            class="group flex flex-col items-center space-y-2 text-secondary hover:text-primary transition-colors duration-200"
+            aria-label="Scroll to testimonials"
+          >
+            <span class="text-sm font-medium">Mehr entdecken</span>
+            <Icon 
+              name="lucide:chevron-down" 
+              class="w-6 h-6 animate-bounce group-hover:text-accent transition-colors duration-200" 
+            />
+          </button>
         </div>
       </div>
 
@@ -220,30 +250,9 @@ const scrollToTestimonials = () => {
         </div>
       </div>
 
-      <!-- Full-width CTA Band -->
-      <div class="bg-accent py-16">
-        <div class="mx-auto max-w-4xl px-6 lg:px-8 text-center">
-          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
-            Bereit für den nächsten Schritt?
-          </h2>
-          <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-             Starte jetzt deine digitale Lerntherapie-Praxis mit Unburdy – 14 Tage kostenlos testen, keine Kreditkarte nötig.
-         </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <NuxtLink 
-              to="/anmelden" 
-              class="inline-flex items-center rounded-md bg-white px-8 py-4 text-lg font-semibold text-accent shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-colors duration-200"
-            >
-              <Icon name="lucide:rocket" class="w-5 h-5 mr-3" />
-              14 Tage kostenlos testen
-            </NuxtLink>
-            <p class="text-white/80 text-sm">
-              Keine Kreditkarte erforderlich
-            </p>
-          </div>
-        </div>
-      </div>
-      
+
+      <CallToActionDisturb />
+
       <!-- Why Unburdy Section -->
       <div class="mx-auto max-w-7xl px-6 lg:px-8 py-24">
         <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 lg:p-12">

@@ -14,25 +14,25 @@
         <nav class="flex flex-col sm:flex-row space-x-6 text-sm">
           <NuxtLink 
             to="/legal/kontakt" 
-            class="text-accent hover:text-accent-hover transition-colors duration-200"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
           >
             Kontakt
           </NuxtLink>
           <NuxtLink 
             to="/legal/impressum" 
-            class="text-accent hover:text-accent-hover transition-colors duration-200"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
           >
             Impressum
           </NuxtLink>
           <NuxtLink 
             to="/legal/agb" 
-            class="text-accent hover:text-accent-hover transition-colors duration-200"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
           >
             AGB
           </NuxtLink>
           <NuxtLink 
             to="/legal/datenschutz" 
-            class="text-accent hover:text-accent-hover transition-colors duration-200"
+            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
           >
             Datenschutzerklärung
           </NuxtLink>

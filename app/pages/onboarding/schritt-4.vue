@@ -1,9 +1,8 @@
 <template>
-  <div class="bg-background min-h-screen">
-    <!-- Fortschrittsanzeige -->
-    <OnboardingFortschritt />
+  <!-- Fortschrittsanzeige -->
+  <OnboardingFortschritt />
 
-    <div class="max-w-2xl mx-auto px-6 py-16">
+  <div class="max-w-2xl mx-auto px-6 py-16">
       <div class="mb-12">
         <h1 class="text-3xl font-bold text-primary mb-4">
           Kontakte & Kostenträger
@@ -243,13 +242,13 @@
         </div>
       </form>
     </div>
-  </div>
 </template>
 
 <script setup>
 // Authentifizierung erforderlich
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
+  layout: 'onboarding'
 })
 
 // Meta-Tags für SEO
