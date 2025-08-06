@@ -1,61 +1,81 @@
-# Multi-stage Docker build for hybrid Nuxt app
-FROM node:22-alpine AS base
+FROM node:20-alpine AS builder
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+COPY package*.json yarn.lock* ./
 
-# Build the application
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Install dependencies
+RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    else npm install; fi
+
+# Copy source code
 COPY . .
 
-# Generate version info (if version.ts is needed)
-RUN echo 'export const VERSION = "docker-build"' > version.ts && \
-    echo 'export const BUILDTIME = "'$(date)'"' >> version.ts && \
-    echo 'export const REVISION = "'${GITHUB_SHA:-"local"}'"' >> version.ts
+# Build the application
+RUN yarn build
 
-# Build the application with hybrid rendering
-RUN npm run build
+# Production stage
+FROM node:20-alpine AS production
 
-# Production image with both static files and server
-FROM base AS runner
+# Install nginx, supervisor, and wget for health checks
+RUN apk add --no-cache nginx supervisor wget
+
+# Create directories and set permissions
+RUN mkdir -p /run/nginx /var/log/nginx /var/log/supervisor /var/www/html \
+    && touch /var/log/nginx/access.log /var/log/nginx/error.log \
+    && chown -R nginx:nginx /var/www/html \
+    && chown -R nginx:nginx /var/log/nginx \
+    && chown nginx:nginx /var/log/nginx/access.log /var/log/nginx/error.log
+
 WORKDIR /app
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nuxt
+# Copy built application from builder stage
+COPY --from=builder /app/.output ./
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/yarn.lock* ./
 
-# Copy built application
-COPY --from=builder --chown=nuxt:nodejs /app/.output /app/.output
+# Install production dependencies only
+RUN if [ -f yarn.lock ]; then \
+        yarn --frozen-lockfile --production && yarn cache clean; \
+    elif [ -f package-lock.json ]; then \
+        npm ci --omit=dev && npm cache clean --force; \
+    else \
+        npm install --only=production && npm cache clean --force; \
+    fi
 
-# Create necessary directories
-RUN mkdir -p /app/public && chown -R nuxt:nodejs /app
+# Copy static files to nginx document root
+COPY --from=builder /app/.output/public /var/www/html/
 
-USER nuxt
+# Copy nginx configuration for static file serving
+COPY nginx-static.conf /etc/nginx/nginx.conf
 
-# Expose port
-EXPOSE 3000
+# Copy supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set environment
-ENV NODE_ENV=production
-ENV NITRO_PORT=3000
-ENV NITRO_HOST=0.0.0.0
+# Debug: Test nginx configuration
+RUN nginx -t || echo "Nginx config test failed!"
+
+# Debug: Check what files are in static directory
+RUN echo "=== Contents of /var/www/html ===" && ls -la /var/www/html/ || echo "No /var/www/html directory"
+
+# Debug: Check nginx version and modules
+RUN nginx -V
+
+# Debug: Check if nginx config file exists and show contents
+RUN echo "=== Nginx config file ===" && cat /etc/nginx/nginx.conf || echo "No nginx config found"
+
+# Expose port 80
+EXPOSE 80
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node /app/.output/server/index.mjs --health-check || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-# Start the application
-CMD ["node", "/app/.output/server/index.mjs"]
+# Set build args
+ARG GITHUB_SHA
+ENV GITHUB_SHA=$GITHUB_SHA
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

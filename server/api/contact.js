@@ -151,6 +151,8 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Contact form submission error:', error)
+    console.error('API Base URL:', config.public.apiBaseUrl)
+    console.error('API Token (first 10 chars):', config.apiToken?.substring(0, 10) + '...')
     
     // Handle different types of errors
     if (error.statusCode) {
@@ -159,6 +161,7 @@ export default defineEventHandler(async (event) => {
     
     // Handle API errors
     if (error.data) {
+      console.error('API Error Data:', error.data)
       throw createError({
         statusCode: error.status || 500,
         statusMessage: error.data.message || 'Failed to submit contact form'
@@ -166,6 +169,12 @@ export default defineEventHandler(async (event) => {
     }
     
     // Handle network or other errors
+    console.error('Network/Other Error:', {
+      message: error.message,
+      cause: error.cause,
+      stack: error.stack?.split('\n').slice(0, 5)
+    })
+    
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal server error'

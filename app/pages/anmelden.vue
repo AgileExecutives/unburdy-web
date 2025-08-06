@@ -147,6 +147,8 @@ useHead({
 const config = useRuntimeConfig()
 const { trackSignup, getCampaignData } = useAnalytics()
 const { getToken: getCsrfToken } = useCsrf()
+const { setAuth } = useAuth()
+const route = useRoute()
 
 // Reactive state
 const isLoading = ref(false)
@@ -173,14 +175,8 @@ const handleSubmit = async () => {
             throw new Error('Passwörter stimmen nicht überein')
         }
 
-        // Get fresh CSRF token if needed
-        if (!csrfToken.value) {
-            const tokenResponse = await $fetch('/api/csrf-token')
-            csrfToken.value = tokenResponse.csrfToken
-        }
-
         // Get fresh CSRF token
-        const csrfToken = await getCsrfToken()
+        const csrfTokenValue = await getCsrfToken()
 
         // Register new user through server API route
         const response = await $fetch('/api/register', {
@@ -194,7 +190,7 @@ const handleSubmit = async () => {
                 agb: form.value.agb,
                 marketingConsent: form.value.marketingConsent,
                 organizationId: form.value.organizationId,
-                csrfToken: csrfToken
+                csrfToken: csrfTokenValue
             }
         })
 
@@ -205,7 +201,6 @@ const handleSubmit = async () => {
         trackSignup('email', 1)
 
         // Set authentication state using useAuth composable
-        const { setAuth } = useAuth()
         if (response.token && response.user) {
             setAuth(response.token, response.user)
         } else if (response.token) {
@@ -219,7 +214,6 @@ const handleSubmit = async () => {
         }
 
         // Get redirect URL from query params
-        const route = useRoute()
         const redirectTo = route.query.redirect || '/onboarding/schritt-1'
 
         // Nach erfolgreicher Registrierung zum gewünschten Ziel weiterleiten
