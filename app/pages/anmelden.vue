@@ -145,6 +145,8 @@ useHead({
 
 // Get runtime config for external URLs
 const config = useRuntimeConfig()
+const { trackSignup, getCampaignData } = useAnalytics()
+const { getToken: getCsrfToken } = useCsrf()
 
 // Reactive state
 const isLoading = ref(false)
@@ -159,17 +161,7 @@ const form = ref({
     organizationId: 0
 })
 
-const csrfToken = ref('')
-
-// Get CSRF token on page load
-onMounted(async () => {
-  try {
-    const response = await $fetch('/api/csrf-token')
-    csrfToken.value = response.csrfToken
-  } catch (error) {
-    console.error('Failed to get CSRF token:', error)
-  }
-})
+// Remove the old CSRF token management since it's now in the composable
 
 // Form submission handler
 const handleSubmit = async () => {
@@ -187,6 +179,9 @@ const handleSubmit = async () => {
             csrfToken.value = tokenResponse.csrfToken
         }
 
+        // Get fresh CSRF token
+        const csrfToken = await getCsrfToken()
+
         // Register new user through server API route
         const response = await $fetch('/api/register', {
             method: 'POST',
@@ -199,12 +194,15 @@ const handleSubmit = async () => {
                 agb: form.value.agb,
                 marketingConsent: form.value.marketingConsent,
                 organizationId: form.value.organizationId,
-                csrfToken: csrfToken.value
+                csrfToken: csrfToken
             }
         })
 
         // Handle successful registration
         console.log('Registration successful:', response)
+
+        // Track successful signup with campaign attribution
+        trackSignup('email', 1)
 
         // Set authentication state using useAuth composable
         const { setAuth } = useAuth()

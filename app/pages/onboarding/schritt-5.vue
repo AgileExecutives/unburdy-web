@@ -197,6 +197,7 @@ useHead({
 
 // Store verwenden
 const store = useOnboardingAutoSave()
+const { trackOnboardingComplete, trackTrialStart, getCampaignData } = useAnalytics()
 
 // Loading state für finalization
 const isLoading = ref(false)
@@ -215,15 +216,19 @@ onMounted(async () => {
     const result = await store.finalizeOnboarding()
     if (result.success) {
       isCompleted.value = true
+      // Track onboarding completion with campaign attribution
+      trackOnboardingComplete(5)
     } else {
       console.warn('Onboarding finalization failed:', result.error)
       // Aber zeige trotzdem die Erfolgsmeldung an
       isCompleted.value = true
+      trackOnboardingComplete(5)
     }
   } catch (error) {
     console.error('Error finalizing onboarding:', error)
     // Zeige trotzdem die Erfolgsmeldung an, da alle Daten bereits gespeichert wurden
     isCompleted.value = true
+    trackOnboardingComplete(5)
   }
 })
 
@@ -243,6 +248,9 @@ const startDashboard = async () => {
     
     // Erfolgsmeldung anzeigen
     alert('🎉 Herzlich willkommen bei Unburdy! Das Dashboard würde jetzt geöffnet werden.')
+    
+    // Track trial start conversion
+    trackTrialStart('standard')
     
     // In einer echten App würde hier folgendes stehen:
     // await navigateTo('/dashboard')

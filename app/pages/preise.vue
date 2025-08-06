@@ -33,6 +33,17 @@
 </template>
 
 <script setup>
+// Analytics tracking
+const { trackPricePageView, getCampaignData } = useAnalytics()
+
+// Track pricing page view with campaign data
+onMounted(() => {
+  const campaign = getCampaignData()
+  // Track which plan might be highlighted based on campaign
+  const planFocus = campaign?.content || 'pro' // Default to pro plan
+  trackPricePageView(planFocus)
+})
+
 // Meta-Tags für SEO
 useSeoMeta({
   title: 'Faire Preise für Lerntherapeutinen und Lerntherapeuten | Unburdy',
