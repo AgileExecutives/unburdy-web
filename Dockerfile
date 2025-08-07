@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -17,15 +17,14 @@ COPY . .
 RUN yarn build
 
 # Production stage
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 # Install nginx, supervisor, and wget for health checks
 RUN apk add --no-cache nginx supervisor wget
 
 # Create directories and set permissions
 RUN mkdir -p /run/nginx /var/log/nginx /var/log/supervisor /var/www/html \
-    && touch /var/log/nginx/access.log /var/log/nginx/error.log \
-    && chown -R nginx:nginx /var/www/html \
+    && touch /var/log/nginx/access.log /var/log/nginx/error.log \ 
     && chown -R nginx:nginx /var/log/nginx \
     && chown nginx:nginx /var/log/nginx/access.log /var/log/nginx/error.log
 
@@ -46,10 +45,11 @@ RUN if [ -f yarn.lock ]; then \
     fi
 
 # Copy static files to nginx document root
-COPY --from=builder /app/.output/public /var/www/html/
+COPY --from=builder /app/.output/public /var/www/html/  
+RUN chown -R nginx:nginx /var/www/html
 
 # Copy nginx configuration for static file serving
-COPY nginx-static.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -58,7 +58,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN nginx -t || echo "Nginx config test failed!"
 
 # Debug: Check what files are in static directory
-RUN echo "=== Contents of /var/www/html ===" && ls -la /var/www/html/ || echo "No /var/www/html directory"
+RUN echo "=== Contents of /var/www/html ==="
+RUN ls -la /var/www/html/ || echo "No /var/www/html directory"
 
 # Debug: Check nginx version and modules
 RUN nginx -V
