@@ -63,7 +63,7 @@ export default defineNuxtConfig({
     apiToken: process.env.NUXT_API_TOKEN,
     apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.de',
     csrfSecret: process.env.NUXT_CSRF_SECRET || 'fallback-secret-change-in-production',
-    logLevel: process.env.NUXT_LOG_LEVEL || 'info', // debug, info, warn, error
+    logLevel: process.env.NUXT_LOG_LEVEL || 'debug', // debug, info, warn, error
     
     // Public keys (exposed to client-side)
     public: {
