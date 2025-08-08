@@ -3,12 +3,46 @@ import crypto from 'crypto'
 // Simple in-memory rate limiting (for production, use Redis or database)
 const rateLimitMap = new Map()
 
+// Simple logger
+const createLogger = (context) => {
+  const config = useRuntimeConfig()
+  const logLevel = config.logLevel || 'info'
+  const levels = { debug: 0, info: 1, warn: 2, error: 3 }
+  const currentLevel = levels[logLevel] ?? 1
+  const formatMessage = (level, message, data) => {
+    const timestamp = new Date().toISOString()
+    const logData = data ? ` | Data: ${JSON.stringify(data, null, 2)}` : ''
+    return `[${timestamp}] [${level.toUpperCase()}] [${context}] ${message}${logData}`
+  }
+  return {
+    debug: (message, data) => currentLevel <= levels.debug && console.debug(formatMessage('debug', message, data)),
+    info: (message, data) => currentLevel <= levels.info && console.log(formatMessage('info', message, data)),
+    warn: (message, data) => currentLevel <= levels.warn && console.warn(formatMessage('warn', message, data)),
+    error: (message, error) => {
+      if (currentLevel <= levels.error) {
+        const errorData = error ? {
+          message: error.message,
+          stack: error.stack,
+          status: error.status || error.statusCode,
+          statusMessage: error.statusMessage,
+          data: error.data
+        } : undefined
+        console.error(formatMessage('error', message, errorData))
+      }
+    }
+  }
+}
+
 export default defineEventHandler(async (event) => {
+  const logger = createLogger('REGISTER')
+  logger.info('Registration request received')
+
   // Get runtime config once at the beginning
   const config = useRuntimeConfig()
   
   // Only allow POST requests
   if (getMethod(event) !== 'POST') {
+    logger.warn('Invalid HTTP method', { method: getMethod(event) })
     throw createError({
       statusCode: 405,
       statusMessage: 'Method Not Allowed'
@@ -68,10 +102,12 @@ export default defineEventHandler(async (event) => {
   try {
     // Get the request body
     const body = await readBody(event)
+    logger.debug('Request body received', { fields: Object.keys(body) })
     
     // Validate required fields
     const { firstName, lastName, email, username, password, agb, organizationId, csrfToken } = body
     if (!firstName || !lastName || !email || !password || !agb) {
+      logger.warn('Missing required fields', { firstName, lastName, email, password, agb })
       throw createError({
         statusCode: 400,
         statusMessage: 'Missing required fields'
@@ -80,6 +116,7 @@ export default defineEventHandler(async (event) => {
 
     // Username should be the same as email (validate this)
     if (username && username !== email) {
+      logger.warn('Username does not match email', { username, email })
       throw createError({
         statusCode: 400,
         statusMessage: 'Username must match email address'
@@ -89,6 +126,7 @@ export default defineEventHandler(async (event) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
+      logger.warn('Invalid email format', { email })
       throw createError({
         statusCode: 400,
         statusMessage: 'Invalid email format'
@@ -97,6 +135,7 @@ export default defineEventHandler(async (event) => {
 
     // Validate password strength (minimum 8 characters)
     if (password.length < 8) {
+      logger.warn('Password too short', { length: password.length })
       throw createError({
         statusCode: 400,
         statusMessage: 'Password must be at least 8 characters long'
@@ -189,7 +228,7 @@ export default defineEventHandler(async (event) => {
     }
 
   } catch (error) {
-    console.error('Registration error:', error)
+    logger.error('Registration error', error)
     
     // Handle different types of errors
     if (error.statusCode) {

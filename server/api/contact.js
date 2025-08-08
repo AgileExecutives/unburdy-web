@@ -3,12 +3,49 @@ import crypto from 'crypto'
 // Simple in-memory rate limiting (for production, use Redis or database)
 const rateLimitMap = new Map()
 
+// Simple logger
+const createLogger = (context) => {
+  const config = useRuntimeConfig()
+  const logLevel = config.logLevel || 'info'
+  
+  const levels = { debug: 0, info: 1, warn: 2, error: 3 }
+  const currentLevel = levels[logLevel] ?? 1
+  
+  const formatMessage = (level, message, data) => {
+    const timestamp = new Date().toISOString()
+    const logData = data ? ` | Data: ${JSON.stringify(data, null, 2)}` : ''
+    return `[${timestamp}] [${level.toUpperCase()}] [${context}] ${message}${logData}`
+  }
+  
+  return {
+    debug: (message, data) => currentLevel <= levels.debug && console.debug(formatMessage('debug', message, data)),
+    info: (message, data) => currentLevel <= levels.info && console.log(formatMessage('info', message, data)),
+    warn: (message, data) => currentLevel <= levels.warn && console.warn(formatMessage('warn', message, data)),
+    error: (message, error) => {
+      if (currentLevel <= levels.error) {
+        const errorData = error ? {
+          message: error.message,
+          stack: error.stack,
+          status: error.status || error.statusCode,
+          statusMessage: error.statusMessage,
+          data: error.data
+        } : undefined
+        console.error(formatMessage('error', message, errorData))
+      }
+    }
+  }
+}
+
 export default defineEventHandler(async (event) => {
+  const logger = createLogger('CONTACT')
+  
   // Get runtime config once at the beginning
   const config = useRuntimeConfig()
+  logger.info('Contact form request received')
   
   // Only allow POST requests
   if (getMethod(event) !== 'POST') {
+    logger.warn('Invalid HTTP method', { method: getMethod(event) })
     throw createError({
       statusCode: 405,
       statusMessage: 'Method Not Allowed'
@@ -68,10 +105,18 @@ export default defineEventHandler(async (event) => {
   try {
     // Get the request body
     const body = await readBody(event)
+    logger.debug('Request body received', { 
+      hasName: !!body.name, 
+      hasEmail: !!body.email, 
+      hasSubject: !!body.subject, 
+      hasMessage: !!body.message,
+      hasCsrfToken: !!body.csrfToken
+    })
     
     // Validate required fields
     const { name, email, subject, message, csrfToken } = body
     if (!name || !email || !subject || !message) {
+      logger.warn('Missing required fields', { name: !!name, email: !!email, subject: !!subject, message: !!message })
       throw createError({
         statusCode: 400,
         statusMessage: 'Missing required fields'
@@ -80,6 +125,7 @@ export default defineEventHandler(async (event) => {
 
     // Validate CSRF token
     if (!csrfToken) {
+      logger.warn('Missing CSRF token')
       throw createError({
         statusCode: 403,
         statusMessage: 'CSRF token required'
@@ -150,9 +196,11 @@ export default defineEventHandler(async (event) => {
     }
 
   } catch (error) {
-    console.error('Contact form submission error:', error)
-    console.error('API Base URL:', config.apiBaseUrl)
-    console.error('API Token (first 10 chars):', config.apiToken?.substring(0, 10) + '...')
+    logger.error('Contact form submission failed', error)
+    logger.debug('Configuration details', { 
+      apiBaseUrl: config.apiBaseUrl,
+      hasApiToken: !!config.apiToken 
+    })
     
     // Handle different types of errors
     if (error.statusCode) {
@@ -161,7 +209,7 @@ export default defineEventHandler(async (event) => {
     
     // Handle API errors
     if (error.data) {
-      console.error('API Error Data:', error.data)
+      logger.error('External API error', error.data)
       throw createError({
         statusCode: error.status || 500,
         statusMessage: error.data.message || 'Failed to submit contact form'
@@ -169,7 +217,7 @@ export default defineEventHandler(async (event) => {
     }
     
     // Handle network or other errors
-    console.error('Network/Other Error:', {
+    logger.error('Unexpected error', {
       message: error.message,
       cause: error.cause,
       stack: error.stack?.split('\n').slice(0, 5)
