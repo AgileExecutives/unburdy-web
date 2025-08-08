@@ -165,7 +165,7 @@ export default defineEventHandler(async (event) => {
 
     // Make the API call to Unburdy API with server-side credentials
     const response = await $fetch('/auth/register', {
-      baseURL: config.public.apiBaseUrl,
+      baseURL: config.apiBaseUrl,
       method: 'POST',
       headers: {
         'Authorization': `${config.apiToken}`,

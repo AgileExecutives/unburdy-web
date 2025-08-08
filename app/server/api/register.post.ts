@@ -63,9 +63,9 @@ export default defineEventHandler(async (event) => {
     // Forward the registration request to the external API
     const apiResponse = await $fetch('/auth/register', {
       method: 'POST',
-      baseURL: config.public.apiBaseUrl,
+      baseURL: config.apiBaseUrl as string,
       headers: {
-        'Authorization': config.apiToken,
+        'Authorization': config.apiToken as string,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },

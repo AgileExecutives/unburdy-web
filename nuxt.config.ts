@@ -61,16 +61,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (only available on server-side)
     apiToken: process.env.NUXT_API_TOKEN,
+    apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.de',
     csrfSecret: process.env.NUXT_CSRF_SECRET || 'fallback-secret-change-in-production',
     
     // Public keys (exposed to client-side)
     public: {
-      apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.com',
-      unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.com',
+      unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de/api/v1',
       // Analytics configuration
-      umamiUrl: process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.eu.umami.is/script.js',
+      umamiUrl: process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de/script.js',
       umamiSiteId: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
-      domain: process.env.NUXT_PUBLIC_DOMAIN || 'unburdy.com'
+      domain: process.env.NUXT_PUBLIC_DOMAIN || 'unburdy.de'
     }
   },
 

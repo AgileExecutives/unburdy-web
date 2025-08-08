@@ -133,7 +133,7 @@ export default defineEventHandler(async (event) => {
 
     // Make the API call to Unburdy API with server-side credentials
     const response = await $fetch('/contact', {
-      baseURL: config.public.apiBaseUrl,
+      baseURL: config.apiBaseUrl,
       method: 'POST',
       headers: {
         'Authorization': `${config.apiToken}`,
@@ -151,7 +151,7 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Contact form submission error:', error)
-    console.error('API Base URL:', config.public.apiBaseUrl)
+    console.error('API Base URL:', config.apiBaseUrl)
     console.error('API Token (first 10 chars):', config.apiToken?.substring(0, 10) + '...')
     
     // Handle different types of errors
