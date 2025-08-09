@@ -43,9 +43,9 @@ export default defineNuxtConfig({
 
   umami: {
     id: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
-    host: (process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de'),
+    host: (process.env.NUXT_PUBLIC_UMAMI_HOST || 'https://analytics.unburdy.de'),
     autoTrack: true,
-    ignoreLocalhost: true,
+    ignoreLocalhost: false,
     logErrors: true
   },
 
@@ -58,11 +58,7 @@ export default defineNuxtConfig({
 
     // Public keys (exposed to client-side)
     public: {
-      unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de/api/v1',
-      // Analytics configuration
-      umamiUrl: process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de/script.js',
-      umamiSiteId: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
-      domain: process.env.NUXT_PUBLIC_DOMAIN || 'unburdy.de'
+      unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de',
     }
   },
 
