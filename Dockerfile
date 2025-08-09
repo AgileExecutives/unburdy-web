@@ -51,8 +51,9 @@ RUN chown -R nginx:nginx /var/www/html
 # Copy nginx configuration for static file serving
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy supervisor configuration
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf.template /app/supervisord.conf.template
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Debug: Test nginx configuration
 RUN nginx -t || echo "Nginx config test failed!"
@@ -78,5 +79,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
 ARG GITHUB_SHA
 ENV GITHUB_SHA=$GITHUB_SHA
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

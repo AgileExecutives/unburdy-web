@@ -105,9 +105,28 @@ const store = useOnboardingAutoSave()
 const showColorDemo = ref(true)
 const isDev = computed(() => process.dev)
 
-// Beim Laden der Seite den aktuellen Schritt setzen
-onMounted(() => {
+// Auth-Store für JWT
+const { setAuth } = useAuth ? useAuth() : { setAuth: () => {} }
+const route = useRoute()
+
+onMounted(async () => {
   store.loadFromStorage()
   store.goToStep(1)
+
+  // Token aus URL extrahieren (Pfad: /onboarding/schritt-1/:token)
+  const tokenFromPath = route.params.token
+  if (tokenFromPath) {
+    try {
+      // Backend-Verification
+      const response = await $fetch(`/auth/verify?token=${tokenFromPath}`)
+      if (response && response.jwt) {
+        setAuth(response.jwt)
+        // JWT steht jetzt für weitere Schritte zur Verfügung
+      }
+    } catch (error) {
+      console.error('Token-Verifikation fehlgeschlagen:', error)
+      // Optional: Fehlerbehandlung/Feedback für User
+    }
+  }
 })
 </script>
