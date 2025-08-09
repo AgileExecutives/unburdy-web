@@ -38,7 +38,7 @@ https://unburdy.com?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale&ut
 
 ### Facebook Social Campaign  
 ```
-https://unburdy.com/preise?utm_source=facebook&utm_medium=social&utm_campaign=back_to_school&utm_content=pricing_focus
+https://unburdy.de/preise?utm_source=facebook&utm_medium=social&utm_campaign=back_to_school&utm_content=pricing_focus
 ```
 
 ### Email Newsletter

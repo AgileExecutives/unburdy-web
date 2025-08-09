@@ -5,12 +5,19 @@ import { defineEventHandler, proxyRequest } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig().public
+  const logger = createLogger('umami-proxy') 
+  logger.info('Umami Proxy Config:', config)
+  logger.debug('Incoming request', {
+    method: event.method,
+    url: event.path,
+    headers: event.headers
+  })
   const umamiHost = config.umamiHost || 'https://analytics.unburdy.de'
   const umamiSiteId = config.umamiSiteId || ''
-  // Proxy the script.js file, adding the id as a query param if present
   let targetUrl = `${umamiHost}/script.js`
   if (umamiSiteId) {
     targetUrl += `?id=${encodeURIComponent(umamiSiteId)}`
   }
+  logger.debug('Proxying to target URL', { targetUrl })
   return proxyRequest(event, targetUrl)
 })

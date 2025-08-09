@@ -11,7 +11,7 @@ export default defineNuxtPlugin({
         link: [
           {
             rel: 'preload',
-            href: (config.public.umamiUrl as string) || 'https://analytics.eu.umami.is/script.js',
+            href: (config.public.umamiHost as string + '/script.js') || 'https://analytics.unburdy.de/script.js',
             as: 'script',
             crossorigin: 'anonymous'
           }
@@ -23,9 +23,9 @@ export default defineNuxtPlugin({
         useHead({
           script: [
             {
-              src: (config.public.umamiUrl as string) || 'https://analytics.eu.umami.is/script.js',
+              src: (config.public.umamiHost as string + '/script.js') || 'https://analytics.unburdy.de/script.js',
               'data-website-id': config.public.umamiSiteId as string,
-              'data-domains': (config.public.domain as string) || 'unburdy.com',
+              'data-domains': (config.public.domain as string) || 'unburdy.de',
               async: true,
               defer: true
             }
