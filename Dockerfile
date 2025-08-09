@@ -20,7 +20,7 @@ RUN yarn build
 FROM node:22-alpine AS production
 
 # Install nginx, supervisor, and wget for health checks
-RUN apk add --no-cache nginx supervisor wget
+RUN apk add --no-cache nginx supervisor wget gettext
 
 # Create directories and set permissions
 RUN mkdir -p /run/nginx /var/log/nginx /var/log/supervisor /var/www/html \
