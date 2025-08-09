@@ -2,11 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/eslint',
-    '@pinia/nuxt'
-  ],
+  modules: ['@nuxt/ui', '@nuxt/eslint', '@pinia/nuxt', 'nuxt-umami'],
 
   css: ['~/assets/css/main.css'],
 
@@ -50,15 +46,15 @@ export default defineNuxtConfig({
     head: {
       link: [
         { rel: 'preconnect', href: 'https://analytics.unburdy.de' }
-      ],
-      script: [
-        {
-          src: process.env.NUXT_PUBLIC_UMAMI_URL,
-          async: true,
-          'data-website-id': process.env.NUXT_PUBLIC_UMAMI_SITE_ID
-        }
       ]
+      // Remove the manual script block here!
     }
+  },
+
+  umami: {
+    id: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '', // Your Umami site ID
+    host: process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de' // Your Umami endpoint (no /script.js)
+    // If you use a custom endpoint, use customEndpoint: 'https://analytics.unburdy.de/script.js'
   },
 
   runtimeConfig: {
