@@ -41,20 +41,12 @@ export default defineNuxtConfig({
     '/api/**': { ssr: true, prerender: false }
   },
 
-  // Optimize for analytics and performance
-  app: {
-    head: {
-      link: [
-        { rel: 'preconnect', href: 'https://analytics.unburdy.de' }
-      ]
-      // Remove the manual script block here!
-    }
-  },
-
   umami: {
-    id: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '', // Your Umami site ID
-    host: process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de' // Your Umami endpoint (no /script.js)
-    // If you use a custom endpoint, use customEndpoint: 'https://analytics.unburdy.de/script.js'
+    id: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
+    host: (process.env.NUXT_PUBLIC_UMAMI_URL || 'https://analytics.unburdy.de'),
+    autoTrack: true,
+    ignoreLocalhost: true,
+    logErrors: true
   },
 
   runtimeConfig: {
