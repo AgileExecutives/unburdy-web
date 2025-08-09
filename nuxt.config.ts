@@ -43,10 +43,11 @@ export default defineNuxtConfig({
 
   umami: {
     id: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
-    host: (process.env.NUXT_PUBLIC_UMAMI_HOST || 'https://analytics.unburdy.de'),
+    host: '/api/umami-proxy',
     autoTrack: true,
     ignoreLocalhost: false,
-    logErrors: true
+    proxy: 'cloak',
+    logErrors: false
   },
 
   runtimeConfig: {
@@ -59,6 +60,8 @@ export default defineNuxtConfig({
     // Public keys (exposed to client-side)
     public: {
       unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de',
+      umamiHost: process.env.NUXT_PUBLIC_UMAMI_HOST || 'https://analytics.unburdy.de',
+      umamiSiteId: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
     }
   },
 
