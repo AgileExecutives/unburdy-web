@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   ],
 
   css: ['~/assets/css/main.css'],
-  
+
   devServer: {
     port: 3001
   },
@@ -36,11 +36,11 @@ export default defineNuxtConfig({
     '/preise': { prerender: true, headers: { 'cache-control': 's-maxage=86400' } },
     '/idee-hinter-unburdy': { prerender: true, headers: { 'cache-control': 's-maxage=86400' } },
     '/legal/**': { prerender: true, headers: { 'cache-control': 's-maxage=604800' } },
-    
+
     // Dynamic pages - server-side rendered
     '/anmelden': { ssr: true, headers: { 'cache-control': 'no-cache' } },
     '/onboarding/**': { ssr: true, headers: { 'cache-control': 'no-cache' } },
-    
+
     // API routes - always server-side
     '/api/**': { ssr: true, prerender: false }
   },
@@ -49,10 +49,13 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        // Preconnect to analytics domain for faster loading
+        { rel: 'preconnect', href: 'https://analytics.unburdy.de' }
+      ],
+      script: [
         {
-          rel: 'preconnect',
-          href: 'https://analytics.unburdy.de'
+          src: process.env.NUXT_PUBLIC_UMAMI_URL,
+          async: true,
+          'data-website-id': process.env.NUXT_PUBLIC_UMAMI_SITE_ID
         }
       ]
     }
@@ -64,7 +67,7 @@ export default defineNuxtConfig({
     apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.de',
     csrfSecret: process.env.NUXT_CSRF_SECRET || 'fallback-secret-change-in-production',
     logLevel: process.env.NUXT_LOG_LEVEL || 'debug', // debug, info, warn, error
-    
+
     // Public keys (exposed to client-side)
     public: {
       unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de/api/v1',
