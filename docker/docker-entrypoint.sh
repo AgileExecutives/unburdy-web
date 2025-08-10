@@ -45,4 +45,4 @@ if [ "$NGINX_LOG_LEVEL" = "debug" ] || [ "$NGINX_SHOW_LOGS" = "true" ]; then
 fi
 
 echo "Starting Supervisor..."
-exec supervisord -c /app/supervisord.conf
+exec supervisord -c /etc/supervisord.conf
