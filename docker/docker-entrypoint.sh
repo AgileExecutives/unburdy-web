@@ -30,7 +30,7 @@ cat "$ENV_FILE_PATH"
 # Export any NUXT_* and NGINX_* variables from .env that are not already set in the environment
 while IFS='=' read -r key value; do
   if echo "$key" | grep -Eq '^(NUXT|NGINX)_'; then
-    if [ -z "${!key}" ]; then
+    if ! env | grep -q "^$key="; then
       export "$key=$value"
     fi
   fi
