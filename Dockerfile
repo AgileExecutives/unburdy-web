@@ -59,9 +59,6 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/yarn.lock* ./
 
 COPY ./docker/start-nuxt.sh ./
-COPY ./docker/replicate-env.sh ./
-RUN chmod +x start-nuxt.sh replicate-env.sh
-# RUN ./replicate-env.sh
 
 # Install production dependencies only
 RUN if [ -f yarn.lock ]; then \
