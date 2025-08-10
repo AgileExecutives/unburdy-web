@@ -44,5 +44,14 @@ if [ "$NGINX_LOG_LEVEL" = "debug" ] || [ "$NGINX_SHOW_LOGS" = "true" ]; then
     show_logs
 fi
 
+set -e
+
+ENV_FILE_PATH="/app/.env"
+# Export all environment variables to .env file
+printenv | awk -F= '{print $1 "=" $2}' > "$ENV_FILE_PATH"
+
+# Show result for debug
+cat "$ENV_FILE_PATH"
+
 echo "Starting Supervisor..."
 exec supervisord -c /etc/supervisord.conf

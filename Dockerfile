@@ -20,7 +20,7 @@ RUN yarn build
 FROM node:22-alpine AS production
 
 # Install nginx, supervisor, and wget for health checks
-RUN apk add --no-cache nginx supervisor wget gettext
+RUN apk add --no-cache nginx supervisor wget gettext vim bash curl
 
 # Create directories and set permissions
 RUN mkdir -p /run/nginx /var/log/nginx /var/log/supervisor /var/www/html \
@@ -38,7 +38,7 @@ COPY --from=builder /app/yarn.lock* ./
 COPY ./docker/start-nuxt.sh ./
 COPY ./docker/replicate-env.sh ./
 RUN chmod +x start-nuxt.sh replicate-env.sh
-RUN ./replicate-env.sh
+# RUN ./replicate-env.sh
 
 # Install production dependencies only
 RUN if [ -f yarn.lock ]; then \
