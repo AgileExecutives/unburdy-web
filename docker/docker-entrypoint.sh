@@ -44,12 +44,5 @@ if [ "$NGINX_LOG_LEVEL" = "debug" ] || [ "$NGINX_SHOW_LOGS" = "true" ]; then
     show_logs
 fi
 
-echo "Generating supervisord.conf from template with all .env variables..."
-
-echo "Generating supervisord.conf from template with NUXT_* environment variables only..."
-# Export only NUXT_* env vars for envsubst
-export $(env | grep '^NUXT_' | cut -d= -f1 | xargs)
-envsubst < /app/supervisord.conf.template > /etc/supervisord.conf
-
 echo "Starting Supervisor..."
-exec supervisord -c /etc/supervisord.conf
+exec supervisord -c /app/supervisord.conf

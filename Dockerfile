@@ -35,6 +35,11 @@ COPY --from=builder /app/.output ./
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/yarn.lock* ./
 
+COPY ./docker/start-nuxt.sh ./
+COPY ./docker/replicate-env.sh ./
+RUN chmod +x start-nuxt.sh replicate-env.sh
+RUN ./replicate-env.sh
+
 # Install production dependencies only
 RUN if [ -f yarn.lock ]; then \
         yarn --frozen-lockfile --production && yarn cache clean; \
@@ -51,8 +56,8 @@ RUN chown -R nginx:nginx /var/www/html
 # Copy nginx configuration for static file serving
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY supervisord.conf.template /app/supervisord.conf.template
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY ./docker/supervisord.conf /etc/supervisord.conf
+COPY ./docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Debug: Test nginx configuration
