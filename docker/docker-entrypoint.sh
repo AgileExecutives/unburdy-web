@@ -2,6 +2,40 @@
 
 echo "=== Unburdy Frontend Configuration ==="
 
+set -e
+
+ENV_FILE_PATH="/app/.env"
+
+# Generate a new .env file, prioritizing current NUXT_* and NGINX_* env vars over build-time .env
+TMP_ENVVARS="/tmp/.env.envvars"
+TMP_BUILDARGS="/tmp/.env.buildargs"
+
+# Collect current env vars
+env | grep -E '^(NUXT|NGINX)_' | awk -F= '{print $1"="$2}' > "$TMP_ENVVARS"
+
+# Collect build-time .env if present
+if [ -f "$ENV_FILE_PATH" ]; then
+  cat "$ENV_FILE_PATH" > "$TMP_BUILDARGS"
+else
+  touch "$TMP_BUILDARGS"
+fi
+
+# Merge, prioritizing env vars
+awk -F= '!a[$1]++' "$TMP_ENVVARS" "$TMP_BUILDARGS" > "$ENV_FILE_PATH"
+rm -f "$TMP_ENVVARS" "$TMP_BUILDARGS"
+
+# Show result for debug
+cat "$ENV_FILE_PATH"
+
+# Export any NUXT_* and NGINX_* variables from .env that are not already set in the environment
+while IFS='=' read -r key value; do
+  if echo "$key" | grep -Eq '^(NUXT|NGINX)_'; then
+    if [ -z "${!key}" ]; then
+      export "$key=$value"
+    fi
+  fi
+done < "$ENV_FILE_PATH"
+
 # Generate runtime configuration for frontend
 cat > /usr/share/nginx/html/env.js << EOF
 window.__ENV__ = {
@@ -43,15 +77,6 @@ show_logs() {
 if [ "$NGINX_LOG_LEVEL" = "debug" ] || [ "$NGINX_SHOW_LOGS" = "true" ]; then
     show_logs
 fi
-
-set -e
-
-ENV_FILE_PATH="/app/.env"
-# Export all environment variables to .env file
-printenv | awk -F= '{print $1 "=" $2}' > "$ENV_FILE_PATH"
-
-# Show result for debug
-cat "$ENV_FILE_PATH"
 
 echo "Starting Supervisor..."
 exec supervisord -c /etc/supervisord.conf

@@ -1,9 +1,32 @@
 FROM node:22-alpine AS builder
 
+# Define build args for all NUXT_* and NGINX_* variables
+ARG NUXT_API_BASE_URL
+ARG NUXT_API_TOKEN
+ARG NUXT_CSRF_SECRET
+ARG NUXT_LOG_LEVEL
+ARG NUXT_UNBURDY_APP
+ARG NUXT_PUBLIC_UMAMI_HOST
+ARG NUXT_PUBLIC_UMAMI_SITE_ID
+ARG NUXT_PUBLIC_DOMAIN
+ARG NGINX_SHOW_LOGS
+ARG NGINX_LOG_LEVEL
 WORKDIR /app
 
-# Copy package files
 COPY package*.json yarn.lock* ./
+
+# Create .env file in builder stage, prioritizing build args over env
+RUN echo "Generating .env from build args and environment..." && \
+  (env | grep -E '^(NUXT|NGINX)_' | awk -F= '{print $1"="$2}' > .env.envvars) && \
+  (for var in NUXT_API_BASE_URL NUXT_API_TOKEN NUXT_CSRF_SECRET NUXT_LOG_LEVEL NUXT_UNBURDY_APP NUXT_PUBLIC_UMAMI_HOST NUXT_PUBLIC_UMAMI_SITE_ID NUXT_PUBLIC_DOMAIN NGINX_SHOW_LOGS NGINX_LOG_LEVEL; do \
+    val=$(eval echo \$$var); \
+    if [ -n "$val" ]; then \
+      echo "$var=$val"; \
+    fi; \
+  done > .env.buildargs) && \
+  awk -F= '!a[$1]++' .env.buildargs .env.envvars > .env && \
+  rm .env.envvars .env.buildargs && \
+  cat .env
 
 # Install dependencies
 RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
