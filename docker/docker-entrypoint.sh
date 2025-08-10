@@ -47,6 +47,10 @@ window.__ENV__ = {
 };
 EOF
 
+echo "==== Frontend configuration generated ===="
+echo "Current environment variables:"
+cat /var/www/html/env.js
+
 # No API proxy setup needed; all API calls go to Nuxt server
 # Just substitute NGINX_LOG_LEVEL if needed
 sed "s|\${NGINX_LOG_LEVEL}|$NGINX_LOG_LEVEL|g" /etc/nginx/nginx.conf > /tmp/nginx.conf.tmp

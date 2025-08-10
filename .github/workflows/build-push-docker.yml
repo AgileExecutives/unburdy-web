@@ -47,8 +47,6 @@ jobs:
             unburdy/unburdy-web:${{ steps.version.outputs.version }}
           build-args: |
             GITHUB_SHA=${{ github.sha }}
-            NUXT_PUBLIC_UMAMI_HOST=${{ secrets.NUXT_PUBLIC_UMAMI_HOST }}
-            NUXT_PUBLIC_UMAMI_SITE_ID=${{ secrets.NUXT_PUBLIC_UMAMI_SITE_ID }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
