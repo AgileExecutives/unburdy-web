@@ -37,9 +37,12 @@ while IFS='=' read -r key value; do
 done < "$ENV_FILE_PATH"
 
 # Generate runtime configuration for frontend
-cat > /usr/share/nginx/html/env.js << EOF
+cat > /var/www/html/env.js << EOF
 window.__ENV__ = {
-  API_BASE_URL: '$API_BASE_URL',
+  PUBLIC_UMAMI_HOST: '$NUXT_PUBLIC_UMAMI_HOST',
+  PUBLIC_UMAMI_WEBSITE_ID: '$NUXT_PUBLIC_UMAMI_WEBSITE_ID',
+  UNBURDY_APP: '$NUXT_UNBURDY_APP',
+  API_BASE_URL: '$NUXT_API_BASE_URL',
   NODE_ENV: '$NODE_ENV'
 };
 EOF
