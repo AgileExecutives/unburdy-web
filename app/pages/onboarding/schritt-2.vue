@@ -199,6 +199,9 @@ const store = useOnboardingAutoSave()
 const isLoading = ref(false)
 const errorMessage = ref('')
 
+const route = useRoute()
+const token = route.params.token
+
 // Reactive state aus dem Store
 const settings = computed({
   get: () => store.settings,

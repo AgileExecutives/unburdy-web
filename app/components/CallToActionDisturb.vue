@@ -6,7 +6,7 @@
             Bereit für den nächsten Schritt?
           </h2>
           <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-             Starte jetzt deine digitale Lerntherapie-Praxis mit Unburdy – 14 Tage kostenlos testen, keine Kreditkarte nötig.
+             Starte jetzt deine digitale Lerntherapie-Praxis mit Unburdy – 14 Tage kostenlos testen.
          </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <NuxtLink 
@@ -17,7 +17,7 @@
               14 Tage kostenlos testen
             </NuxtLink>
             <p class="text-white/80 text-sm">
-              Keine Kreditkarte erforderlich
+              Keine Zahlungsverbindung erforderlich
             </p>
           </div>
         </div>

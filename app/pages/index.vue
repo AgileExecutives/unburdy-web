@@ -101,12 +101,18 @@ const scrollToTestimonials = () => {
 
             
             <div class="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
-              <NuxtLink to="/anmelden" class="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+              <button 
+                @click="$router.push('/anmelden')" 
+                class="cursor-pointer rounded-md px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-accent hover:shadow-lg hover:scale-105 bg-accent transition-all duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent transform active:scale-95"
+              >
                 14 Tage kostenlos testen
-              </NuxtLink>
-              <NuxtLink to="/idee-hinter-unburdy" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+              </button>
+              <button 
+                @click="$router.push('/idee-hinter-unburdy')" 
+                class="cursor-pointer text-sm font-semibold leading-6 text-gray-900 dark:text-white hover:text-accent hover:scale-105 transition-all duration-300 ease-in-out transform active:scale-95"
+              >
                 Mehr über Unburdy <span aria-hidden="true">→</span>
-              </NuxtLink>
+              </button>
             </div>
 
             <!-- Scroll to testimonials indicator - Mobile only -->

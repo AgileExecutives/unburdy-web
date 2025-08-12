@@ -1,0 +1,15 @@
+{
+  "input": "./api/openapi.yaml",
+  "output": "./types/api",
+  "client": "fetch",
+  "useOptions": true,
+  "useUnionTypes": true,
+  "exportCore": true,
+  "exportServices": true,
+  "exportModels": true,
+  "exportSchemas": false,
+  "indent": "2",
+  "postfix": "Service",
+  "request": "./types/api/request.ts",
+  "write": true
+}

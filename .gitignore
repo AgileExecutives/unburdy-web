@@ -9,6 +9,9 @@ dist
 # Node dependencies
 node_modules
 
+# Generated API types (regenerate with yarn api:generate)
+/types/api/
+
 # Logs
 logs
 *.log

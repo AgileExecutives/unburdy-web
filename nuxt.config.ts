@@ -47,7 +47,7 @@ export default defineNuxtConfig({
     // host: '/api/umami-proxy',
     // proxy: 'cloak',
     autoTrack: true,
-    ignoreLocalhost: false,
+    ignoreLocalhost: true,
     logErrors: false
   },
 
