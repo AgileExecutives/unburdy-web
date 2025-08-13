@@ -1,5 +1,5 @@
 // composables/useAuth.js
-// Authentication state management with JWT token handling
+// Simplified authentication state management with JWT token handling
 
 export const useAuth = () => {
   // Reactive authentication state
@@ -35,10 +35,17 @@ export const useAuth = () => {
   const setAuth = (authToken, userData = null) => {
     token.value = authToken
     user.value = userData
-    isAuthenticated.value = true
+    
+    // Only set as authenticated if we have a token
+    isAuthenticated.value = !!authToken
 
     if (process.client) {
-      localStorage.setItem('token', authToken)
+      if (authToken) {
+        localStorage.setItem('token', authToken)
+      } else {
+        localStorage.removeItem('token')
+      }
+      
       if (userData) {
         localStorage.setItem('user', JSON.stringify(userData))
       }

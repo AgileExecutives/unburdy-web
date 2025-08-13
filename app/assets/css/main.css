@@ -32,13 +32,13 @@
 
 }
 
-/* Dark Mode - Semantische Farbnamen */
+/* Dark Mode - Semantische Farbnamen  #293547;  */
 .dark {
   --color-background: #111827;
   --color-background-secondary: #1E2939;
   --color-background-tertiary: #121E3C;
-  --color-surface: #293547;
-  --color-surface-secondary: #546d8e;
+  --color-surface: #181632; 
+  --color-surface-secondary: #2a2a3d;
   
   --color-text-primary: #f9fafb;
   --color-text-secondary: #d1d5db;

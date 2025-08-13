@@ -221,7 +221,7 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
     // Use the typed AuthService for registration  
     const response = await AuthService.postAuthRegister({
       user: registrationData,
-      authorization: config.apiToken
+      authorization: 'Bearer ' + config.apiToken
     })
 
     logger.info('Registration successful', { 
@@ -229,18 +229,11 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
       organizationId: response.organization_id 
     })
 
-    // Return success response
+    // Return the full API response with success flag
     return {
       success: true,
       message: 'Registration successful',
-      // Note: The register endpoint doesn't return a token directly
-      // The user will need to verify their email first
-      user: {
-        id: response.customer_id,
-        firstName: firstName,
-        lastName: lastName,
-        email: email
-      }
+      ...response
     }
 
   } catch (error: any) {

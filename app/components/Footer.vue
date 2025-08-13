@@ -43,6 +43,6 @@
 </template>
 
 <script setup>
-// Get current year for copyright
-const currentYear = new Date().getFullYear()
+// Get current year for copyright - use computed to ensure SSR/client consistency
+const currentYear = computed(() => new Date().getFullYear())
 </script>

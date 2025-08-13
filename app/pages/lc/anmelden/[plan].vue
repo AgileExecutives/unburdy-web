@@ -14,7 +14,7 @@
             </div>
 
             <div class="sm:mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
-                <div class="sm:bg-background-secondary sm:py-8 px-4 shadow sm:rounded-lg sm:px-10 sm:border border-default">
+                <div class="bg-surface sm:py-8 px-4 shadow sm:rounded-lg sm:px-10 sm:border border-default">
                     <form class="space-y-6" @submit.prevent="handleSubmit">
                         <div>
                             <div class="grid grid-cols-2 gap-4">
@@ -22,13 +22,13 @@
                                     <label for="firstName"
                                         class="block text-sm font-medium text-secondary">Vorname</label>
                                     <input id="firstName" name="firstName" type="text" required v-model="form.firstName"
-                                        class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+                                        class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface-secondary text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
                                 </div>
                                 <div>
                                     <label for="lastName"
                                         class="block text-sm font-medium text-secondary">Nachname</label>
                                     <input id="lastName" name="lastName" type="text" required v-model="form.lastName"
-                                        class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+                                        class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface-secondary text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
                                 </div>
                             </div>
                         </div>
@@ -37,37 +37,39 @@
                             <label for="email" class="block text-sm font-medium text-secondary">E-Mail-Adresse</label>
                             <input id="email" name="email" type="email" autocomplete="email" required
                                 v-model="form.email"
-                                class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+                                class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface-secondary text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
                         </div>
 
                         <div>
                             <label for="password" class="block text-sm font-medium text-secondary">Passwort</label>
                             <input id="password" name="password" type="password" autocomplete="new-password" required
-                                v-model="form.password"
-                                @input="onPasswordInput"
-                                :class="[
-                                    'mt-1 block w-full px-3 py-1 rounded-xl border bg-surface text-primary shadow-sm focus:ring-2 focus:ring-opacity-20 transition-all duration-200',
+                                v-model="form.password" @input="onPasswordInput" :class="[
+                                    'mt-1 block w-full px-3 py-1 rounded-xl border bg-surface-secondary text-primary shadow-sm focus:ring-2 focus:ring-opacity-20 transition-all duration-200',
                                     passwordValidation.isValid || !form.password ? 'border-default focus:border-accent focus:ring-accent' : 'border-red-500 focus:border-red-500 focus:ring-red-500'
                                 ]">
-                            
+
                             <!-- Password Requirements -->
                             <div v-if="passwordRequirements" class="mt-2 text-xs text-secondary">
                                 <div class="flex items-center space-x-4">
-                                    <span :class="form.password.length >= passwordRequirements.minLength ? 'text-green-600' : 'text-red-500'">
+                                    <span
+                                        :class="form.password.length >= passwordRequirements.minLength ? 'text-green-600' : 'text-red-500'">
                                         ✓ Min. {{ passwordRequirements.minLength }} Zeichen
                                     </span>
-                                    <span v-if="passwordRequirements.capital" :class="hasCapitalLetter(form.password) ? 'text-green-600' : 'text-red-500'">
+                                    <span v-if="passwordRequirements.capital"
+                                        :class="hasCapitalLetter(form.password) ? 'text-green-600' : 'text-red-500'">
                                         ✓ Großbuchstabe
                                     </span>
-                                    <span v-if="passwordRequirements.numbers" :class="hasNumber(form.password) ? 'text-green-600' : 'text-red-500'">
+                                    <span v-if="passwordRequirements.numbers"
+                                        :class="hasNumber(form.password) ? 'text-green-600' : 'text-red-500'">
                                         ✓ Zahl
                                     </span>
-                                    <span v-if="passwordRequirements.special" :class="hasSpecialChar(form.password) ? 'text-green-600' : 'text-red-500'">
+                                    <span v-if="passwordRequirements.special"
+                                        :class="hasSpecialChar(form.password) ? 'text-green-600' : 'text-red-500'">
                                         ✓ Sonderzeichen
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <!-- Password Validation Errors -->
                             <div v-if="passwordValidation.errors.length > 0" class="mt-2">
                                 <p v-for="error in passwordValidation.errors" :key="error" class="text-sm text-red-600">
@@ -81,7 +83,7 @@
                                 bestätigen</label>
                             <input id="confirmPassword" name="confirmPassword" type="password" required
                                 v-model="form.confirmPassword"
-                                class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+                                class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface-secondary text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
                         </div>
 
                         <div class="flex items-center">
@@ -177,6 +179,7 @@ const config = useRuntimeConfig()
 const { trackSignup, getCampaignData } = useAnalytics()
 const { getToken: getCsrfToken } = useCsrf()
 const { setAuth } = useAuth()
+const { setOnboardingData } = useOnboarding()
 const { validatePassword, fetchPasswordRequirements } = usePasswordValidation()
 const route = useRoute()
 
@@ -263,31 +266,113 @@ const handleSubmit = async () => {
         // Track successful signup with campaign attribution
         trackSignup('email', 1)
 
-        // Set authentication state using useAuth composable
-        if (response.token && response.user) {
-            setAuth(response.token, response.user)
-        } else if (response.token) {
-            // Fallback: extract user info from token or use basic info
-            setAuth(response.token, {
-                firstName: form.value.firstName,
-                lastName: form.value.lastName,
-                email: form.value.email,
-                username: form.value.email
+        console.log('response:', response)
+        // Set authentication state using useAuth composable simplified to just user and token
+        // Since no token is returned from registration (user needs to verify email),
+        // we save just the user info without setting authentication
+        setAuth(null, {
+            firstName: form.value.firstName,
+            lastName: form.value.lastName,
+            email: form.value.email,
+            username: form.value.email,
+            id: response.user?.id
+        })
+
+        // Store onboarding data in the separate onboarding store
+        if (response.onboarding_token && response.customer?.id && response.user?.id) {
+            setOnboardingData({
+                step: 0,
+                customerId: response.customer.id,
+                userId: response.user.id,
+                planSlug: response.plan?.name || route.params.plan || 'basic',
+                onboardingToken: response.onboarding_token,
+                stepData: {
+                    user: {
+                        id: response.user.id,
+                        first_name: response.user.first_name,
+                        last_name: response.user.last_name,
+                        email: response.user.email,
+                        active: response.user.active,
+                        agb: response.user.agb,
+                        marketing_consent: response.user.marketing_consent,
+                    },
+                    customer: {
+                        id: response.customer.id,
+                        email: response.customer.email
+                    },
+                    organization: response.organization ? {
+                        id: response.organization.id,
+                        name: response.organization.name,
+                        slug: response.organization.slug,
+                        customer_id: response.organization.customer_id
+                    } : null,
+                    plan: response.plan ? {
+                        id: response.plan.id,
+                        name: response.plan.name,
+                        monthly: response.plan.monthly
+                    } : null
+                }
             })
+
+            // Initialize onboarding with step 0
+            try {
+                const onboardingResponse = await $fetch('/api/onboarding/', {
+                    method: 'POST',
+                    body: {
+                        userToken: response.token, // Add user token for additional auth
+                        data: {
+                            step: 0,
+                            customerId: response.customer.id,
+                            userId: response.user.id,
+                            planSlug: response.plan?.name || route.params.plan || 'basic',
+                            onboardingToken: response.onboarding_token,
+                            stepData: {
+                                user: {
+                                    id: response.user.id,
+                                    first_name: response.user.first_name,
+                                    last_name: response.user.last_name,
+                                    email: response.user.email,
+                                    active: response.user.active,
+                                    agb: response.user.agb,
+                                    marketing_consent: response.user.marketing_consent,
+                                },
+                                customer: {
+                                    id: response.customer.id,
+                                    email: response.customer.email
+                                },
+                                organization: response.organization ? {
+                                    id: response.organization.id,
+                                    name: response.organization.name,
+                                    slug: response.organization.slug,
+                                    customer_id: response.organization.customer_id
+                                } : null,
+                                plan: response.plan ? {
+                                    id: response.plan.id,
+                                    name: response.plan.name,
+                                    monthly: response.plan.monthly
+                                } : null
+                            },
+
+                        }
+                    }
+                })
+
+                console.log('Onboarding initialized successfully:', onboardingResponse)
+            } catch (onboardingError) {
+                console.error('Failed to initialize onboarding:', onboardingError)
+                // Don't fail the registration flow, just log the error
+            }
         }
 
-        // Get redirect URL from query params
-        const redirectTo = route.query.redirect || '/onboarding/schritt-1'
-
-        // Nach erfolgreicher Registrierung zum gewünschten Ziel weiterleiten
-        await navigateTo(redirectTo)
+        // Navigate to the new onboarding start page with the selected plan
+        await navigateTo(`/onboarding/start`)
 
     } catch (error) {
         console.error('Fehler bei der Registrierung:', error)
 
         // Show user-friendly error messages
         let errorMessage = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
-        
+
         if (error.statusMessage) {
             errorMessage = error.statusMessage
         } else if (error.message) {
