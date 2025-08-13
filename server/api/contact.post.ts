@@ -1,9 +1,42 @@
-import * as crypto from 'crypto'
-import { defineEventHandler, createError, readBody, getMethod, getHeader } from 'h3'
-import { $fetch } from 'ofetch'
+import crypto from 'crypto'
+import type { 
+  models_ContactFormRequest, 
+  models_ContactFormResponse 
+} from '../../types/api'
+import { ContactService } from '../../types/api/services/ContactService'
+import { OpenAPI } from '../../types/api/core/OpenAPI'
+import { createLogger } from '../utils/logger'
 
-// Inline CSRF validation (temporary)
-function validateContactCsrfToken(token: string, secret: string): { isValid: boolean; error?: string } {
+// Simple in-memory rate limiting (for production, use Redis or database)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+
+function checkRateLimit(identifier: string): { allowed: boolean; resetTime?: number } {
+  const now = Date.now()
+  const maxRequests = 5
+  const windowMs = 10 * 60 * 1000 // 10 minutes
+  
+  if (!rateLimitMap.has(identifier)) {
+    rateLimitMap.set(identifier, { count: 1, resetTime: now + windowMs })
+    return { allowed: true }
+  }
+
+  const rateLimit = rateLimitMap.get(identifier)!
+  
+  if (now > rateLimit.resetTime) {
+    rateLimitMap.set(identifier, { count: 1, resetTime: now + windowMs })
+    return { allowed: true }
+  }
+
+  if (rateLimit.count >= maxRequests) {
+    return { allowed: false, resetTime: rateLimit.resetTime }
+  }
+
+  rateLimit.count++
+  return { allowed: true }
+}
+
+// CSRF validation function
+function validateCsrfToken(token: string, secret: string): { isValid: boolean; error?: string } {
   if (!token) {
     return { isValid: false, error: 'CSRF token required' }
   }
@@ -35,7 +68,7 @@ function validateContactCsrfToken(token: string, secret: string): { isValid: boo
   }
 
   const tokenAge = Date.now() - timestamp
-  const maxAge = 2 * 60 * 60 * 1000 // 2 hours (matching CSRF generation)
+  const maxAge = 2 * 60 * 60 * 1000 // 2 hours
 
   if (tokenAge > maxAge) {
     return { isValid: false, error: 'CSRF token expired' }
@@ -48,65 +81,7 @@ function validateContactCsrfToken(token: string, secret: string): { isValid: boo
   return { isValid: true }
 }
 
-// Inline rate limiting (temporary)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
-
-function checkRateLimit(identifier: string): { allowed: boolean; resetTime?: number } {
-  const now = Date.now()
-  const maxRequests = 5
-  const windowMs = 10 * 60 * 1000 // 10 minutes
-  
-  if (!rateLimitMap.has(identifier)) {
-    rateLimitMap.set(identifier, { count: 1, resetTime: now + windowMs })
-    return { allowed: true }
-  }
-
-  const rateLimit = rateLimitMap.get(identifier)!
-  
-  if (now > rateLimit.resetTime) {
-    rateLimitMap.set(identifier, { count: 1, resetTime: now + windowMs })
-    return { allowed: true }
-  }
-
-  if (rateLimit.count >= maxRequests) {
-    return { allowed: false, resetTime: rateLimit.resetTime }
-  }
-
-  rateLimit.count++
-  return { allowed: true }
-}
-
-// Simple logger inline (since the logger utility has import issues)
-const createLogger = (context: string) => {
-  
-  const levels = { debug: 0, info: 1, warn: 2, error: 3 }
-  const currentLevel = levels['info'] ?? 1
-  
-  const formatMessage = (level: string, message: string, data?: any) => {
-    const timestamp = new Date().toISOString()
-    const logData = data ? ` | Data: ${JSON.stringify(data, null, 2)}` : ''
-    return `[${timestamp}] [${level.toUpperCase()}] [${context}] ${message}${logData}`
-  }
-  
-  return {
-    debug: (message: string, data?: any) => currentLevel <= levels.debug && console.debug(formatMessage('debug', message, data)),
-    info: (message: string, data?: any) => currentLevel <= levels.info && console.log(formatMessage('info', message, data)),
-    warn: (message: string, data?: any) => currentLevel <= levels.warn && console.warn(formatMessage('warn', message, data)),
-    error: (message: string, error?: any) => {
-      if (currentLevel <= levels.error) {
-        const errorData = error ? {
-          message: error.message,
-          stack: error.stack,
-          status: error.status || error.statusCode,
-          statusMessage: error.statusMessage,
-          data: error.data
-        } : undefined
-        console.error(formatMessage('error', message, errorData))
-      }
-    }
-  }
-}
-
+// Request body interface
 interface ContactFormBody {
   name: string
   email: string
@@ -116,28 +91,23 @@ interface ContactFormBody {
   csrfToken: string
 }
 
-interface ContactApiData {
-  name: string
-  email: string
-  subject: string
+// Response interface
+interface ContactResponse {
+  success: boolean
   message: string
-  newsletter: boolean
-  timestamp: string
-  source: string
+  newsletterAdded?: boolean
+  newsletterMessage?: string
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ContactResponse> => {
   const logger = createLogger('CONTACT')
+  logger.info('Contact form submission received')
+
+  // Get runtime config
+  const config = useRuntimeConfig()
   
-  const config = {
-    csrfSecret: process.env.NUXT_CSRF_SECRET || 'default-secret',
-    apiBaseUrl: process.env.NUXT_API_BASE_URL || 'http://localhost:8080',
-    apiToken: process.env.NUXT_API_TOKEN || ''
-  }
-  logger.info('Contact form request received', { 
-    configuredApiBaseUrl: config.apiBaseUrl,
-    hasApiToken: !!config.apiToken 
-  })
+  // Configure OpenAPI client with server-side config
+  OpenAPI.BASE = config.apiBaseUrl
   
   // Only allow POST requests
   if (getMethod(event) !== 'POST') {
@@ -151,11 +121,11 @@ export default defineEventHandler(async (event) => {
   // Get client IP for rate limiting
   let clientIP = 'unknown'
   try {
-    // Try different ways to get client IP
-    clientIP = getHeader(event, 'x-forwarded-for') || 
-               getHeader(event, 'x-real-ip') || 
-               getHeader(event, 'cf-connecting-ip') || 
-               'unknown'
+    clientIP = (event.node?.req as any)?.connection?.remoteAddress 
+      || getHeader(event, 'x-forwarded-for') 
+      || getHeader(event, 'x-real-ip') 
+      || getHeader(event, 'cf-connecting-ip')
+      || 'unknown'
   } catch (e) {
     clientIP = 'unknown'
   }
@@ -173,11 +143,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Validate referer header (basic check)
+  // Validate referer header
   const referer = getHeader(event, 'referer')
   const host = getHeader(event, 'host')
   
-  // Allow requests from same origin or no referer (for direct API calls in development)
   const allowedOrigins = [
     `https://${host}`,
     `http://${host}`,
@@ -194,89 +163,79 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Get the request body
-    const body = await readBody<ContactFormBody>(event)
+    // Get and validate request body
+    const body = await readBody(event) as ContactFormBody
     logger.debug('Request body received', { 
       hasName: !!body.name, 
-      hasEmail: !!body.email, 
-      hasSubject: !!body.subject, 
+      hasEmail: !!body.email,
       hasMessage: !!body.message,
-      hasCsrfToken: !!body.csrfToken
+      hasSubject: !!body.subject
     })
     
     // Validate required fields
-    const { name, email, subject, message, csrfToken } = body
+    const { name, email, subject, message, newsletter, csrfToken } = body
     if (!name || !email || !subject || !message) {
-      logger.warn('Missing required fields', { 
-        name: !!name, 
-        email: !!email, 
-        subject: !!subject, 
-        message: !!message 
-      })
+      logger.warn('Missing required fields', { name: !!name, email: !!email, subject: !!subject, message: !!message })
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing required fields: name, email, subject, and message are required'
+        statusMessage: 'Missing required fields'
       })
     }
 
-    // Validate email format (basic validation)
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      logger.warn('Invalid email format', { email: email.substring(0, 5) + '...' })
+      logger.warn('Invalid email format', { email })
       throw createError({
         statusCode: 400,
         statusMessage: 'Invalid email format'
       })
     }
 
-    // Validate CSRF token using the inline function
-    // TODO: Fix CSRF validation - temporarily disabled for testing
-    /* const csrfResult = validateContactCsrfToken(csrfToken, config.csrfSecret as string)
-    if (!csrfResult.isValid) {
+    // Validate CSRF token
+    const csrfValidation = validateCsrfToken(csrfToken, config.csrfSecret)
+    if (!csrfValidation.isValid) {
+      logger.warn('CSRF validation failed', { error: csrfValidation.error })
       throw createError({
         statusCode: 403,
-        statusMessage: csrfResult.error || 'Invalid CSRF token'
+        statusMessage: csrfValidation.error || 'Invalid CSRF token'
       })
-    } */
-    logger.debug('CSRF token validation temporarily bypassed for testing')
+    }
 
-    // Prepare the data for the Unburdy API
-    const contactData: ContactApiData = {
-      name: body.name,
-      email: body.email,
-      subject: body.subject,
-      message: body.message,
-      newsletter: body.newsletter || false,
+    // Prepare the typed contact form data
+    const contactFormData: models_ContactFormRequest = {
+      name: name,
+      email: email,
+      subject: subject,
+      message: message,
+      newsletter: newsletter || false,
       timestamp: new Date().toISOString(),
       source: 'website_contact_form'
     }
 
-    logger.debug('Sending to external API', { 
-      apiBaseUrl: config.apiBaseUrl,
-      hasApiToken: !!config.apiToken 
+    logger.info('Calling backend API for contact form submission', { 
+      name, 
+      email: email.substring(0, 5) + '...',
+      subject 
     })
 
-    // Make the API call to Unburdy API with server-side credentials
-    const response = await $fetch<{ success: boolean; message: string }>('/contact-form', {
-      baseURL: config.apiBaseUrl as string,
-      method: 'POST',
-      headers: {
-        'Authorization': config.apiToken,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: contactData
+    // Use the typed ContactService for submission
+    const response = await ContactService.postContact({
+      contactForm: contactFormData
     })
 
     logger.info('Contact form submitted successfully', { 
-      name: body.name, 
-      email: body.email.substring(0, 5) + '...' 
+      name, 
+      email: email.substring(0, 5) + '...',
+      newsletterAdded: response.newsletterAdded 
     })
 
     // Return success response
     return {
       success: true,
-      message: 'Contact form submitted successfully'
+      message: response.message || 'Contact form submitted successfully',
+      newsletterAdded: response.newsletterAdded,
+      newsletterMessage: response.newsletterMessage
     }
 
   } catch (error: any) {
@@ -287,22 +246,23 @@ export default defineEventHandler(async (event) => {
       throw error
     }
     
-    // Handle API errors
-    if (error.data) {
-      logger.error('External API error', error.data)
+    // Handle API errors from the typed service
+    if (error.status || error.statusCode) {
+      let statusMessage = 'Failed to submit contact form'
+      
+      if (error.status === 400 || error.statusCode === 400) {
+        if (error.body?.message) {
+          statusMessage = error.body.message
+        }
+      }
+      
       throw createError({
-        statusCode: error.status || 502,
-        statusMessage: error.data.message || 'Failed to submit contact form to external service'
+        statusCode: error.status || error.statusCode || 502,
+        statusMessage
       })
     }
     
     // Handle network or other errors
-    logger.error('Unexpected error', {
-      message: error.message,
-      cause: error.cause,
-      stack: error.stack?.split('\n').slice(0, 5)
-    })
-    
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal server error'

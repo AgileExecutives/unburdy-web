@@ -1,4 +1,6 @@
 <script setup>
+import { getPlan } from '@/../types/plans'
+
 useSeoMeta({
   title: 'Lerntherapie Software für selbstständige Therapeutinnen und Therapeuten | Unburdy',
   description: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeutinen und Lerntherapeuten. Jetzt 14 Tage kostenlos testen!',
@@ -7,6 +9,8 @@ useSeoMeta({
   twitterTitle: 'Lerntherapie Software für selbstständige Therapeutinnen und Therapeuten | Unburdy',
   twitterDescription: 'Verwalte deine Lerntherapie-Praxis einfach & DSGVO-konform – mit der Software speziell für selbstständige Lerntherapeutinen und Lerntherapeuten. Jetzt 14 Tage kostenlos testen!'
 })
+
+const trialPlan = getPlan('trial14')
 
 // Animation setup
 onMounted(() => {
@@ -60,8 +64,7 @@ const scrollToTestimonials = () => {
       <div class="floating-circle floating-circle-5"></div>
     </div>
 
-    <div class="relative isolate px-6 pt-14 lg:px-8 z-10">
-      
+<ContentContainer>    
       <!-- Hero Section -->
       <div class="mx-auto max-w-7xl py-12 md:py-32 sm:py-48 lg:py-56">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -102,10 +105,10 @@ const scrollToTestimonials = () => {
             
             <div class="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
               <button 
-                @click="$router.push('/anmelden')" 
+                @click="$router.push(trialPlan.anmeldeLink)" 
                 class="cursor-pointer rounded-md px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-accent hover:shadow-lg hover:scale-105 bg-accent transition-all duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent transform active:scale-95"
               >
-                14 Tage kostenlos testen
+                {{ trialPlan.actionText }}
               </button>
               <button 
                 @click="$router.push('/idee-hinter-unburdy')" 
@@ -256,8 +259,17 @@ const scrollToTestimonials = () => {
         </div>
       </div>
 
+</ContentContainer>  
 
-      <CallToActionDisturb />
+      <CallToActionDisturb text="Digitalisiert durchstrarten" to="/anmelden/basic-free30">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+            Bereit für den nächsten Schritt?
+          </h2>
+          <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+             Starte jetzt deine digitale Lerntherapie-Praxis mit Unburdy.
+         </p>
+      </CallToActionDisturb>
+<ContentContainer>  
 
       <!-- Why Unburdy Section -->
       <div class="mx-auto max-w-7xl px-6 lg:px-8 py-24">
@@ -315,8 +327,7 @@ const scrollToTestimonials = () => {
         <div class="floating-circle floating-circle-6"></div>
         <div class="floating-circle floating-circle-7"></div>
       </div>
-    </div>
-
+</ContentContainer>  
 
   </div>
 </template>

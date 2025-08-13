@@ -97,6 +97,17 @@ export const useAuth = () => {
     }
   }
 
+  // Check if user is verified (no verification_token present)
+  const isVerified = () => {
+    if (!user.value) {
+      return false
+    }
+    
+    // User is considered verified if they don't have a verification_token
+    // or if they have a verified_at timestamp
+    return !user.value.verification_token || !!user.value.verified_at
+  }
+
   // Logout function
   const logout = async () => {
     try {
@@ -124,6 +135,7 @@ export const useAuth = () => {
     clearAuth,
     getToken,
     hasValidToken,
+    isVerified,
     logout,
     initAuth
   }

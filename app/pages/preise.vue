@@ -8,20 +8,13 @@
         
         <div class="grid md:grid-cols-3 gap-8">
           <Preiskarte 
-            name="Basis" 
-            preis="29" 
-            :funktionen="['Klientenverwaltung', 'Terminplanung', 'Einfache Rechnungen', 'Datenschutz DSGVO']" 
-          />
-          <Preiskarte 
-            name="Pro" 
-            preis="49" 
-            :funktionen="['Alles aus Basis', 'Diagnose-Verwaltung', 'Therapieberichte', 'Statistiken', 'E-Mail Support']" 
-            highlight 
-          />
-          <Preiskarte 
-            name="Praxis" 
-            preis="89" 
-            :funktionen="['Alles aus Pro', 'Mehrere Therapeuten', 'Team-Verwaltung', 'Prioritäts-Support', 'API-Zugang']" 
+            v-for="plan in plans" 
+            :key="plan.slug"
+            :name="plan.name" 
+            :price="plan.price" 
+            :slug="plan.slug"
+            :features="plan.features" 
+            :highlight="plan.highlight"
           />
         </div>
 
@@ -33,8 +26,13 @@
 </template>
 
 <script setup>
+import { getPlans } from '@/../types/plans'
+
 // Analytics tracking
 const { trackPricePageView, getCampaignData } = useAnalytics()
+
+// Get all plans from the centralized configuration
+const plans = getPlans(['basis', 'pro', 'praxis'])
 
 // Track pricing page view with campaign data
 onMounted(() => {

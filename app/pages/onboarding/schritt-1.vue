@@ -163,7 +163,6 @@ onMounted(async () => {
   store.goToStep(1)
 
   // Token aus URL extrahieren (Pfad: /onboarding/schritt-1/:token)
-  const tokenFromPath = route.params.token
   if (tokenFromPath) {
     try {
       isValidating.value = true
