@@ -44,7 +44,36 @@
                             <label for="password" class="block text-sm font-medium text-secondary">Passwort</label>
                             <input id="password" name="password" type="password" autocomplete="new-password" required
                                 v-model="form.password"
-                                class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+                                @input="onPasswordInput"
+                                :class="[
+                                    'mt-1 block w-full px-3 py-1 rounded-xl border bg-surface text-primary shadow-sm focus:ring-2 focus:ring-opacity-20 transition-all duration-200',
+                                    passwordValidation.isValid || !form.password ? 'border-default focus:border-accent focus:ring-accent' : 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                ]">
+                            
+                            <!-- Password Requirements -->
+                            <div v-if="passwordRequirements" class="mt-2 text-xs text-secondary">
+                                <div class="flex items-center space-x-4">
+                                    <span :class="form.password.length >= passwordRequirements.minLength ? 'text-green-600' : 'text-red-500'">
+                                        ✓ Min. {{ passwordRequirements.minLength }} Zeichen
+                                    </span>
+                                    <span v-if="passwordRequirements.capital" :class="hasCapitalLetter(form.password) ? 'text-green-600' : 'text-red-500'">
+                                        ✓ Großbuchstabe
+                                    </span>
+                                    <span v-if="passwordRequirements.numbers" :class="hasNumber(form.password) ? 'text-green-600' : 'text-red-500'">
+                                        ✓ Zahl
+                                    </span>
+                                    <span v-if="passwordRequirements.special" :class="hasSpecialChar(form.password) ? 'text-green-600' : 'text-red-500'">
+                                        ✓ Sonderzeichen
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Password Validation Errors -->
+                            <div v-if="passwordValidation.errors.length > 0" class="mt-2">
+                                <p v-for="error in passwordValidation.errors" :key="error" class="text-sm text-red-600">
+                                    {{ error }}
+                                </p>
+                            </div>
                         </div>
 
                         <div>
@@ -77,7 +106,7 @@
                         <div>
                             <button type="submit"
                                 class="flex w-full justify-center rounded-md border border-transparent bg-accent py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50"
-                                :disabled="isLoading">
+                                :disabled="isLoading || !passwordValidation.isValid || (form.password && form.password !== form.confirmPassword)">
                                 <span v-if="isLoading" class="mr-2">
                                     <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -148,7 +177,21 @@ const config = useRuntimeConfig()
 const { trackSignup, getCampaignData } = useAnalytics()
 const { getToken: getCsrfToken } = useCsrf()
 const { setAuth } = useAuth()
+const { validatePassword, fetchPasswordRequirements } = usePasswordValidation()
 const route = useRoute()
+
+// Password validation state
+const passwordValidation = ref({ isValid: true, errors: [], requirements: null })
+const passwordRequirements = ref(null)
+
+// Initialize password requirements on component mount
+onMounted(async () => {
+    try {
+        passwordRequirements.value = await fetchPasswordRequirements()
+    } catch (error) {
+        console.warn('Failed to load password requirements:', error)
+    }
+})
 
 // Reactive state
 const isLoading = ref(false)
@@ -163,6 +206,20 @@ const form = ref({
     organizationId: 0
 })
 
+// Password validation helper methods
+const hasCapitalLetter = (password) => /[A-Z]/.test(password)
+const hasNumber = (password) => /\d/.test(password)
+const hasSpecialChar = (password) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+
+// Handle password input changes
+const onPasswordInput = async () => {
+    if (form.value.password) {
+        passwordValidation.value = await validatePassword(form.value.password)
+    } else {
+        passwordValidation.value = { isValid: true, errors: [], requirements: null }
+    }
+}
+
 // Remove the old CSRF token management since it's now in the composable
 
 // Form submission handler
@@ -170,6 +227,12 @@ const handleSubmit = async () => {
     isLoading.value = true
 
     try {
+        // Validate password against backend requirements
+        const passwordValidationResult = await validatePassword(form.value.password)
+        if (!passwordValidationResult.isValid) {
+            throw new Error('Passwort erfüllt nicht die Anforderungen: ' + passwordValidationResult.errors.join(', '))
+        }
+
         // Validate password confirmation
         if (form.value.password !== form.value.confirmPassword) {
             throw new Error('Passwörter stimmen nicht überein')

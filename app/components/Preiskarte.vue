@@ -26,7 +26,7 @@
 
     <div class="text-center">
       <NuxtLink 
-        :to="slug ? `/anmelden/${slug}` : '/anmelden/pro'" 
+        :to="slug ? `/lc/anmelden/${slug}` : '/lc/anmelden/pro'" 
         :class="[
           'inline-block w-full px-6 py-3 rounded-lg font-semibold transition-colors duration-200',
           highlight 

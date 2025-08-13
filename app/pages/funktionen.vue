@@ -81,7 +81,7 @@
             Teste Unburdy 14 Tage kostenlos und überzeuge dich selbst.
           </p>
           <div class="flex items-center justify-center gap-x-6">
-            <NuxtLink to="/anmelden"
+            <NuxtLink to="/lc/anmelden"
               class="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
               14 Tage kostenlos testen
             </NuxtLink>

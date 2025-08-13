@@ -26,7 +26,7 @@
         </p>
       </div>
       <NuxtLink 
-        to="/anmelden" 
+        to="/lc/anmelden" 
         class="inline-flex items-center px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-hover transition-colors duration-200"
       >
         Zurück zur Anmeldung
@@ -158,49 +158,52 @@ const userEmail = ref('')
 const { setAuth } = useAuth ? useAuth() : { setAuth: () => {} }
 const route = useRoute()
 
-onMounted(async () => {
+onMounted(() => {
   store.loadFromStorage()
   store.goToStep(1)
 
   // Token aus URL extrahieren (Pfad: /onboarding/schritt-1/:token)
   if (tokenFromPath) {
-    try {
-      isValidating.value = true
-      
-      // Call our validation API
-      const response = await $fetch('/api/onboarding/validate-token', {
-        method: 'POST',
-        body: { token: tokenFromPath }
-      })
-      
-      if (response.success && response.valid) {
-        validationSuccess.value = true
-        userEmail.value = response.email
+    // Async logic wrapped in IIFE to avoid onMounted async issues
+    (async () => {
+      try {
+        isValidating.value = true
         
-        // If we have user data, store it
-        if (response.user) {
-          // Store user information for later use
-          store.setUserData(response.user)
+        // Call our validation API
+        const response = await $fetch('/api/onboarding/validate-token', {
+          method: 'POST',
+          body: { token: tokenFromPath }
+        })
+        
+        if (response.success && response.valid) {
+          validationSuccess.value = true
+          userEmail.value = response.email
+          
+          // If we have user data, store it
+          if (response.user) {
+            // Store user information for later use
+            store.setUserData(response.user)
+          }
+          
+          console.log('Token validation successful:', response)
+        } else {
+          validationError.value = 'Token ist ungültig oder abgelaufen'
         }
         
-        console.log('Token validation successful:', response)
-      } else {
-        validationError.value = 'Token ist ungültig oder abgelaufen'
+      } catch (error) {
+        console.error('Token-Verifikation fehlgeschlagen:', error)
+        
+        if (error.statusCode === 404) {
+          validationError.value = 'Token nicht gefunden oder abgelaufen'
+        } else if (error.statusCode === 400) {
+          validationError.value = 'Ungültiger Token'
+        } else {
+          validationError.value = 'Fehler bei der Token-Validierung'
+        }
+      } finally {
+        isValidating.value = false
       }
-      
-    } catch (error) {
-      console.error('Token-Verifikation fehlgeschlagen:', error)
-      
-      if (error.statusCode === 404) {
-        validationError.value = 'Token nicht gefunden oder abgelaufen'
-      } else if (error.statusCode === 400) {
-        validationError.value = 'Ungültiger Token'
-      } else {
-        validationError.value = 'Fehler bei der Token-Validierung'
-      }
-    } finally {
-      isValidating.value = false
-    }
+    })()
   } else {
     // No token in URL
     isValidating.value = false

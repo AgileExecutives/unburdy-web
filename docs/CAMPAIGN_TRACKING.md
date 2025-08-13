@@ -43,7 +43,7 @@ https://unburdy.de/preise?utm_source=facebook&utm_medium=social&utm_campaign=bac
 
 ### Email Newsletter
 ```
-https://unburdy.com/anmelden?utm_source=newsletter&utm_medium=email&utm_campaign=free_trial&cid=nl_2025_01
+https://unburdy.com/lc/anmelden?utm_source=newsletter&utm_medium=email&utm_campaign=free_trial&cid=nl_2025_01
 ```
 
 ## Tracked Events

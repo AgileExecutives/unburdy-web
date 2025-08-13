@@ -120,7 +120,7 @@ export const useAuth = () => {
       console.warn('Logout API call failed:', error)
     } finally {
       clearAuth()
-      await navigateTo('/anmelden')
+      await navigateTo('/lc/anmelden')
     }
   }
 

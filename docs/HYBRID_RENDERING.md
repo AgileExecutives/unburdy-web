@@ -36,7 +36,7 @@ These pages require server-side processing:
 
 ```typescript
 routeRules: {
-  '/anmelden': { ssr: true },      // Registration (needs CSRF)
+  '/lc/anmelden': { ssr: true },      // Registration (needs CSRF)
   '/onboarding/**': { ssr: true }, // Onboarding flow (needs auth)
   '/api/**': { ssr: true },        // API routes (always server-side)
 }
@@ -205,7 +205,7 @@ https://unburdy.com/preise?utm_source=facebook&utm_medium=social
 #### Dynamic Pages with Campaigns
 ```bash
 # These get full server-side + client-side tracking:
-https://unburdy.com/anmelden?utm_source=newsletter&utm_campaign=trial
+https://unburdy.com/lc/anmelden?utm_source=newsletter&utm_campaign=trial
 https://unburdy.com/onboarding/schritt-1?utm_source=google&utm_content=cta
 ```
 
@@ -329,7 +329,7 @@ routeRules: {
     prerender: true,
     headers: { 'cache-control': 's-maxage=31536000' } // 1 year
   },
-  '/anmelden': { 
+  '/lc/anmelden': { 
     ssr: true,
     headers: { 'cache-control': 'no-cache' } // Always fresh
   }
@@ -383,7 +383,7 @@ npm run preview
 ```
 
 ### CSRF Token Flow
-1. Visit `/anmelden` (SSR page)
+1. Visit `/lc/anmelden` (SSR page)
 2. Check that CSRF token is generated
 3. Submit form with token
 4. Verify server validation works
@@ -413,7 +413,7 @@ npm run preview
 3. Check route rules in `nuxt.config.ts`
 
 ### CSRF Token Issues
-1. Verify server route is SSR: `routeRules: { '/anmelden': { ssr: true } }`
+1. Verify server route is SSR: `routeRules: { '/lc/anmelden': { ssr: true } }`
 2. Check cookie settings (httpOnly, secure, sameSite)
 3. Validate token generation and signature
 

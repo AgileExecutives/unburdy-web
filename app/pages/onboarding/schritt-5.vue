@@ -208,28 +208,30 @@ const isCompleted = ref(false)
 const summary = computed(() => store.completionSummary)
 
 // Beim Laden der Seite
-onMounted(async () => {
+onMounted(() => {
   store.goToStep(5)
   
-  // Versuche Onboarding abzuschließen
-  try {
-    const result = await store.finalizeOnboarding()
-    if (result.success) {
-      isCompleted.value = true
-      // Track onboarding completion with campaign attribution
-      trackOnboardingComplete(5)
-    } else {
-      console.warn('Onboarding finalization failed:', result.error)
-      // Aber zeige trotzdem die Erfolgsmeldung an
+  // Versuche Onboarding abzuschließen - wrap in IIFE
+  ;(async () => {
+    try {
+      const result = await store.finalizeOnboarding()
+      if (result.success) {
+        isCompleted.value = true
+        // Track onboarding completion with campaign attribution
+        trackOnboardingComplete(5)
+      } else {
+        console.warn('Onboarding finalization failed:', result.error)
+        // Aber zeige trotzdem die Erfolgsmeldung an
+        isCompleted.value = true
+        trackOnboardingComplete(5)
+      }
+    } catch (error) {
+      console.error('Error finalizing onboarding:', error)
+      // Zeige trotzdem die Erfolgsmeldung an, da alle Daten bereits gespeichert wurden
       isCompleted.value = true
       trackOnboardingComplete(5)
     }
-  } catch (error) {
-    console.error('Error finalizing onboarding:', error)
-    // Zeige trotzdem die Erfolgsmeldung an, da alle Daten bereits gespeichert wurden
-    isCompleted.value = true
-    trackOnboardingComplete(5)
-  }
+  })()
 })
 
 // Dashboard starten

@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { getPlans } from '../../../types/plans'
+import { getPlans } from '../../../../types/plans'
 
 // Define page meta
 definePageMeta({
@@ -118,7 +118,7 @@ const redirectTo = computed(() => route.query.redirect as string || '/onboarding
 const selectPlan = (planSlug: string) => {
   // Navigate to the plan-specific registration page with redirect parameter
   router.push({
-    path: `/anmelden/${planSlug}`,
+    path: `/lc/anmelden/${planSlug}`,
     query: {
       redirect: redirectTo.value
     }
@@ -126,7 +126,7 @@ const selectPlan = (planSlug: string) => {
 }
 
 // Analytics tracking
-const { trackPageView } = useAnalytics()
+const { trackPageView, getCampaignData } = useAnalytics()
 
 onMounted(() => {
   trackPageView('plan_selection', {
@@ -137,7 +137,6 @@ onMounted(() => {
 // Auto-redirect to default plan if only one plan or specific preference
 const autoRedirectPlan = computed(() => {
   // If there's a preferred plan in campaign data, use that
-  const { getCampaignData } = useAnalytics()
   const campaign = getCampaignData()
   return campaign?.content || 'pro' // Default to pro plan
 })

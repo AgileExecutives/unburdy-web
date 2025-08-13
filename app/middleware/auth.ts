@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (process.server) return
 
   // Skip auth check for public pages and verification pages
-  const publicPages = ['/anmelden', '/', '/idee-hinter-unburdy', '/preise', '/legal/impressum', '/legal/agb', '/legal/datenschutz', '/legal/kontakt', '/onboarding/verification']
+  const publicPages = ['/lc/anmelden', '/', '/idee-hinter-unburdy', '/preise', '/legal/impressum', '/legal/agb', '/legal/datenschutz', '/legal/kontakt', '/onboarding/verification']
   if (publicPages.includes(to.path) || to.path.startsWith('/onboarding/verification/')) {
     return
   }
@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // Check if user is authenticated with valid token
     if (!isAuthenticated.value || !hasValidToken()) {
       // Redirect to registration page with return URL
-      return navigateTo(`/anmelden?redirect=${encodeURIComponent(to.fullPath)}`)
+      return navigateTo(`/lc/anmelden?redirect=${encodeURIComponent(to.fullPath)}`)
     }
 
     // Check if user is verified (if verification check is available)

@@ -261,7 +261,7 @@ const scrollToTestimonials = () => {
 
 </ContentContainer>  
 
-      <CallToActionDisturb text="Digitalisiert durchstrarten" to="/anmelden/basic-free30">
+      <CallToActionDisturb text="Digitalisiert durchstrarten" to="/lc/anmelden/basic-free30">
           <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
             Bereit für den nächsten Schritt?
           </h2>

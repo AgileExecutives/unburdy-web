@@ -36,10 +36,12 @@ export default defineNuxtPlugin({
       // Initialize campaign tracking when router is ready
       const router = useRouter()
       
+      // Extract analytics functions at plugin level to avoid lifecycle issues
+      const { trackPageView, cleanUrl } = useAnalytics()
+      
       router.afterEach((to, from) => {
         // Track page views with campaign context (after hydration)
         nextTick(() => {
-          const { trackPageView } = useAnalytics()
           trackPageView(to.path, {
             referrer: from.path || document.referrer,
             title: document.title,
@@ -49,13 +51,13 @@ export default defineNuxtPlugin({
       })
 
       // Load analytics after page is interactive (better for prerendered pages)
-      onMounted(() => {
+      // Use nextTick instead of onMounted to avoid lifecycle issues
+      nextTick(() => {
         // Small delay to prioritize critical content rendering
         setTimeout(() => {
           loadUmami()
           
           // Track initial page view for prerendered pages
-          const { trackPageView } = useAnalytics()
           trackPageView(window.location.pathname, {
             initial_load: true,
             prerendered: true,
@@ -65,9 +67,9 @@ export default defineNuxtPlugin({
       })
 
       // Clean URL parameters after tracking is complete
-      onMounted(() => {
+      // Use nextTick instead of onMounted to avoid lifecycle issues
+      nextTick(() => {
         setTimeout(() => {
-          const { cleanUrl } = useAnalytics()
           cleanUrl()
         }, 3000) // Wait longer to ensure all tracking is complete
       })

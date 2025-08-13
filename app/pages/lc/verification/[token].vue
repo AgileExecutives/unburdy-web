@@ -115,6 +115,9 @@ definePageMeta({
 const route = useRoute()
 const config = useRuntimeConfig()
 
+// Analytics
+const { trackConversion } = useAnalytics()
+
 // Reactive state
 const isVerifying = ref(true)
 const verificationResult = ref<VerificationResponse | null>(null)
@@ -152,7 +155,6 @@ const verifyToken = async () => {
     }
 
     // Track successful verification
-    const { trackConversion } = useAnalytics()
     trackConversion('email_verification_success', 1, {
       token_length: token.value.length
     })
@@ -180,7 +182,6 @@ const verifyToken = async () => {
     }
 
     // Track failed verification
-    const { trackConversion } = useAnalytics()
     trackConversion('email_verification_failed', 0, {
       error_code: error.statusCode,
       error_message: error.statusMessage

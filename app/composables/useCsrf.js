@@ -56,15 +56,13 @@ export const useCsrf = () => {
     return await fetchCsrfToken()
   }
 
-  // Initialize token on composable creation (client-side only)
+  // Initialize token immediately on client-side (no lifecycle hooks)
   if (process.client) {
-    onMounted(async () => {
-      try {
-        await fetchCsrfToken()
-      } catch (err) {
-        // Fail silently on mount, let individual components handle errors
-        console.warn('Failed to initialize CSRF token:', err)
-      }
+    // Fetch token immediately when composable is created
+    nextTick(() => {
+      fetchCsrfToken().catch(() => {
+        // Fail silently on initialization
+      })
     })
   }
 

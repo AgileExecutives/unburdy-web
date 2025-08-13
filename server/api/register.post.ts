@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { defineEventHandler, createError, readBody, getMethod, getHeader } from 'h3'
 import type { 
   models_RegisterRequest, 
   models_AuthResponse,
@@ -45,7 +46,7 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
   
   // Configure OpenAPI client with server-side config
   OpenAPI.BASE = config.apiBaseUrl
-  OpenAPI.TOKEN = config.apiToken
+  // Note: We don't set OpenAPI.TOKEN here because AuthService handles authorization directly
   
   // Only allow POST requests
   if (getMethod(event) !== 'POST') {
@@ -133,12 +134,12 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
       })
     }
 
-    // Validate password strength
-    if (password.length < 8) {
+    // Validate password strength (based on backend requirements)
+    if (password.length < 6) {
       logger.warn('Password too short', { length: password.length })
       throw createError({
         statusCode: 400,
-        statusMessage: 'Password must be at least 8 characters long'
+        statusMessage: 'Password must be at least 6 characters long'
       })
     }
 
@@ -191,22 +192,36 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
     }
 
     // Prepare the typed registration data
+    // Note: Using snake_case as required by the API
+    // Only sending basic required fields to test
     const registrationData: models_RegisterRequest = {
       first_name: firstName,
       last_name: lastName,
       email: email,
-      password: password,
-      agb: agb,
-      marketing_consent: body.marketingConsent || false,
-      organization_id: organizationId || undefined
+      password: password
+      // Temporarily removing optional fields to test if they cause the 400 error
+      // agb: agb,
+      // marketing_consent: body.marketingConsent || false,
+      // ...(organizationId && { organization_id: organizationId })
     }
 
-    logger.info('Calling backend API for registration', { email, firstName, lastName })
+    // Log the exact data being sent to debug API field requirements
+    logger.info('Calling backend API for registration', { 
+      email, 
+      firstName, 
+      lastName,
+      registrationData: {
+        ...registrationData,
+        password: '[REDACTED]'
+      },
+      apiBaseUrl: config.apiBaseUrl,
+      hasApiToken: !!config.apiToken
+    })
 
-    // Use the typed AuthService for registration
+    // Use the typed AuthService for registration  
     const response = await AuthService.postAuthRegister({
       user: registrationData,
-      authorization: config.apiToken // Don't add Bearer prefix as it's handled by the service
+      authorization: config.apiToken
     })
 
     logger.info('Registration successful', { 
@@ -229,7 +244,16 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
     }
 
   } catch (error: any) {
-    logger.error('Registration error', error)
+    logger.error('Registration error', {
+      message: error.message,
+      status: error.status,
+      statusCode: error.statusCode,
+      body: error.body,
+      responseBody: error.responseBody,
+      responseText: error.responseText,
+      response: error.response,
+      stack: error.stack
+    })
     
     // Handle different types of errors
     if (error.statusCode) {

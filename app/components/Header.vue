@@ -13,7 +13,7 @@
         <NuxtLink to="/legal/kontakt" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Kontakt</NuxtLink>
       </div>
       <div class="lg:flex lg:flex-1 lg:justify-end">
-        <NuxtLink to="/anmelden" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
+        <NuxtLink to="/lc/anmelden" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
       </div>
     </nav>
   </header>

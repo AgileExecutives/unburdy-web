@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { defineEventHandler, createError, readBody, getMethod, getHeader } from 'h3'
 import type { 
   models_ContactFormRequest, 
   models_ContactFormResponse 
@@ -6,6 +7,7 @@ import type {
 import { ContactService } from '../../types/api/services/ContactService'
 import { OpenAPI } from '../../types/api/core/OpenAPI'
 import { createLogger } from '../utils/logger'
+import { validateContactCsrfToken } from '../../app/server/utils/csrf'
 
 // Simple in-memory rate limiting (for production, use Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
@@ -35,53 +37,7 @@ function checkRateLimit(identifier: string): { allowed: boolean; resetTime?: num
   return { allowed: true }
 }
 
-// CSRF validation function
-function validateCsrfToken(token: string, secret: string): { isValid: boolean; error?: string } {
-  if (!token) {
-    return { isValid: false, error: 'CSRF token required' }
-  }
-
-  const parts = token.split('.')
-  if (parts.length !== 3) {
-    return { isValid: false, error: 'Invalid CSRF token format' }
-  }
-
-  const signature = parts[parts.length - 1]
-  const tokenToVerify = `${parts[1]}:${parts[0]}` // csrfToken:timestamp format
-  
-  const hmac = crypto.createHmac('sha256', secret)
-  hmac.update(tokenToVerify)
-  const expectedSignature = hmac.digest('hex')
-
-  if (signature !== expectedSignature) {
-    return { isValid: false, error: 'Invalid CSRF token signature' }
-  }
-
-  const timestampStr = parts[0]
-  if (!timestampStr) {
-    return { isValid: false, error: 'Missing timestamp in token' }
-  }
-  
-  const timestamp = parseInt(timestampStr)
-  if (isNaN(timestamp)) {
-    return { isValid: false, error: 'Invalid token timestamp' }
-  }
-
-  const tokenAge = Date.now() - timestamp
-  const maxAge = 2 * 60 * 60 * 1000 // 2 hours
-
-  if (tokenAge > maxAge) {
-    return { isValid: false, error: 'CSRF token expired' }
-  }
-
-  if (tokenAge < 0) {
-    return { isValid: false, error: 'Invalid token timestamp (future)' }
-  }
-
-  return { isValid: true }
-}
-
-// Request body interface
+// Request body interface (includes CSRF token for frontend)
 interface ContactFormBody {
   name: string
   email: string
@@ -106,8 +62,14 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
   // Get runtime config
   const config = useRuntimeConfig()
   
-  // Configure OpenAPI client with server-side config
+  // Configure OpenAPI client with server-side config AND authentication
   OpenAPI.BASE = config.apiBaseUrl
+  OpenAPI.TOKEN = config.apiToken  // Add the API token for authentication
+  
+  logger.debug('OpenAPI configuration', { 
+    baseUrl: config.apiBaseUrl, 
+    hasToken: !!config.apiToken 
+  })
   
   // Only allow POST requests
   if (getMethod(event) !== 'POST') {
@@ -193,7 +155,7 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
     }
 
     // Validate CSRF token
-    const csrfValidation = validateCsrfToken(csrfToken, config.csrfSecret)
+    const csrfValidation = validateContactCsrfToken(csrfToken, config.csrfSecret)
     if (!csrfValidation.isValid) {
       logger.warn('CSRF validation failed', { error: csrfValidation.error })
       throw createError({
@@ -216,7 +178,9 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
     logger.info('Calling backend API for contact form submission', { 
       name, 
       email: email.substring(0, 5) + '...',
-      subject 
+      subject,
+      apiBaseUrl: config.apiBaseUrl,
+      hasApiToken: !!config.apiToken
     })
 
     // Use the typed ContactService for submission
@@ -251,9 +215,12 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
       let statusMessage = 'Failed to submit contact form'
       
       if (error.status === 400 || error.statusCode === 400) {
-        if (error.body?.message) {
-          statusMessage = error.body.message
-        }
+        statusMessage = 'Invalid contact form data'
+      } else if (error.status === 401 || error.statusCode === 401) {
+        statusMessage = 'API authentication failed'
+        logger.error('API authentication error - check API token')
+      } else if (error.status === 500 || error.statusCode === 500) {
+        statusMessage = 'Backend server error'
       }
       
       throw createError({

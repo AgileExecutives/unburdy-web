@@ -62,7 +62,7 @@ curl -w "%{time_total}s" http://localhost:3000/
 curl -w "%{time_total}s" http://localhost:3000/preise
 
 # Test dynamic pages (should work with CSRF)
-curl -I http://localhost:3000/anmelden
+curl -I http://localhost:3000/lc/anmelden
 ```
 
 ### Deploy to Production

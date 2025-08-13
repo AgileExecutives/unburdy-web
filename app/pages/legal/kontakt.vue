@@ -228,13 +228,16 @@ const countdown = ref(10)
 let countdownTimer = null
 
 // Get CSRF token on page load
-onMounted(async () => {
-  try {
-    const response = await $fetch('/api/csrf-token')
-    csrfToken.value = response.csrfToken
-  } catch (error) {
-    console.error('Failed to get CSRF token:', error)
-  }
+onMounted(() => {
+  // Wrap async logic in IIFE
+  ;(async () => {
+    try {
+      const response = await $fetch('/api/csrf-token')
+      csrfToken.value = response.csrfToken
+    } catch (error) {
+      console.error('Failed to get CSRF token:', error)
+    }
+  })()
 })
 
 // Form submission

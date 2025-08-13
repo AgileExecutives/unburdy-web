@@ -28,7 +28,7 @@ export const plans: PlansConfig = {
     price: "29",
     slug: "basis-free30",
     currency: "EUR",
-    anmeldeLink: "/anmelden/basis-free30",
+    anmeldeLink: "/lc/anmelden/basis-free30",
     features: [
       "Klientenverwaltung",
       "Terminplanung",
@@ -49,7 +49,7 @@ export const plans: PlansConfig = {
     price: "49",
     currency: "EUR",
     slug: "pro-free30",
-    anmeldeLink: "/anmelden/pro-free30",
+    anmeldeLink: "/lc/anmelden/pro-free30",
     features: [
       "Alles aus Basis",
       "Diagnose-Verwaltung",
@@ -71,7 +71,7 @@ export const plans: PlansConfig = {
     price: "89",
     currency: "EUR",
     slug: "praxis-free30",
-    anmeldeLink: "/anmelden/praxis-free30",
+    anmeldeLink: "/lc/anmelden/praxis-free30",
     features: [
       "Alles aus Pro",
       "Mehrere Therapeuten",
@@ -93,7 +93,7 @@ export const plans: PlansConfig = {
     price: "0",
     currency: "EUR",
     slug: "trial14",
-    anmeldeLink: "/anmelden/trial14",
+    anmeldeLink: "/lc/anmelden/trial14",
     features: [
       "Vollständiger Zugang zu allen Features",
       "Klientenverwaltung",

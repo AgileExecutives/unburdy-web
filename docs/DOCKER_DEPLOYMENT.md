@@ -6,7 +6,7 @@ This guide explains how to deploy your hybrid Nuxt app to your Docker server, co
 
 ### **Hybrid Architecture Benefits**
 - ⚡ **Static pages** (/, /preise, /legal/*) served instantly
-- 🔒 **Dynamic pages** (/anmelden, /onboarding/*) with server functionality
+- 🔒 **Dynamic pages** (/lc/anmelden, /onboarding/*) with server functionality
 - 🛡️ **API routes** (/api/*) for secure operations
 - 📊 **Analytics** work perfectly on all page types
 - 🎯 **Campaign tracking** with UTM parameters
@@ -112,7 +112,7 @@ Internet → Nginx (Port 80/443) → Nuxt App (Port 3000)
 /legal/* → Nginx → Nuxt (static HTML) → Browser ⚡
 
 # Dynamic pages (SSR, no cache)
-/anmelden → Nginx → Nuxt (server-side) → Browser 🔒
+/lc/anmelden → Nginx → Nuxt (server-side) → Browser 🔒
 /onboarding/* → Nginx → Nuxt (server-side) → Browser 🔒
 
 # API routes (rate limited, no cache)
@@ -217,7 +217,7 @@ curl -w "%{time_total}s" https://unburdy.de/
 curl -w "%{time_total}s" https://unburdy.de/preise
 
 # Test dynamic pages (should work with CSRF)
-curl -I https://unburdy.de/anmelden
+curl -I https://unburdy.de/lc/anmelden
 
 # Test API endpoints
 curl https://unburdy.de/api/csrf-token

@@ -24,7 +24,7 @@
           {{ getCampaignCTADescription() }}
         </p>
         <NuxtLink
-          to="/anmelden"
+          to="/lc/anmelden"
           @click="trackCampaignCTA"
           class="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
         >

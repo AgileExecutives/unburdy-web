@@ -10,8 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "api:generate": "npx openapi-typescript-codegen --input ./api/openapi.yaml --output ./types/api --client fetch --useOptions --useUnionTypes",
-    "api:generate-dev": "npx openapi-typescript-codegen --input http://localhost:8080/swagger/doc.json --output ./types/api --client fetch --useOptions --useUnionTypes"
+    "api:generate": "npx openapi-typescript-codegen --input http://localhost:8080/swagger/doc.json --output ./types/api --client fetch --useOptions --useUnionTypes"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.58",

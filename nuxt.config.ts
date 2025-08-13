@@ -34,7 +34,7 @@ export default defineNuxtConfig({
     '/legal/**': { prerender: true, headers: { 'cache-control': 's-maxage=604800' } },
 
     // Dynamic pages - server-side rendered
-    '/anmelden': { ssr: true, headers: { 'cache-control': 'no-cache' } },
+    '/lc/**': { ssr: true, headers: { 'cache-control': 'no-cache' } },
     '/onboarding/**': { ssr: true, headers: { 'cache-control': 'no-cache' } },
 
     // API routes - always server-side
