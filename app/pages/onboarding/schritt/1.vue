@@ -14,7 +14,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 bg-surface-secondary">
+        <div class="flex-1 ">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Step Header -->
                 <div class="text-center mb-8">
@@ -97,7 +97,7 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { updateOnboardingData, setCurrentStep } = useOnboarding()
+const { updateOnboardingData, getOnboardingData, setCurrentStep } = useOnboarding()
 
 // Update current step
 setCurrentStep(1)
