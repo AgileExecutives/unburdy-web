@@ -26,8 +26,8 @@ export const usePasswordValidation = () => {
 
     isLoading.value = true
     try {
-      const response = await $fetch('/auth/password-security', {
-        baseURL: 'http://localhost:8080'
+      const response = await $fetch('/api/auth/password-security', {
+        method: 'GET'
       })
       passwordRequirements.value = response as PasswordRequirements
       return passwordRequirements.value
@@ -35,9 +35,9 @@ export const usePasswordValidation = () => {
       console.warn('Failed to fetch password requirements, using defaults:', error)
       // Fallback to safe defaults if backend is unavailable
       passwordRequirements.value = {
-        minLength: 6,
-        capital: false,
-        numbers: false,
+        minLength: 8,
+        capital: true,
+        numbers: true,
         special: false
       }
       return passwordRequirements.value

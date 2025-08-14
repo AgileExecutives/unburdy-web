@@ -1,10 +1,10 @@
 <template>
   <div>
-    <!-- Redirecting to home page -->
+    <!-- Redirect to preise page -->
   </div>
 </template>
 
-<script setup lang="ts">
-// Redirect to home page
-await navigateTo('/')
+<script setup>
+// Redirect to /preise page
+await navigateTo('/preise', { redirectCode: 301 })
 </script>

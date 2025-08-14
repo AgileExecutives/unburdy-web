@@ -1,14 +1,7 @@
 import crypto from 'crypto'
 import { createLogger } from '../utils/logger'
 
-// Response interface for CSRF token endpoint
-interface CsrfTokenResponse {
-  success: boolean
-  csrfToken: string
-  expiresAt: number
-}
-
-export default defineEventHandler(async (event): Promise<CsrfTokenResponse> => {
+export default defineEventHandler(async (event) => {
   const logger = createLogger('CSRF_TOKEN')
   
   try {
@@ -29,8 +22,9 @@ export default defineEventHandler(async (event): Promise<CsrfTokenResponse> => {
     const randomBytes = crypto.randomBytes(16).toString('hex')
     const token = `${timestamp}.${randomBytes}`
     
-    // Create HMAC signature
-    const hmac = crypto.createHmac('sha256', config.csrfSecret)
+    // Create HMAC signature - use a fallback secret if not configured
+    const secret = config.csrfSecret || 'default-csrf-secret-fallback'
+    const hmac = crypto.createHmac('sha256', secret)
     hmac.update(token)
     const signature = hmac.digest('hex')
     
@@ -39,7 +33,8 @@ export default defineEventHandler(async (event): Promise<CsrfTokenResponse> => {
     
     logger.debug('CSRF token generated', { 
       tokenLength: csrfToken.length,
-      expiresAt: new Date(expiresAt).toISOString()
+      expiresAt: new Date(expiresAt).toISOString(),
+      hasCustomSecret: !!config.csrfSecret
     })
     
     return {
@@ -49,7 +44,11 @@ export default defineEventHandler(async (event): Promise<CsrfTokenResponse> => {
     }
     
   } catch (error: any) {
-    logger.error('Error generating CSRF token', error)
+    logger.error('Error generating CSRF token', { 
+      error: error.message, 
+      stack: error.stack,
+      name: error.name 
+    })
     
     // Handle different types of errors
     if (error.statusCode) {
@@ -59,7 +58,7 @@ export default defineEventHandler(async (event): Promise<CsrfTokenResponse> => {
     // Handle unexpected errors
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })
