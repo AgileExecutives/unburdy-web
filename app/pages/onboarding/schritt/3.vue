@@ -1,17 +1,7 @@
 <template>
     <div class="min-h-screen flex flex-col">
         <!-- Progress Bar -->
-        <div class="bg-surface border-b border-default py-4">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between mb-2">
-                    <h1 class="text-lg font-semibold text-primary">Praxiseinrichtung</h1>
-                    <span class="text-sm text-secondary">Schritt 3 von 4</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-accent h-2 rounded-full transition-all duration-300" style="width: 75%"></div>
-                </div>
-            </div>
-        </div>
+        <OnboardingProgressBar :current-step="3" />
 
         <!-- Main Content -->
         <div class="flex-1">

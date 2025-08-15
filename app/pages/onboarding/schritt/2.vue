@@ -1,17 +1,7 @@
 <template>
     <div class="min-h-screen flex flex-col">
         <!-- Progress Bar -->
-        <div class="bg-surface border-b border-default py-4">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between mb-2">
-                    <h1 class="text-lg font-semibold text-primary">Praxiseinrichtung</h1>
-                    <span class="text-sm text-secondary">Schritt 2 von 4</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-accent h-2 rounded-full transition-all duration-300" style="width: 50%"></div>
-                </div>
-            </div>
-        </div>
+        <OnboardingProgressBar :current-step="2" />
 
         <!-- Main Content -->
         <div class="flex-1">
@@ -21,24 +11,15 @@
                     <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
                         2
                     </div>
-                    <h2 class="text-3xl font-bold text-primary mb-2">Planung und Kalender</h2>
+                    <h2 class="text-3xl font-bold text-primary mb-2">Planung {{ (existingData?.step1 ? existingData.step1.practiceName : '') }}</h2>
                     <p class="text-lg text-secondary">
-                        Richte deine Termine, Verfügbarkeiten und Kalendereinstellungen ein
+                        Konfiguriere deine wöchentlichen Verfügbarkeiten und Ferienzeiten. 
                     </p>
                 </div>
 
                 <!-- Content Card -->
                 <div class="bg-surface rounded-lg border border-default p-8 mb-8">
-                    <div class="text-center py-12">
-                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <h3 class="text-xl font-medium text-gray-900 mb-2">Kalender-Formular wird hier eingefügt</h3>
-                        <p class="text-gray-500">
-                            Hier werden später die Felder für Terminzeiten, Verfügbarkeiten, 
-                            Pausenzeiten und Kalender-Synchronisation eingefügt.
-                        </p>
-                    </div>
+                    <WeeklyAvailabilityEditor /> <!--v-model="formData.step2.availability" / -->
                 </div>
 
                 <!-- Navigation -->
@@ -79,6 +60,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter, navigateTo } from '#app'
 import { useOnboarding } from '~/composables/useOnboarding'
 
@@ -97,18 +79,50 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { updateOnboardingData, setCurrentStep } = useOnboarding()
+const { updateOnboardingData, getOnboardingData, setCurrentStep } = useOnboarding()
 
+// Form data
+const formData = ref({
+    availability: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: []
+    }
+})
+
+// Load existing data if available
+const existingData = ref({})
+
+if (existingData.value?.step2) {
+    formData.value = { ...existing.step2 }
+}
 // Update current step
 setCurrentStep(2)
 
+onMounted(() => {
+    existingData.value = getOnboardingData()
+    console.log('Existing Data:', existingData.value)
+})  
+
+// Save form data
+const saveFormData = () => {
+    updateOnboardingData({
+        step2: formData.value
+    })
+}
+
 // Methods
 const goBack = async () => {
+    saveFormData()
     await navigateTo('/onboarding/schritt/1')
 }
 
 const goNext = async () => {
-    // Save any form data here before navigating
+    saveFormData()
     await navigateTo('/onboarding/schritt/3')
 }
 </script>
