@@ -3,7 +3,7 @@
         <div class="absolute inset-0 grid grid-cols-1 grid-rows-4">
             <div 
                 v-for="minute in [0, 15, 30, 45]" 
-                :key="minute"
+                :key="`${day}-${hour}-${minute}`"
                 class="cursor-pointer"
                 :class="{ 
                     'bg-green-500/50': isBooked(minute),
@@ -15,9 +15,14 @@
                 @mouseup="$emit('mouseup-quarter', { hour, minute })"
             ></div>
         </div>
-        <span class="absolute top-0 left-1 text-xs text-gray-500 pointer-events-none">
-            {{ hour }}:00
-        </span>
+        <div class="absolute top-0 left-1 text-xs text-gray-500 pointer-events-none">
+            <div :class="{ 
+                    'text-gray-800': isBooked(0),
+                    'text-blue-400': isSelected(0),
+                    'hover:text-blue-500': !isBooked(0) && !isSelected(0)
+                }">
+            {{ hour }}:00</div>
+        </div>
     </div>
 </template>
 
@@ -34,6 +39,10 @@ const props = defineProps({
     selectedTimes: {
         type: Object,
         default: null
+    },
+    day: {
+        type: String,
+        required: true
     }
 })
 

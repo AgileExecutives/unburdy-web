@@ -8,19 +8,13 @@
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Step Header -->
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-                        2
-                    </div>
-                    <h2 class="text-3xl font-bold text-primary mb-2">Planung {{ (existingData?.step1 ? existingData.step1.practiceName : '') }}</h2>
                     <p class="text-lg text-secondary">
-                        Konfiguriere deine wöchentlichen Verfügbarkeiten und Ferienzeiten. 
+Planung {{ (existingData?.step1 ? existingData.step1.practiceName : '') }}
                     </p>
                 </div>
 
                 <!-- Content Card -->
-                <div class="bg-surface rounded-lg border border-default p-8 mb-8">
-                    <WeeklyAvailabilityEditor /> <!--v-model="formData.step2.availability" / -->
-                </div>
+                    <AvailabilityManager v-model="formData.availability" />
 
                 <!-- Navigation -->
                 <div class="flex justify-between items-center">
@@ -117,12 +111,12 @@ const saveFormData = () => {
 
 // Methods
 const goBack = async () => {
-    saveFormData()
+    //saveFormData()
     await navigateTo('/onboarding/schritt/1')
 }
 
 const goNext = async () => {
-    saveFormData()
+    //saveFormData()
     await navigateTo('/onboarding/schritt/3')
 }
 </script>

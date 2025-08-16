@@ -1,9 +1,9 @@
 <template>
     <div class="bg-surface rounded-lg border border-default">
         <!-- Header -->
-        <div class="px-4 py-3 border-b border-default">
+        <div class="px-4 py-3">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-medium text-primary">Verfügbare Zeiten</h3>
+                <p>Verfügbare Zeiten</p>
                 <div class="flex items-center space-x-2">
                     <UButton
                         v-for="days in [5, 6, 7]"
@@ -29,7 +29,7 @@
                 <div 
                     v-for="day in visibleDays" 
                     :key="day.key"
-                    class="border border-gray-200 rounded-lg p-3"
+                    class="border border-gray-200 rounded-lg p-3 bg-background"
                 >
                     <!-- Day Header -->
                     <div class="flex items-center justify-between mb-3">
@@ -38,8 +38,9 @@
                     <div class="grid grid-cols-1">
                         <HourSlot 
                             v-for="hour in visibleHours" 
-                            :key="hour"
+                            :key="`${day.key}-${hour}`"
                             :hour="hour"
+                            :day="day.key"
                             :booked-times="getDaySlots(day.key)"
                             :selected-times="selection.dayKey === day.key ? selection.times : null"
                             @mousedown-quarter="handleMouseDown(day.key, $event)"
@@ -62,9 +63,9 @@ const props = defineProps({
         type: Object,
         default: () => ({
             monday: [{ startTime: 1300, endTime: 1800 }],
-            tuesday: [],
-            wednesday: [],
-            thursday: [],
+            tuesday: [{ startTime: 1300, endTime: 1800 }],
+            wednesday: [{ startTime: 1300, endTime: 1800 }],
+            thursday: [{ startTime: 1300, endTime: 1800 }],
             friday: [{ startTime: 2000, endTime: 2100 }],
             saturday: [],
             sunday: []
@@ -97,7 +98,7 @@ const allDays = ref([
 
 // Computed Properties
 const visibleDays = computed(() => allDays.value.slice(0, weekViewMode.value))
-const gridCols = computed(() => `grid-cols-1 md:grid-cols-${weekViewMode.value}`)
+const gridCols = computed(() => "grid-cols-" + weekViewMode.value.toString())
 const visibleHours = computed(() => Array.from({ length: 14 }, (_, i) => i + 7))
 
 // Methods

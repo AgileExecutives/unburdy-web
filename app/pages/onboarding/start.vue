@@ -138,7 +138,10 @@
             </div>
         </div>
                         <!-- Debug Information (only in development) -->
-                <div v-if="isDevelopment && false" class="bg-gray-900 rounded-lg border border-gray-200 p-4 mb-8">
+                <div v-if="isDevelopment" class="bg-gray-900 rounded-lg border border-gray-200 p-4 mb-8">
+                    <button @click="deletestore" class="text-xs text-gray-400 hover:text-gray-300">
+                        schritt zurücksetzen
+                    </button>
                     <h3 class="text-sm font-medium text-gray-700 mb-2">Debug Information (Development Only)</h3>
                     <details class="text-xs">
                         <summary class="cursor-pointer text-gray-600 mb-2">Full Registration Data</summary>
@@ -164,11 +167,17 @@ const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
 const { isAuthenticated, user, token } = useAuth()
-const { getOnboardingData, hasOnboardingData } = useOnboarding()
+const { getOnboardingData, hasOnboardingData, setOnboardingData,updateOnboardingData } = useOnboarding()
 
 // State
 const isLoading = ref(true)
 const error = ref(null)
+
+const deleteStore = () => {
+    // Reset the store or perform any necessary cleanup
+    const onboardingData = getOnboardingData()
+
+}
 
 // Get plan from route params
 const plan = computed(() => route.params.plan || 'basic')
