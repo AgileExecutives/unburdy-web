@@ -9,12 +9,51 @@
                 <!-- Step Header -->
                 <div class="text-center mb-8">
                     <p class="text-lg text-secondary">
-Planung {{ (existingData?.step1 ? existingData.step1.practiceName : '') }}
+                        Planung {{ step1Data.practiceName || '' }}
                     </p>
                 </div>
 
+
+                <!-- Holidays Message -->
+                <div v-if="holidays && holidays.BW" class="mb-6 p-4 bg-green-50 border border-green-200 rounded">
+                    <span class="text-green-700 font-semibold">Wir haben die Ferientage und Feiertage für dein Bundesland geladen.</span>
+                </div>
+
                 <!-- Content Card -->
-                    <AvailabilityManager v-model="formData.availability" />
+
+                                <AvailabilityManager v-model="formData.availability" />
+
+                                <!-- Ferien und Feiertage Anzeige -->
+                                <div v-if="holidays && holidays.BW" class="mt-8">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <!-- Ferien Termine -->
+                                        <div>
+                                            <h3 class="text-lg font-semibold mb-2 text-accent">Ferientermine</h3>
+                                            <div v-for="(yearData, year) in holidays.BW.school_holidays" :key="year" class="mb-4">
+                                                <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
+                                                <ul class="list-disc ml-6">
+                                                    <li v-for="(dates, name) in yearData" :key="name">
+                                                        <span class="font-semibold">{{ name }}:</span>
+                                                        <span class="ml-2">{{ dates[0] }} bis {{ dates[1] }}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- Feiertage -->
+                                        <div>
+                                            <h3 class="text-lg font-semibold mb-2 text-accent">Feiertage</h3>
+                                            <div v-for="(yearData, year) in holidays.BW.public_holidays" :key="year" class="mb-4">
+                                                <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
+                                                <ul class="list-disc ml-6">
+                                                    <li v-for="(date, name) in yearData" :key="name">
+                                                        <span class="font-semibold">{{ name }}:</span>
+                                                        <span class="ml-2">{{ date }}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                 <!-- Navigation -->
                 <div class="flex justify-between items-center">
@@ -55,6 +94,7 @@ Planung {{ (existingData?.step1 ? existingData.step1.practiceName : '') }}
 
 <script setup>
 import { ref } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter, navigateTo } from '#app'
 import { useOnboarding } from '~/composables/useOnboarding'
 
@@ -73,7 +113,7 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { updateOnboardingData, getOnboardingData, setCurrentStep } = useOnboarding()
+const { saveStepData, getOnboardingData, setCurrentStep, goBack: goBackStep } = useOnboarding()
 
 // Form data
 const formData = ref({
@@ -87,36 +127,42 @@ const formData = ref({
         sunday: []
     }
 })
-
-// Load existing data if available
-const existingData = ref({})
-
-if (existingData.value?.step2) {
-    formData.value = { ...existing.step2 }
-}
-// Update current step
-setCurrentStep(2)
-
 onMounted(() => {
     existingData.value = getOnboardingData()
+    // Load existing step 1 data for practice name display (flat structure)
+    step1Data.value = Array.isArray(existingData.value?.steps)
+        ? existingData.value.steps.find(step => step.stepNumber === 1)
+        : {}
+
+    // Load existing step 2 data if available (flat structure)
+    const step2Data = Array.isArray(existingData.value?.steps)
+        ? existingData.value.steps.find(step => step.stepNumber === 2)
+        : undefined
+    if (step2Data) {
+        formData.value = { ...step2Data }
+    }
+
     console.log('Existing Data:', existingData.value)
-})  
+})
+
 
 // Save form data
 const saveFormData = () => {
-    updateOnboardingData({
-        step2: formData.value
-    })
+    saveStepData(2, formData.value)
 }
+
+// Update current step
+setCurrentStep(2)
 
 // Methods
 const goBack = async () => {
-    //saveFormData()
+    saveFormData()
+    await goBackStep()
     await navigateTo('/onboarding/schritt/1')
 }
 
 const goNext = async () => {
-    //saveFormData()
+    saveFormData()
     await navigateTo('/onboarding/schritt/3')
 }
 </script>

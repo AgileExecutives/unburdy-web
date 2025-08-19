@@ -68,8 +68,10 @@
                                     id="contactPerson"
                                     v-model="formData.contactPerson"
                                     type="text"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-accent focus:border-accent"
-                                    placeholder="Dein Name oder der des Ansprechpartners"
+                                    readonly
+                                    tabindex="-1"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-700 cursor-not-allowed"
+                                    placeholder="Wird automatisch aus deinen Benutzerdaten gefüllt"
                                 />
                             </div>
 
@@ -95,6 +97,7 @@
                                 <input
                                     id="postalCode"
                                     v-model="formData.postalCode"
+                                    @input="setNewPostalCode($event.target.value)"
                                     type="text"
                                     required
                                     maxlength="5"
@@ -134,11 +137,14 @@
                                     <option 
                                         v-for="(stateName, stateCode) in bundeslaenderData.states" 
                                         :key="stateCode"
-                                        :value="convertStateNameToValue(stateName)"
+                                        :value="stateCode"
                                     >
                                         {{ stateName }}
                                     </option>
                                 </select>
+                                <p v-if="formData.postalCode && formData.postalCode.length === 5" class="text-xs text-gray-500 mt-1">
+                                    Bundesland wird automatisch anhand der PLZ ermittelt
+                                </p>
                             </div>
 
                             <!-- Focus Areas -->
@@ -177,6 +183,107 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-accent focus:border-accent"
                                     placeholder="Weitere Informationen zu deiner Praxis, besonderen Spezialisierungen oder Arbeitsweise..."
                                 />
+                            </div>
+
+
+                            <div v-if="formData.holidays" class="lg:col-span-3 mt-8 p-4 bg-gray-500/20 border border-gray-200 rounded">
+                                <div class="flex items-center">
+                                    <span class="text-gray-400 font-semibold">Wir haben die Feiertage für dein Bundesland importiert.</span>
+                                    <a href="#" class="ml-2 text-accent underline" @click.prevent="openHolidaysModal">mehr...</a>
+                                </div>
+                                <div v-if="nearbyProviders && nearbyProviders.length > 0" class="flex items-center mt-2">
+                                    <span class="text-gray-400 font-semibold">Zudem haben wir auch die Jugendämter deiner Region herausgesucht</span>
+                                    <a href="#" class="ml-2 text-accent underline" @click.prevent="openProvidersModal">mehr...</a>
+                                </div>
+                                <div v-if="showHolidaysModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                    <div class="bg-gray-900 text-white p-6 rounded-lg shadow-xl max-w-3xl w-full h-full md:max-h-[60vh] overflow-y-auto border-2 border-white relative">
+                                        <!-- Close X button -->
+                                        <button 
+                                            @click="closeHolidaysModal"
+                                            class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+                                        >
+                                            ×
+                                        </button>
+                                        <h2 class="text-lg font-bold mb-4 text-gray-100 pr-10">Feiertage für {{ formData.bundesland }}</h2>
+                                        <div v-if="formData.holidays && formData.holidays.school">
+                                            <!-- Tabs for years -->
+                                            <div class="flex space-x-2 mb-4 border-b border-gray-700">
+                                                <button
+                                                    v-for="year in Object.keys(formData.holidays.school)"
+                                                    :key="year"
+                                                    :class="['px-3 py-2 rounded-t text-sm', selectedHolidayYear === year ? 'bg-accent text-white border-b-2 border-accent' : 'bg-gray-800 text-gray-300 hover:bg-gray-700']"
+                                                    @click="selectedHolidayYear = year"
+                                                >
+                                                    {{ year }}
+                                                </button>
+                                            </div>
+                                            <!-- Holidays data for selected year -->
+          .                                   <div v-if="selectedHolidayYear" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <!-- School holidays -->
+                                                <div>
+                                                    <h3 class="text-base font-semibold mb-2 text-accent">Ferientermine</h3>
+                                                    <ul class="space-y-1">
+                                                        <li v-for="(dates, name) in formData.holidays.school[selectedHolidayYear]" :key="name" class="bg-gray-800 p-2 rounded text-sm">
+                                                            <span class="font-semibold text-blue-300">{{ name }}:</span>
+                                                            <div class="text-gray-300 text-xs mt-1">
+                                                                {{ dates[0] }} bis {{ dates[1] }}
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- Public holidays -->
+                                                <div>
+                                                    <h3 class="text-base font-semibold mb-2 text-accent">Feiertage</h3>
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <div v-for="(date, name) in formData.holidays.public[selectedHolidayYear]" :key="name" class="bg-gray-800 p-2 rounded text-sm">
+                                                            <span class="font-semibold text-green-300">{{ name }}:</span>
+                                                            <div class="text-gray-300 text-xs mt-1">
+                                                                {{ date }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="mt-4 px-4 py-2 bg-accent text-white rounded hover:bg-accent-hover text-sm" @click="closeHolidaysModal">Schließen</button>
+                                    </div>
+                                </div>
+                                <!-- Providers Modal -->
+                                <div v-if="showProvidersModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                    <transition name="bounce">
+                                        <div v-if="showProvidersModal" class="bg-gray-900 text-white p-6 rounded-lg shadow-xl max-w-4xl w-full h-full md:max-h-[70vh] overflow-y-auto border-2 border-white relative">
+                                        <!-- Close X button -->
+                                        <button 
+                                            @click="closeProvidersModal"
+                                            class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+                                        >
+                                            ×
+                                        </button>
+                                        <h2 class="text-lg font-bold mb-4 text-gray-100 pr-10">Jugendämter in {{ formData.bundesland }}</h2>
+                                        <div v-if="nearbyProviders && nearbyProviders.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            <div v-for="provider in nearbyProviders" :key="provider.name" class="bg-gray-800 p-3 rounded text-xs">
+                                                <h3 class="font-semibold text-blue-300 mb-2 text-xs">{{ provider.name }}</h3>
+                                                <div class="space-y-1">
+                                                    <div class="text-gray-300">
+                                                        <span class="font-medium text-gray-200">Abteilung:</span> {{ provider.abteilung }}
+                                                    </div>
+                                                    <div class="text-gray-300">
+                                                        <span class="font-medium text-gray-200">Adresse:</span> {{ provider.adresse }}
+                                                    </div>
+                                                    <div class="text-gray-300">
+                                                        <span class="font-medium text-gray-200">Tel:</span> {{ provider.telefon }}
+                                                    </div>
+                                                    <div class="text-gray-300">
+                                                        <span class="font-medium text-gray-200">E-Mail:</span> 
+                                                        <a :href="`mailto:${provider.email}`" class="text-blue-400 hover:text-blue-300 underline ml-1">{{ provider.email }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="mt-4 px-4 py-2 bg-accent text-white rounded hover:bg-accent-hover text-sm" @click="closeProvidersModal">Schließen</button>
+                                    </div>
+                                    </transition>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -403,7 +510,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter, navigateTo } from '#app'
 import { useOnboarding } from '~/composables/useOnboarding'
 import { useEnumerations } from '~/composables/useEnumerations'
@@ -434,9 +541,10 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { updateOnboardingData, getOnboardingData, setCurrentStep } = useOnboarding()
+const { saveStepData, getOnboardingData, setCurrentStep, goBack: goBackStep } = useOnboarding()
 const { focusAreas, serviceOffers, isLoading, error, loadEnumerations } = useEnumerations()
 
+// ===== STATE =====
 // Form data
 const formData = ref({
     postalCode: '',
@@ -451,72 +559,103 @@ const formData = ref({
     customerSelected: false
 })
 
-// Show address fields when customer data includes address
+// UI state
 const showAddressFields = ref(false)
-
-// Potential customers state
 const isCheckingCustomers = ref(false)
-
-// Semantic flow state
 const showIdentifiedCustomer = ref(false)
-const identifiedCustomer = ref({})
-
-// Manual search card (for when no match found)
 const showManualSearchCard = ref(false)
-const manualSearchZip = ref('')
-const manualSearchResults = ref([])
-const isManualSearching = ref(false)
-
-// High score matches card (for when user data finds multiple good matches)
 const showHighScoreMatches = ref(false)
-const highScoreMatches = ref([])
-
-// Bundeslaender data
+const showHolidaysModal = ref(false)
+const selectedHolidayYear = ref(null)
+const showProvidersModal = ref(false)
+const isManualSearching = ref(false)
 const bundeslaenderData = ref([])
 const isLoadingBundeslaender = ref(false)
+const isLoadingHolidays = ref(false)
+const providers = ref([])
+const isLoadingProviders = ref(false)
 
-// Tag selector methods
-const updateSelectedFocusAreas = (newSelected) => {
-    formData.value.selectedFocusAreas = newSelected
-    saveFormData()
-}
+// Search state - single source of truth for customer search results
+const searchResults = ref([])
+const identifiedCustomer = ref({})
+const manualSearchZip = ref('')
+const holidays = ref([])
 
-const updateSelectedServiceOffers = (newSelected) => {
-    formData.value.selectedServiceOffers = newSelected
-    saveFormData()
-}
+// ===== COMPUTED PROPERTIES =====
+// Different customer lists computed from searchResults
+const highScoreMatches = computed(() => {
+    return searchResults.value.filter(customer => 
+        customer.score > CONFIDENCE_THRESHOLDS.MEDIUM && customer.score <= CONFIDENCE_THRESHOLDS.VERY_HIGH
+    ).sort((a, b) => b.score - a.score)
+})
 
-// Load bundeslaender data
-const loadBundeslaender = async () => {
-    try {
-        isLoadingBundeslaender.value = true
-        const response = await $fetch('/api/static/bundeslaender')
-        bundeslaenderData.value = response
-        console.log('Bundeslaender data loaded:', response)
-        console.log('States available:', response?.states)
-        console.log('Postal codes count:', response?.postal_codes?.length)
-    } catch (error) {
-        console.error('Failed to load bundeslaender data:', error)
-    } finally {
-        isLoadingBundeslaender.value = false
+const veryHighScoreMatches = computed(() => {
+    return searchResults.value.filter(customer => customer.score > CONFIDENCE_THRESHOLDS.VERY_HIGH)
+})
+
+const manualSearchResults = computed(() => {
+    return searchResults.value.filter(customer => 
+        customer.searchType === 'manual' || customer.source === 'manual'
+    )
+})
+
+// Filter providers by proximity to client's ZIP code
+const nearbyProviders = computed(() => {
+    if (!formData.value.providers || !formData.value.postalCode) {
+        return formData.value.providers || []
     }
-}
-
-// Convert state name to standardized value for form
-const convertStateNameToValue = (stateName) => {
-    if (!stateName) return ''
     
-    return stateName.toLowerCase()
-        .replace(/ä/g, 'ae')
-        .replace(/ö/g, 'oe') 
-        .replace(/ü/g, 'ue')
-        .replace(/ß/g, 'ss')
-        .replace(/[^a-z0-9]/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '')
+    const clientZip = formData.value.postalCode
+    
+    // Calculate distance for each provider and sort by proximity
+    const providersWithDistance = formData.value.providers.map(provider => {
+        const providerZip = extractZipFromAddress(provider.adresse)
+        const distance = calculateZipDistance(clientZip, providerZip)
+        return { ...provider, distance, zipCode: providerZip }
+    }).filter(provider => provider.zipCode) // Only include providers with valid ZIP codes
+    
+    // Sort by distance (closest first) and return top 9
+    return providersWithDistance
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 9)
+})
+
+// ===== UTILITY FUNCTIONS =====
+const extractZipFromAddress = (address) => {
+    if (!address) return null
+    // Extract 5-digit ZIP code from address string
+    const zipMatch = address.match(/\b(\d{5})\b/)
+    return zipMatch ? zipMatch[1] : null
 }
 
-// Calculate Bundesland from ZIP code
+const calculateZipDistance = (zip1, zip2) => {
+    if (!zip1 || !zip2) return Infinity
+    
+    const clientZip = zip1.toString()
+    const providerZip = zip2.toString()
+    
+    // Check for prefix matches and prioritize them
+    if (providerZip.startsWith(clientZip)) {
+        return 0.1 // Exact match gets highest priority
+    }
+    
+    // Check for progressively shorter prefix matches
+    for (let i = clientZip.length - 1; i >= 2; i--) {
+        const prefix = clientZip.substring(0, i)
+        if (providerZip.startsWith(prefix)) {
+            return i // Longer prefix = lower distance value = higher priority
+        }
+    }
+    
+    // If no prefix match, fall back to numerical difference
+    const num1 = parseInt(clientZip)
+    const num2 = parseInt(providerZip)
+    const diff = Math.abs(num1 - num2)
+    
+    // Add large offset to ensure prefix matches always come first
+    return 1000 + diff
+}
+
 const calculateBundeslandFromZip = (zipCode) => {
     if (!zipCode || zipCode.length !== 5 || !bundeslaenderData.value.postal_codes) {
         return null
@@ -532,64 +671,19 @@ const calculateBundeslandFromZip = (zipCode) => {
     })
     
     if (matchingRange && matchingRange.state) {
-        // Convert state code to the value format used in our dropdown
-        const stateCode = matchingRange.state
-        const stateName = bundeslaenderData.value.states[stateCode]
-        
-        // Use the shared conversion function
-        return convertStateNameToValue(stateName)
+        // Return the state code directly (this is what the dropdown expects as value)
+        return matchingRange.state
     }
     
     return null
 }
 
-// Load existing data if available
-var existingData = getOnboardingData()
-
-// Initialize contactPerson with user's first_name and last_name if not already set
-if (!formData.value.contactPerson && existingData?.stepData?.user) {
-    const userData = existingData.stepData.user
-    const firstName = userData.first_name || ''
-    const lastName = userData.last_name || ''
-    if (firstName || lastName) {
-        formData.value.contactPerson = `${firstName} ${lastName}`.trim()
-    }
-}
-
-// Update current step
-setCurrentStep(1)
-
-const setNewPostalCode = (value) => {
-    formData.value.postalCode = value
-    
-    // Auto-calculate Bundesland when ZIP code is complete
-    if (value.length === 5) {
-
-        const calculatedBundesland = calculateBundeslandFromZip(value)
-        console.log(`ZIP ${value} -> Bundesland: ${calculatedBundesland}`)
-        if (calculatedBundesland) {
-
-            // Always update Bundesland when ZIP changes (don't check if empty)
-            formData.value.bundesland = calculatedBundesland
-            console.log(`Auto-set Bundesland to: ${calculatedBundesland}`)
-        }
-    } else {
-        // Clear Bundesland if ZIP is incomplete
-        formData.value.bundesland = ''
-    }
-}
-
-// Parse address from customer data into separate components
 const parseAddress = (address) => {
     if (!address || typeof address !== 'string') {
         return { street: '', city: '', postalCode: '' }
     }
 
     // Common German address patterns
-    // Pattern 1: "Musterstraße 123, 10115 Berlin"
-    // Pattern 2: "Musterstraße 123\n10115 Berlin"
-    // Pattern 3: "Musterstraße 123 10115 Berlin"
-    
     const addressParts = address.split(/[,\n]/).map(part => part.trim())
     
     if (addressParts.length >= 2) {
@@ -621,12 +715,74 @@ const parseAddress = (address) => {
     return { street: address, city: '', postalCode: '' }
 }
 
-const adoptCustomerData = (customer, isAutoFill = false) => {
+const formatAddress = (data) => {
+    const parts = []
+    if (data.street) parts.push(data.street)
+    if (data.postalCode && data.city) {
+        parts.push(`${data.postalCode} ${data.city}`)
+    } else if (data.city) {
+        parts.push(data.city)
+    }
+    return parts.join(', ') || 'Nicht verfügbar'
+}
+
+const formatCustomerAddress = (customer) => {
+    if (customer.address) {
+        return customer.address
+    }
     
+    const parts = []
+    if (customer.street) parts.push(customer.street)
+    if (customer.postal_code && customer.city) {
+        parts.push(`${customer.postal_code} ${customer.city}`)
+    } else if (customer.city) {
+        parts.push(customer.city)
+    } else if (customer.postal_code) {
+        parts.push(customer.postal_code)
+    }
+    
+    return parts.join(', ') || 'Adresse nicht verfügbar'
+}
+
+// ===== FORM FUNCTIONS =====
+const updateSelectedFocusAreas = (newSelected) => {
+    formData.value.selectedFocusAreas = newSelected
+    saveFormData()
+}
+
+const updateSelectedServiceOffers = (newSelected) => {
+    formData.value.selectedServiceOffers = newSelected
+    saveFormData()
+}
+
+const setNewPostalCode = (value) => {
+    formData.value.postalCode = value
+    
+    // Auto-calculate Bundesland when ZIP code is complete
+    if (value.length === 5) {
+        const calculatedBundesland = calculateBundeslandFromZip(value)
+        console.log(`ZIP ${value} -> Bundesland: ${calculatedBundesland}`)
+        if (calculatedBundesland) {
+            formData.value.bundesland = calculatedBundesland
+            console.log(`Auto-set Bundesland to: ${calculatedBundesland}`)
+        }
+    } else {
+        // Clear Bundesland if ZIP is incomplete
+        formData.value.bundesland = ''
+    }
+}
+
+const saveFormData = () => {
+    saveStepData(1, formData.value)
+}
+
+// ===== CUSTOMER DATA FUNCTIONS =====
+const adoptCustomerData = (customer, isAutoFill = false) => {
     // Pre-fill form with customer data
     if (customer.name) {
         formData.value.practiceName = customer.name
     }
+    
     // Parse and set address information
     if (customer.address) {
         const addressParts = parseAddress(customer.address)
@@ -660,6 +816,7 @@ const adoptCustomerData = (customer, isAutoFill = false) => {
     const emptyAndRefill = (dest, source) => {
         dest.push(...source)
     }
+    
     // Set focus areas if available
     if (customer.focus && (customer.focus.length > 0)) {
         emptyAndRefill(formData.value.selectedFocusAreas, customer.focus)
@@ -669,6 +826,7 @@ const adoptCustomerData = (customer, isAutoFill = false) => {
     if (customer.offers && (customer.offers.length > 0)) {
         emptyAndRefill(formData.value.selectedServiceOffers, customer.offers)
     }
+    
     console.log('Adopted form data:', formData.value)
 
     // Set additional notes if available
@@ -678,82 +836,14 @@ const adoptCustomerData = (customer, isAutoFill = false) => {
     
     // Save the updated data
     saveFormData()
-}
-
-// New methods for semantic flow and user data matching
-const checkInitialUserDataMatch = async () => {
-    // Skip search flow if customer has already been selected
-    if (formData.value.customerSelected) {
-        console.log('Customer already selected, skipping search flow')
-        return
-    }
     
-    // Also skip if we have substantial customer data (company name and contact person)
-    if (formData.value.practiceName && formData.value.contactPerson) {
-        console.log('Customer data already exists, skipping search flow')
-        return
-    }
-    
-    const userData = existingData?.stepData?.user || {}
-    
-    // If we have user data, check if it matches existing customers
-    if (userData.email || (userData.first_name && userData.last_name)) {
-        try {
-            const queryParams = new URLSearchParams({
-                zip: userData.postal_code || '',
-                first_name: userData.first_name || '',
-                last_name: userData.last_name || '',
-                email: userData.email || ''
-            })
-            
-            const response = await $fetch(`/api/fuzzy/potential-customers?${queryParams.toString()}`)
-            console.log('Initial user data match response:', response)
-            if (response?.results?.length > 0) {
-                const processedCustomers = response.results.map((item) => ({ ...item.customer, score: item.score }))
-                
-                // Filter customers with high scores (>MEDIUM)
-                const highScoreCustomers = processedCustomers.filter(customer => customer.score > CONFIDENCE_THRESHOLDS.MEDIUM)
-                
-                if (highScoreCustomers.length > 0) {
-                    // Find very high matches (>VERY_HIGH) for automatic adoption
-                    const veryHighScoreCustomers = highScoreCustomers.filter(customer => customer.score > CONFIDENCE_THRESHOLDS.VERY_HIGH)
-                    
-                    if (veryHighScoreCustomers.length === 1) {
-                        // Single very high match - show semantic flow immediately
-                        showIdentifiedCustomerWithData(veryHighScoreCustomers[0])
-                    } else if (highScoreCustomers.length === 1 && highScoreCustomers[0].score > CONFIDENCE_THRESHOLDS.HIGH) {
-                        // Single high match - show semantic flow
-                        showIdentifiedCustomerWithData(highScoreCustomers[0])
-                    } else if (highScoreCustomers.length > 1) {
-                        // Multiple high matches - show selection card
-                        highScoreMatches.value = highScoreCustomers.sort((a, b) => b.score - a.score)
-                        showHighScoreMatches.value = true
-                        // Also populate basic form with user data
-                        fillFormWithUserData(userData)
-                    } else {
-                        // Single medium match - populate ZIP and let user search
-                        if (highScoreCustomers[0].postal_code) {
-                            formData.value.postalCode = highScoreCustomers[0].postal_code
-                        }
-                        fillFormWithUserData(userData)
-                    }
-                } else {
-                    // No high score match - show manual search card and populate form with user data
-                    showManualSearchCard.value = true
-                    fillFormWithUserData(userData)
-                }
-            } else {
-                // No API results - show manual search card and populate form with user data
-                showManualSearchCard.value = true
-                fillFormWithUserData(userData)
-            }
-        } catch (error) {
-            console.error('Error checking initial user data:', error)
-            // Fallback to user data and show manual search
-            showManualSearchCard.value = true
-            fillFormWithUserData(userData)
+    // Set focus to first field after a short delay to ensure DOM is updated
+    nextTick(() => {
+        const practiceNameField = document.getElementById('practiceName')
+        if (practiceNameField) {
+            practiceNameField.focus()
         }
-    }
+    })
 }
 
 const fillFormWithUserData = (userData) => {
@@ -770,14 +860,6 @@ const fillFormWithUserData = (userData) => {
         formData.value.street = userData.street
         showAddressFields.value = true
     }
-}
-
-const showIdentifiedCustomerWithData = (customerData) => {
-    identifiedCustomer.value = {
-        ...customerData,
-        ...parseCustomerData(customerData)
-    }
-    showIdentifiedCustomer.value = true
 }
 
 const parseCustomerData = (customer) => {
@@ -804,126 +886,105 @@ const parseCustomerData = (customer) => {
     return parsed
 }
 
-const acceptCustomerMatch = (customer = null) => {
-    // Store current contactPerson to preserve it
-    if (!customer) {
-        console.error('No customer data provided to acceptCustomerMatch')
+// ===== SEARCH FUNCTIONS =====
+const performCustomerSearch = async (searchParams) => {
+    try {
+        const queryParams = new URLSearchParams(searchParams)
+        const response = await $fetch(`/api/fuzzy/potential-customers?${queryParams.toString()}`)
+        
+        if (response?.results?.length > 0) {
+            // Add search metadata to each result
+            const results = response.results.map((item) => ({ 
+                ...item.customer, 
+                score: item.score,
+                searchType: searchParams.searchType || 'auto',
+                source: searchParams.source || 'api'
+            }))
+            
+            // Update search results
+            searchResults.value = results
+            return results
+        }
+        
+        return []
+    } catch (error) {
+        console.error('Error performing customer search:', error)
+        return []
+    }
+}
+
+const checkInitialUserDataMatch = async () => {
+    // Skip search flow if customer has already been selected
+    if (formData.value.customerSelected) {
+        console.log('Customer already selected, skipping search flow')
         return
     }
     
-        // Manual/search result case - need to parse and adopt customer data
-        adoptCustomerData(customer)
-        
-        // Mark that a customer has been selected
-        formData.value.customerSelected = true
-        
-        if (showIdentifiedCustomer.value) {
-            closeIdentifiedCustomer()
-        } else if (showManualSearchCard.value) {
-            closeManualSearchCard()
-        } else if (showHighScoreMatches.value) {
-            closeHighScoreMatches()
-        }
-    
-    saveFormData()
-}
-
-const dicardSearchResults = () => {
-    // Fill form with user data only
-    const userData = existingData?.stepData?.user || {}
-    fillFormWithUserData(userData)
-    showIdentifiedCustomer.value = false
-}
-
-const formatAddress = (data) => {
-    const parts = []
-    if (data.street) parts.push(data.street)
-    if (data.postalCode && data.city) {
-        parts.push(`${data.postalCode} ${data.city}`)
-    } else if (data.city) {
-        parts.push(data.city)
+    // Also skip if we have substantial customer data (company name and contact person)
+    if (formData.value.practiceName && formData.value.contactPerson) {
+        console.log('Customer data already exists, skipping search flow')
+        return
     }
-    return parts.join(', ') || 'Nicht verfügbar'
-}
-
-const saveFormData = () => {
-    updateOnboardingData({
-        step1: formData.value
-    })
-}
-
-const goBack = async () => {
-    saveFormData() // Save data before navigating
-    await navigateTo('/onboarding/start')
-}
-
-const goNext = async () => {
-    try {
-        // Save data locally first
-        saveFormData()
-        
-        // Get current onboarding data for API call
-        const onboardingData = getOnboardingData()
-        
-        if (!onboardingData || !onboardingData.userToken) {
-            console.error('Missing onboarding data or userToken')
-            // Still navigate even if API call fails
-            await navigateTo('/onboarding/schritt/2')
-            return
+    
+    const existingData = getOnboardingData()
+    const userData = existingData?.user || {}
+    
+    // If we have user data, check if it matches potential customers from catalog
+    if (userData.email || (userData.first_name && userData.last_name)) {
+        const searchParams = {
+            zip: userData.postal_code || '',
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            email: userData.email || '',
+            searchType: 'initial',
+            source: 'user_data'
         }
-        
-        // Prepare API payload
-        const apiPayload = {
-            userToken: onboardingData.userToken,
-            data: {
-                step: 1,
-                customerId: onboardingData.customerId,
-                userId: onboardingData.userId,
-                planSlug: onboardingData.planSlug,
-                onboardingToken: onboardingData.onboardingToken,
-                stepData: {
-                    step1: formData.value
-                }
-            }
-        }
-        
-        console.log('Saving step 1 data to API:', apiPayload)
-        
-        // Call API to save onboarding data
-        const response = await $fetch('/api/onboarding', {
-            method: 'POST',
-            body: apiPayload
-        })
-        
-        if (response.success) {
-            console.log('Step 1 data saved successfully:', response)
+
+        searchResults.value = await performCustomerSearch(searchParams)
+        console.log('Initial user data match response:', searchResults.value)
+
+        if (searchResults.value.length > 0) {
+            handleSearchResults(searchResults.value, userData)
         } else {
-            console.warn('API response indicates failure:', response)
+            // No API results - show manual search card and populate form with user data
+            showManualSearchCard.value = true
+            fillFormWithUserData(userData)
         }
-        
-    } catch (error) {
-        console.error('Failed to save step 1 data to API:', error)
-        // Don't block navigation on API failure
     }
-    
-    // Navigate to next step regardless of API call result
-    await navigateTo('/onboarding/schritt/2')
 }
 
-// Manual search functionality
-const onSearchPostalCodeChanged = (event) => {
-    // Only allow digits and limit to 5 characters
-    const value = event.target.value.replace(/[^0-9]/g, '').slice(0, 5)
-    manualSearchZip.value = value
+const handleSearchResults = (results, userData) => {
+    // Filter customers with high scores (>MEDIUM)
+    const highScoreCustomers = results.filter(customer => customer.score > CONFIDENCE_THRESHOLDS.MEDIUM)
     
-    // Clear results if ZIP changes
-    if (manualSearchResults.value.length > 0) {
-        manualSearchResults.value = []
-    }
-    
-    // Automatically search when there are at least 3 digits
-    if (value.length >= 3) {
-        performManualSearch()
+    if (highScoreCustomers.length > 0) {
+        // Find very high matches (>VERY_HIGH) for automatic adoption
+        const veryHighScoreCustomers = highScoreCustomers.filter(customer => customer.score > CONFIDENCE_THRESHOLDS.VERY_HIGH)
+        
+        if (veryHighScoreCustomers.length === 1) {
+            // Single very high match - show semantic flow immediately
+            showIdentifiedCustomerWithData(veryHighScoreCustomers[0])
+        } else if (highScoreCustomers.length === 1 && highScoreCustomers[0].score > CONFIDENCE_THRESHOLDS.HIGH) {
+            // Single high match - show semantic flow
+            showIdentifiedCustomerWithData(highScoreCustomers[0])
+        } else if (highScoreCustomers.length > 1 && highScoreCustomers.some(customer => customer.score > CONFIDENCE_THRESHOLDS.HIGH)) {
+            // Multiple matches with at least one high score - show selection card
+            showHighScoreMatches.value = true
+            // Also populate basic form with user data
+            fillFormWithUserData(userData)
+        } else {
+            // Medium score matches (between MEDIUM and HIGH) - show manual search and populate ZIP
+            console.log('Medium score customer found, showing manual search with prefilled ZIP')
+            if (highScoreCustomers[0].postal_code) {
+                formData.value.postalCode = highScoreCustomers[0].postal_code
+            }
+            showManualSearchCard.value = true
+            fillFormWithUserData(userData)
+        }
+    } else {
+        // No high score match - show manual search card and populate form with user data
+        showManualSearchCard.value = true
+        fillFormWithUserData(userData)
     }
 }
 
@@ -933,48 +994,153 @@ const performManualSearch = async () => {
     
     try {
         isManualSearching.value = true
-        manualSearchResults.value = []
         
         // Get user data for enhanced search
         const onboardingData = getOnboardingData()
-        const userData = onboardingData?.stepData?.user || {}
+        const userData = onboardingData?.userData || {}
         
-        // Search with ZIP code AND user data for better matching
-        const queryParams = new URLSearchParams({
+        const searchParams = {
             zip: manualSearchZip.value,
             first_name: userData.first_name || '',
             last_name: userData.last_name || '',
-            email: userData.email || ''
-        })
-        
-        console.log('Manual search with combined data:', {
-            zip: manualSearchZip.value,
-            first_name: userData.first_name || '',
-            last_name: userData.last_name || '',
-            email: userData.email || ''
-        })
-        
-        const response = await $fetch(`/api/fuzzy/potential-customers?${queryParams.toString()}`)
-        
-        if (response?.results?.length > 0) {
-            manualSearchResults.value = response.results.map((item) => ({ ...item.customer, score: item.score }))
+            email: userData.email || '',
+            searchType: 'manual',
+            source: 'manual_zip'
         }
-    } catch (error) {
-        console.error('Error performing manual search:', error)
+        
+        console.log('Manual search with combined data:', searchParams)
+        
+        await performCustomerSearch(searchParams)
     } finally {
         isManualSearching.value = false
     }
 }
 
+// ===== EVENT HANDLERS =====
+const showIdentifiedCustomerWithData = (customerData) => {
+    identifiedCustomer.value = {
+        ...customerData,
+        ...parseCustomerData(customerData)
+    }
+    showIdentifiedCustomer.value = true
+}
+
+const acceptCustomerMatch = (customer = null) => {
+    if (!customer) {
+        console.error('No customer data provided to acceptCustomerMatch')
+        return
+    }
+    
+    // Manual/search result case - need to parse and adopt customer data
+    adoptCustomerData(customer)
+    
+    // Mark that a customer has been selected
+    formData.value.customerSelected = true
+    
+    if (showIdentifiedCustomer.value) {
+        closeIdentifiedCustomer()
+    } else if (showManualSearchCard.value) {
+        closeManualSearchCard()
+    } else if (showHighScoreMatches.value) {
+        closeHighScoreMatches()
+    }
+    
+    saveFormData()
+}
+
+const dicardSearchResults = () => {
+    // Fill form with user data only
+    const existingData = getOnboardingData()
+    const userData = existingData?.userData || {}
+    fillFormWithUserData(userData)
+    showIdentifiedCustomer.value = false
+}
+
+const onSearchPostalCodeChanged = (event) => {
+    // Only allow digits and limit to 5 characters
+    const value = event.target.value.replace(/[^0-9]/g, '').slice(0, 5)
+    manualSearchZip.value = value
+    
+    // Clear results if ZIP changes
+    if (searchResults.value.length > 0) {
+        searchResults.value = []
+    }
+    
+    // Automatically search when there are at least 3 digits
+    if (value.length >= 3) {
+        performManualSearch()
+    }
+}
+
+watch(() => formData.value.bundesland, async (newBundesland) => {
+  if (newBundesland && !isLoadingHolidays.value && !isLoadingBundeslaender.value) {
+    // Ensure the bundesland is in the correct format
+    console.log('Selected bundesland:', holidays.value)
+
+    console.log('Selected bundesland:', newBundesland)
+    const holidaysLand = holidays.value.find(holiday => holiday.state === newBundesland)
+    console.log('Holidays for selected bundesland:', holidaysLand)
+    formData.value.holidays = {
+        state: newBundesland,
+        school: holidaysLand ? holidaysLand.school_holidays : [],
+        public: holidaysLand ? holidaysLand.public_holidays : [],
+    }
+
+    // Load providers for the selected Bundesland
+    const providersLand = providers.value.find(provider => provider.state === newBundesland)
+    console.log('Providers for selected bundesland:', providersLand)
+    formData.value.providers = providersLand ? providersLand.providers : []
+  }
+})
+
+// ===== HOLIDAY MODAL FUNCTIONS =====
+function openHolidaysModal() {
+  showHolidaysModal.value = true
+  // Default to first available year
+  if (formData.value.holidays && formData.value.holidays.school) {
+    const years = Object.keys(formData.value.holidays.school)
+    selectedHolidayYear.value = years.length ? years[0] : null
+  }
+  // Add ESC key listener
+  document.addEventListener('keydown', handleEscapeKey)
+}
+
+function closeHolidaysModal() {
+  showHolidaysModal.value = false
+  selectedHolidayYear.value = null
+  // Remove ESC key listener
+  document.removeEventListener('keydown', handleEscapeKey)
+}
+
+function handleEscapeKey(event) {
+  if (event.key === 'Escape' && (showHolidaysModal.value || showProvidersModal.value)) {
+    closeHolidaysModal()
+    closeProvidersModal()
+  }
+}
+
+// ===== PROVIDER MODAL FUNCTIONS =====
+function openProvidersModal() {
+  showProvidersModal.value = true
+  // Add ESC key listener
+  document.addEventListener('keydown', handleEscapeKey)
+}
+
+function closeProvidersModal() {
+  showProvidersModal.value = false
+  // Remove ESC key listener
+  document.removeEventListener('keydown', handleEscapeKey)
+}
+
+// ===== UI FUNCTIONS =====
 const closeManualSearchCard = () => {
     showManualSearchCard.value = false
     manualSearchZip.value = ''
-    manualSearchResults.value = []
+    searchResults.value = []
 }
 
 const closeHighScoreMatches = () => {
     showHighScoreMatches.value = false
-    highScoreMatches.value = []
 }
 
 const closeIdentifiedCustomer = () => {
@@ -982,45 +1148,201 @@ const closeIdentifiedCustomer = () => {
     identifiedCustomer.value = null
 }
 
-const formatCustomerAddress = (customer) => {
-    if (customer.address) {
-        return customer.address
-    }
-    
-    const parts = []
-    if (customer.street) parts.push(customer.street)
-    if (customer.postal_code && customer.city) {
-        parts.push(`${customer.postal_code} ${customer.city}`)
-    } else if (customer.city) {
-        parts.push(customer.city)
-    } else if (customer.postal_code) {
-        parts.push(customer.postal_code)
-    }
-    
-    return parts.join(', ') || 'Adresse nicht verfügbar'
+// ===== NAVIGATION FUNCTIONS =====
+const goBack = async () => {
+    saveFormData() // Save data before navigating
+    await goBackStep() // Use the composable's goBack function
+    router.push('/onboarding/start')
 }
 
-const fillFormFromExistingData = (data) => {
-    if (data?.step1) {
-        formData.value = { ...data.step1 }
+const goNext = async () => {
+    try {
+        // Save data locally first
+        saveFormData()
+
+        // Get current onboarding data for API call
+        const onboardingData = getOnboardingData()
+
+        // Use onboarding_id from top-level onboardingData
+        const onboarding_id = onboardingData.onboarding_id
+        if (!onboarding_id) {
+            console.error('No onboarding_id found in onboardingData')
+            // Optionally block or show error to user
+            return
+        }
+
+
+        console.log('Saving step 1 data to API:', onboardingData)
+
+        // Call API to save onboarding data
+        // Get token from useAuth composable
+        const { getToken } = useAuth()
+        const token = getToken()
+        const response = await $fetch(`/api/onboarding`, {
+            method: 'POST',
+            body: onboardingData,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        if (response.success) {
+            console.log('Step 1 data saved successfully:', response)
+        } else {
+            console.warn('API response indicates failure:', response)
+        }
+
+    } catch (error) {
+        console.error('Failed to save step 1 data to API:', error)
+        // Don't block navigation on API failure
+    }
+
+    // Navigate to next step regardless of API call result
+    await navigateTo('/onboarding/schritt/2')
+}
+
+// ===== DATA LOADING FUNCTIONS =====
+const loadBundeslaender = async () => {
+    try {
+        isLoadingBundeslaender.value = true
+        const response = await $fetch('/api/static/bundeslaender')
+        bundeslaenderData.value = response
+        console.log('Bundeslaender data loaded:', response)
+        console.log('States available:', response?.states)
+        console.log('Postal codes count:', response?.postal_codes?.length)
+    } catch (error) {
+        console.error('Failed to load bundeslaender data:', error)
+    } finally {
+        isLoadingBundeslaender.value = false
     }
 }
+
+const loadHolidays = async() => {
+    try {
+        isLoadingHolidays.value = true
+        const response = await $fetch('/api/static/ferien-feiertage')
+        holidays.value = response
+    } catch (error) {
+        console.error('Failed to load holidays data:', error)
+    } finally {
+        isLoadingHolidays.value = false
+    }
+}
+
+const loadProviders = async() => {
+    try {
+        isLoadingProviders.value = true
+        const response = await $fetch('/api/static/jugendaemter')
+        providers.value = response
+    } catch (error) {
+        console.error('Failed to load providers data:', error)
+    } finally {
+        isLoadingProviders.value = false
+    }
+}
+
+const initializeFormData = () => {
+    const existingData = getOnboardingData()
+
+    // Always set contactPerson from user data (read-only field)
+    if (existingData?.user) {
+        const userData = existingData.user
+        const firstName = userData.first_name || ''
+        const lastName = userData.last_name || ''
+        formData.value.contactPerson = `${firstName} ${lastName}`.trim() || 'Nicht verfügbar'
+    }
+
+    // Load existing step 1 data if available and customerSelected is true
+    const existingStep1 = Array.isArray(existingData?.steps)
+        ? existingData.steps.find(step => step.stepNumber === 1)
+        : undefined
+    if (
+        existingStep1 &&
+        existingStep1.customerSelected
+    ) {
+        const contactPerson = formData.value.contactPerson
+        Object.assign(formData.value, existingStep1)
+        formData.value.customerSelected = true
+        formData.value.contactPerson = contactPerson
+    }
+}
+
+// ===== INITIALIZATION =====
+// Update current step
+setCurrentStep(1)
 
 // Load enumerations on mount
 onMounted(async () => {
     try {
-                await loadEnumerations()
+        await loadEnumerations()
         await loadBundeslaender()
-        existingData = getOnboardingData()
-        // Check for initial user data match
+        loadHolidays()
+        loadProviders()
+        
+        // Initialize form data
+        initializeFormData()
+        
+        // Get existing data for search logic
+        const existingData = getOnboardingData()
         console.log('Onboarding data:', existingData)
-        if (!existingData?.step1?.customerSelected) {
+
+        // Check for initial user data match
+        const existingStep1 = Array.isArray(existingData?.steps)
+            ? existingData.steps.find(step => step.stepNumber === 1)
+            : undefined
+        if (!existingStep1?.customerSelected) {
             await checkInitialUserDataMatch()
         } else {
-            fillFormFromExistingData(existingData)
+            console.log('Existing step 1 data found, populating form')
+            // Save current contactPerson (from user data) before merging
+            const contactPerson = formData.value.contactPerson
+            formData.value = { ...existingStep1 }
+            // Restore contactPerson from user data (read-only field)
+            formData.value.contactPerson = contactPerson
         }
     } catch (err) {
         console.error('Failed to load enumerations or check user data:', err)
     }
 })
 </script>
+
+<style scoped>
+/* Bounce animation for provider modal */
+.bounce-enter-active {
+    animation: bounce-in 0.6s ease-out;
+}
+
+.bounce-leave-active {
+    animation: bounce-out 0.3s ease-in;
+}
+
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.3) translateY(-50px);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05) translateY(-10px);
+        opacity: 0.8;
+    }
+    70% {
+        transform: scale(0.95) translateY(5px);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-out {
+    0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8) translateY(-20px);
+        opacity: 0;
+    }
+}
+</style>

@@ -87,13 +87,24 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { updateOnboardingData, setCurrentStep } = useOnboarding()
+const { saveStepData, setCurrentStep, getOnboardingData, updateUserData } = useOnboarding()
+
+onMounted(() => {
+    const onboardingData = getOnboardingData()
+    if (!onboardingData.userData?.onboardingToken && process.client) {
+        const token = localStorage.getItem('onboardingToken')
+        if (token) {
+            updateUserData({ onboardingToken: token })
+        }
+    }
+})
 
 // Update current step
 setCurrentStep(3)
 
 // Methods
 const goBack = async () => {
+    // Save any form data here before navigating
     await navigateTo('/onboarding/schritt/2')
 }
 

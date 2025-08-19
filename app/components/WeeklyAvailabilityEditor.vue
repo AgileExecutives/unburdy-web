@@ -5,14 +5,32 @@
             <div class="flex items-center justify-between">
                 <p>Verfügbare Zeiten</p>
                 <div class="flex items-center space-x-2">
+                    <div>
+                    Tage / Woche:
+                    </div>
                     <UButton
                         v-for="days in [5, 6, 7]"
                         :key="days"
                         @click="weekViewMode = days"
                         :variant="weekViewMode === days ? 'solid' : 'outline'"
                         size="sm"
+                        :class="weekViewMode === days ? 'bg-green-600/30 text-white border-green-600' : 'bg-white/30 text-white border-green-600'"
                     >
                         {{ days }}
+                    </UButton>
+                    <UButton
+                        class="ml-4 bg-green-600/30 text-white border-green-600"
+                        size="sm"
+                        @click="copyMondayToWeek"
+                    >
+                        Montag → Woche
+                    </UButton>
+                    <UButton
+                        class="ml-2 bg-red-600/30 text-white border-red-600"
+                        size="sm"
+                        @click="clearAllAvailability"
+                    >
+                        Löschen
                     </UButton>
                 </div>
             </div>
@@ -98,11 +116,36 @@ const allDays = ref([
 
 // Computed Properties
 const visibleDays = computed(() => allDays.value.slice(0, weekViewMode.value))
-const gridCols = computed(() => "grid-cols-" + weekViewMode.value.toString())
+const gridCols = computed(() => {
+    // Explicit class names for Tailwind CSS purging
+    const gridClasses = {
+        5: 'grid-cols-5',
+        6: 'grid-cols-6', 
+        7: 'grid-cols-7'
+    }
+    return gridClasses[weekViewMode.value] || 'grid-cols-5'
+})
 const visibleHours = computed(() => Array.from({ length: 14 }, (_, i) => i + 7))
 
 // Methods
 const getDaySlots = (dayKey) => formData.value[dayKey] || []
+
+const copyMondayToWeek = () => {
+    const mondaySlots = formData.value['monday'] ? JSON.parse(JSON.stringify(formData.value['monday'])) : []
+    visibleDays.value.forEach(day => {
+        if (day.key !== 'monday') {
+            formData.value[day.key] = JSON.parse(JSON.stringify(mondaySlots))
+        }
+    })
+    emit('update:modelValue', formData.value)
+}
+
+const clearAllAvailability = () => {
+    allDays.value.forEach(day => {
+        formData.value[day.key] = []
+    })
+    emit('update:modelValue', formData.value)
+}
 
 const handleMouseDown = (dayKey, time) => {
     selection.value = {

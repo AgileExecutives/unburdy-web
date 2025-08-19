@@ -139,13 +139,23 @@
         </div>
                         <!-- Debug Information (only in development) -->
                 <div v-if="isDevelopment" class="bg-gray-900 rounded-lg border border-gray-200 p-4 mb-8">
-                    <button @click="deletestore" class="text-xs text-gray-400 hover:text-gray-300">
-                        schritt zurücksetzen
-                    </button>
-                    <h3 class="text-sm font-medium text-gray-700 mb-2">Debug Information (Development Only)</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button @click="clearOnboardingData" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
+                            Clear Data
+                        </button>
+                        <button @click="createMockData" class="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">
+                            Create Mock Data
+                        </button>
+                        <button @click="goToOnboarding" class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">
+                            Continue Onboarding
+                        </button>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">Debug Information (Development Only)</h3>
                     <details class="text-xs">
-                        <summary class="cursor-pointer text-gray-600 mb-2">Full Registration Data</summary>
-                        <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
+                                                <summary class="cursor-pointer text-gray-300 mb-2">Full Registration Data</summary>
+                                                <client-only>
+                                                    <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto text-gray-900">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
+                                                </client-only>
                     </details>
                 </div>
     </div>
@@ -167,17 +177,11 @@ const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
 const { isAuthenticated, user, token } = useAuth()
-const { getOnboardingData, hasOnboardingData, setOnboardingData,updateOnboardingData } = useOnboarding()
+const { getOnboardingData, hasOnboardingData, goBack, initOnboarding, clearOnboardingStepsData } = useOnboarding()
 
 // State
 const isLoading = ref(true)
 const error = ref(null)
-
-const deleteStore = () => {
-    // Reset the store or perform any necessary cleanup
-    const onboardingData = getOnboardingData()
-
-}
 
 // Get plan from route params
 const plan = computed(() => route.params.plan || 'basic')
@@ -196,13 +200,34 @@ const planName = computed(() => planNames[plan.value] || plan.value.charAt(0).to
 
 // Access onboarding data
 const onboardingData = computed(() => getOnboardingData())
-const apiUser = computed(() => onboardingData.value?.stepData?.user)
-const apiCustomer = computed(() => onboardingData.value?.stepData?.customer)
-const apiOrganization = computed(() => onboardingData.value?.stepData?.organization)
-const apiPlan = computed(() => onboardingData.value?.stepData?.plan)
+const apiUser = computed(() => onboardingData.value?.userData)
+const apiCustomer = computed(() => {
+    // Customer data is now stored in userData if available
+    const userData = onboardingData.value?.userData
+    return userData?.customerId ? {
+        id: userData.customerId,
+        email: userData.email
+    } : null
+})
+const apiOrganization = computed(() => {
+    // Organization data is now stored in userData if available
+    const userData = onboardingData.value?.userData
+    return userData?.organizationId ? {
+        id: userData.organizationId,
+        name: 'Organization ' + userData.organizationId  // We don't have detailed org data in userData
+    } : null
+})
+const apiPlan = computed(() => {
+    // Plan data is now stored in userData.planSlug
+    const userData = onboardingData.value?.userData
+    return userData?.planSlug ? {
+        name: userData.planSlug,
+        monthly: true  // Default assumption
+    } : null
+})
 
 // Authentication tokens
-const onboardingToken = computed(() => onboardingData.value?.onboardingToken)
+const onboardingToken = computed(() => onboardingData.value?.userData?.onboardingToken)
 
 // Plan display name - prefer API plan name, fallback to route-based name
 const planDisplayName = computed(() => {
@@ -248,7 +273,12 @@ const checkAuthAndData = async () => {
 
         // Check if we have any user data (either from auth or onboarding)
         if (!user.value && !hasOnboardingData()) {
-            throw new Error('Keine Benutzerdaten gefunden. Bitte registriere dich erneut.')
+            // In development mode, provide a helpful option to create mock data
+            if (isDevelopment.value) {
+                error.value = 'Keine Benutzerdaten gefunden. Du kannst Mock-Daten erstellen oder dich registrieren.'
+            } else {
+                throw new Error('Keine Benutzerdaten gefunden. Bitte registriere dich erneut.')
+            }
         }
 
         isLoading.value = false
@@ -257,6 +287,42 @@ const checkAuthAndData = async () => {
         error.value = err.message || 'Ein unbekannter Fehler ist aufgetreten'
         isLoading.value = false
     }
+}
+
+// Mock data functionality for development
+const createMockData = () => {
+    const mockData = {
+        userData: {
+            id: 999,
+            first_name: 'Test',
+            last_name: 'User',
+            email: 'test@example.com',
+            active: true,
+            agb: true,
+            marketing_consent: false,
+            customerId: 888,
+            organizationId: 777,
+            planSlug: 'basic',
+            onboardingToken: 'mock-token-' + Date.now()
+        },
+        currentStep: 0,
+        steps: []  // Start with empty steps array
+    }
+    
+    initOnboarding(mockData)
+    console.log('Mock onboarding data created:', mockData)
+    
+    // Refresh the page state
+    error.value = null
+    checkAuthAndData()
+}
+
+const clearOnboardingData = () => {
+
+    clearOnboardingStepsData()
+
+    // Refresh the page state
+    checkAuthAndData()
 }
 
 const goToOnboarding = async () => {

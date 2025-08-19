@@ -69,26 +69,32 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
     clientIP = getHeader(event, 'x-forwarded-for') || getHeader(event, 'x-real-ip') || 'unknown'
   }
   
-  // Rate limiting: 3 registrations per hour per IP
-  const now = Date.now()
-  const windowMs = 60 * 60 * 1000 // 1 hour
-  const maxRequests = 3
+  // Rate limiting: 3 registrations per hour per IP (disabled in development)
+  const isDevelopment = process.env.NODE_ENV === 'development'
   
-  if (!rateLimitMap.has(clientIP)) {
-    rateLimitMap.set(clientIP, { count: 1, resetTime: now + windowMs })
-  } else {
-    const rateLimit = rateLimitMap.get(clientIP)!
-    if (now > rateLimit.resetTime) {
-      // Reset window
+  if (!isDevelopment) {
+    const now = Date.now()
+    const windowMs = 60 * 60 * 1000 // 1 hour
+    const maxRequests = 3
+    
+    if (!rateLimitMap.has(clientIP)) {
       rateLimitMap.set(clientIP, { count: 1, resetTime: now + windowMs })
-    } else if (rateLimit.count >= maxRequests) {
-      throw createError({
-        statusCode: 429,
-        statusMessage: 'Too many registration attempts. Please try again later.'
-      })
     } else {
-      rateLimit.count++
+      const rateLimit = rateLimitMap.get(clientIP)!
+      if (now > rateLimit.resetTime) {
+        // Reset window
+        rateLimitMap.set(clientIP, { count: 1, resetTime: now + windowMs })
+      } else if (rateLimit.count >= maxRequests) {
+        throw createError({
+          statusCode: 429,
+          statusMessage: 'Too many registration attempts. Please try again later.'
+        })
+      } else {
+        rateLimit.count++
+      }
     }
+  } else {
+    logger.info('Rate limiting disabled in development mode')
   }
 
   // Validate referer header

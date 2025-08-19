@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
         'Authorization': `Bearer ${config.apiToken}`
       }
     })
-    
+    console.log('Password requirements fetched successfully:', response)
     return response
   } catch (error: any) {
     console.error('Failed to fetch password requirements from external API:', error)

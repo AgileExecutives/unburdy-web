@@ -84,6 +84,15 @@
                             <input id="confirmPassword" name="confirmPassword" type="password" required
                                 v-model="form.confirmPassword"
                                 class="mt-1 block w-full px-3 py-1 rounded-xl border border-default bg-surface-secondary text-primary shadow-sm focus:border-accent focus:ring-accent focus:ring-2 focus:ring-opacity-20 transition-all duration-200">
+
+                            <!-- Password mismatch message -->
+                            <!-- Password mismatch hint styled like password requirements, under confirm password field -->
+                            <div
+                                v-if="form.password && form.confirmPassword && passwordRequirements && form.confirmPassword.length >= passwordRequirements.minLength - 2">
+                                <div v-if="form.password !== form.confirmPassword" class="mt-2 text-xs text-red-600">
+                                    <span>6AB Die Passwörter stimmen nicht überein.</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="flex items-center">
@@ -108,7 +117,7 @@
                         <div>
                             <button type="submit"
                                 class="flex w-full justify-center rounded-md border border-transparent bg-accent py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50"
-                                :disabled="isLoading || !passwordValidation.isValid || (form.password && form.password !== form.confirmPassword)">
+                                :disabled="isLoading || !passwordValidation.isValid || !form.agb || (form.password && form.password !== form.confirmPassword)">
                                 <span v-if="isLoading" class="mr-2">
                                     <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -179,7 +188,7 @@ const config = useRuntimeConfig()
 const { trackSignup, getCampaignData } = useAnalytics()
 const { getToken: getCsrfToken } = useCsrf()
 const { setAuth } = useAuth()
-const { setOnboardingData } = useOnboarding()
+const { initOnboarding } = useOnboarding()
 const { validatePassword, fetchPasswordRequirements } = usePasswordValidation()
 const route = useRoute()
 
@@ -229,18 +238,18 @@ const onPasswordInput = async () => {
 const handleSubmit = async () => {
     isLoading.value = true
 
+    // Validate password against backend requirements
+    const passwordValidationResult = await validatePassword(form.value.password)
+    if (!passwordValidationResult.isValid) {
+        throw new Error('Passwort erfüllt nicht die Anforderungen: ' + passwordValidationResult.errors.join(', '))
+    }
+
+    // Validate password confirmation
+    if (form.value.password !== form.value.confirmPassword) {
+        throw new Error('Passwörter stimmen nicht überein')
+    }
+
     try {
-        // Validate password against backend requirements
-        const passwordValidationResult = await validatePassword(form.value.password)
-        if (!passwordValidationResult.isValid) {
-            throw new Error('Passwort erfüllt nicht die Anforderungen: ' + passwordValidationResult.errors.join(', '))
-        }
-
-        // Validate password confirmation
-        if (form.value.password !== form.value.confirmPassword) {
-            throw new Error('Passwörter stimmen nicht überein')
-        }
-
         // Get fresh CSRF token
         const csrfTokenValue = await getCsrfToken()
 
@@ -259,6 +268,9 @@ const handleSubmit = async () => {
                 csrfToken: csrfTokenValue
             }
         })
+        if (!response || Object.keys(response).length === 0) {
+            throw new Error('Registration failed: No response from server')
+        }
 
         // Handle successful registration
         console.log('Registration successful:', response)
@@ -266,7 +278,6 @@ const handleSubmit = async () => {
         // Track successful signup with campaign attribution
         trackSignup('email', 1)
 
-        console.log('response:', response)
         // Set authentication state using useAuth composable simplified to just user and token
         // Since no token is returned from registration (user needs to verify email),
         // we save just the user info without setting authentication
@@ -278,112 +289,101 @@ const handleSubmit = async () => {
             id: response.user?.id
         })
 
-        // Store onboarding data in the separate onboarding store
-        if (response.onboarding_token && response.customer?.id && response.user?.id) {
-            setOnboardingData({
-                step: 0,
-                customerId: response.customer.id,
-                userId: response.user.id,
-                planSlug: response.plan?.name || route.params.plan || 'basic',
-                onboardingToken: response.onboarding_token,
-                stepData: {
-                    user: {
-                        id: response.user.id,
-                        first_name: response.user.first_name,
-                        last_name: response.user.last_name,
-                        email: response.user.email,
-                        active: response.user.active,
-                        agb: response.user.agb,
-                        marketing_consent: response.user.marketing_consent,
-                    },
-                    customer: {
-                        id: response.customer.id,
-                        email: response.customer.email
-                    },
-                    organization: response.organization ? {
-                        id: response.organization.id,
-                        name: response.organization.name,
-                        slug: response.organization.slug,
-                        customer_id: response.organization.customer_id
-                    } : null,
-                    plan: response.plan ? {
-                        id: response.plan.id,
-                        name: response.plan.name,
-                        monthly: response.plan.monthly
-                    } : null
-                }
+        // Store onboarding data using the new structure
+        // At minimum we need user ID and some user data to proceed
+        if (response.token) {
+            // You may want to use a composable or Pinia store for auth token
+            setAuth(response.token, {
+                firstName: response.user.first_name,
+                lastName: response.user.last_name,
+                email: response.user.email,
+                username: response.user.email,
+                id: response.user.id
             })
+        }
 
-            // Initialize onboarding with step 0
+        // Build onboardingData with generated API types and new key names
+        const onboardingData = {
+            onboarding_id: response.onboarding_id || null,
+            user: response.user && Object.keys(response.user).length > 0 ? response.user : {
+                id: null,
+                first_name: form.value.firstName,
+                last_name: form.value.lastName,
+                email: form.value.email,
+                active: true,
+                agb: form.value.agb,
+                marketing_consent: form.value.marketingConsent
+            },
+            plan: response.plan || {},
+            organization: response.organization || {},
+            customer: response.customer || {},
+            currentStep: 0,
+            steps: [{}]
+        }
+
+        console.log('Initializing onboarding with data:', onboardingData)
+        initOnboarding(onboardingData)
+
+        // Initialize onboarding on server (optional - for server-side tracking)
+        if (response.onboarding_id && response.customer?.id && response.user?.id && response.token) {
             try {
-                const onboardingResponse = await $fetch('/api/onboarding/', {
+                const onboardingApiResponse = await $fetch('/api/onboarding/', {
                     method: 'POST',
                     body: {
-                        userToken: response.token, // Add user token for additional auth
-                        data: {
-                            step: 0,
-                            customerId: response.customer.id,
-                            userId: response.user.id,
-                            planSlug: response.plan?.name || route.params.plan || 'basic',
-                            onboardingToken: response.onboarding_token,
-                            stepData: {
-                                user: {
-                                    id: response.user.id,
-                                    first_name: response.user.first_name,
-                                    last_name: response.user.last_name,
-                                    email: response.user.email,
-                                    active: response.user.active,
-                                    agb: response.user.agb,
-                                    marketing_consent: response.user.marketing_consent,
-                                },
-                                customer: {
-                                    id: response.customer.id,
-                                    email: response.customer.email
-                                },
-                                organization: response.organization ? {
-                                    id: response.organization.id,
-                                    name: response.organization.name,
-                                    slug: response.organization.slug,
-                                    customer_id: response.organization.customer_id
-                                } : null,
-                                plan: response.plan ? {
-                                    id: response.plan.id,
-                                    name: response.plan.name,
-                                    monthly: response.plan.monthly
-                                } : null
-                            },
-
-                        }
+                        userToken: response.token,
+                        onboarding_id: onboardingData.onboarding_id,
+                        user: onboardingData.user,
+                        plan: onboardingData.plan,
+                        organization: onboardingData.organization,
+                        customer: onboardingData.customer,
+                        currentStep: onboardingData.currentStep,
+                        steps: onboardingData.steps
                     }
                 })
 
-                console.log('Onboarding initialized successfully:', onboardingResponse)
+                console.log('Server onboarding initialized successfully:', onboardingApiResponse)
             } catch (onboardingError) {
-                console.error('Failed to initialize onboarding:', onboardingError)
+                console.error('Failed to initialize onboarding on server:', onboardingError)
                 // Don't fail the registration flow, just log the error
+                // The client-side data is already stored in localStorage
             }
+        } else {
+            console.warn('Missing required fields for server onboarding initialization:', {
+                hasToken: !!response.token,
+                hasonboarding_id: !!response.onboarding_id,
+                hasCustomerId: !!response.customer?.id,
+                hasUserId: !!response.user?.id
+            })
         }
 
+        // Fallback: create minimal onboarding data with form values
+        // Only run fallback if onboardingData.user is missing id
+        if (!onboardingData.user?.id) {
+            const fallbackData = {
+                onboarding_id: null,
+                user: {
+                    id: null,
+                    first_name: form.value.firstName,
+                    last_name: form.value.lastName,
+                    email: form.value.email,
+                    active: true,
+                    agb: form.value.agb,
+                    marketing_consent: form.value.marketingConsent
+                },
+                plan: {},
+                organization: {},
+                customer: {},
+                currentStep: 0,
+                steps: []
+            }
+            initOnboarding(fallbackData)
+        }
         // Navigate to the new onboarding start page with the selected plan
         await navigateTo(`/onboarding/start`)
-
     } catch (error) {
-        console.error('Fehler bei der Registrierung:', error)
-
-        // Show user-friendly error messages
-        let errorMessage = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
-
-        if (error.statusMessage) {
-            errorMessage = error.statusMessage
-        } else if (error.message) {
-            errorMessage = error.message
-        }
-
-        // Here you could show a toast notification or set an error state
-        alert(errorMessage) // For now, simple alert - replace with proper error handling
-
-    } finally {
+        console.error('Registration failed:', error)
         isLoading.value = false
+        return
     }
 }
 </script>

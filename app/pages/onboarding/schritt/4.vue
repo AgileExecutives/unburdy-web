@@ -88,7 +88,17 @@ useHead({
 // Composables
 const router = useRouter()
 const config = useRuntimeConfig()
-const { updateOnboardingData, setCurrentStep, clearOnboardingData } = useOnboarding()
+const { saveStepData, setCurrentStep, clearOnboardingData, getOnboardingData, updateUserData } = useOnboarding()
+
+onMounted(() => {
+    const onboardingData = getOnboardingData()
+    if (!onboardingData.userData?.onboardingToken && process.client) {
+        const token = localStorage.getItem('onboardingToken')
+        if (token) {
+            updateUserData({ onboardingToken: token })
+        }
+    }
+})
 
 // Update current step
 setCurrentStep(4)
@@ -100,7 +110,7 @@ const goBack = async () => {
 
 const finish = async () => {
     // Save completion status and clear onboarding data
-    updateOnboardingData({ completed: true })
+    saveStepData(4, { completed: true })
     
     // Show success message or redirect to app
     // For now, redirect to external app

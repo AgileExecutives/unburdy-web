@@ -1,23 +1,25 @@
 import { defineEventHandler, createError, readBody, getMethod } from 'h3'
 import type { 
-  models_CustomerOnboardingRequest,
-  models_CustomerOnboarding 
-} from '../../types/api'
+  models_Customer,
+  models_User,
+  models_Organization,
+  models_Plan,
+  models_CustomerOnboarding
+} from '../../types/api/models'
 import { OpenAPI } from '../../types/api/core/OpenAPI'
 import { request as __request } from '../../types/api/core/request'
 import { createLogger } from '../utils/logger'
 
 // Request body interface
 interface OnboardingRequestBody {
-  userToken: string // JWT token for authentication (required)
-  data: {
-    step: number
-    customerId: number
-    userId: number
-    planSlug: string
-    onboardingToken: string // Onboarding process ID for URL path
-    stepData?: any // Optional step data
-  }
+  // userToken removed: should not be posted in body
+  onboarding_id: number | string // Onboarding process ID for URL path
+  user: models_User
+  plan: models_Plan
+  organization: models_Organization
+  customer: models_Customer
+    currentStep: number
+    steps: any[]
 }
 
 // Response interface
@@ -49,66 +51,60 @@ export default defineEventHandler(async (event): Promise<OnboardingResponse> => 
   try {
     // Parse request body
     const body = await readBody(event) as OnboardingRequestBody
-    
-    // Validate required fields
-    if (!body.userToken || !body.data || !body.data.customerId || !body.data.userId || !body.data.planSlug || !body.data.onboardingToken) {
+
+    // Get userToken from Authorization header
+  const authHeaderRaw = event.headers['authorization'] || event.headers['Authorization']
+    let userToken: string | undefined = undefined
+    if (Array.isArray(authHeaderRaw)) {
+      // If multiple headers, use the first
+      userToken = authHeaderRaw[0].startsWith('Bearer ') ? authHeaderRaw[0].slice(7) : undefined
+    } else if (typeof authHeaderRaw === 'string') {
+      userToken = authHeaderRaw.startsWith('Bearer ') ? authHeaderRaw.slice(7) : undefined
+    }
+
+    // Get onboarding_id from body or URL param
+    const urlId = event.context.params?.id
+    const onboarding_id = body.onboarding_id || urlId
+
+    // Validate required fields (userToken not required in body)
+    if (!userToken || !onboarding_id || !body.user || !body.plan || !body.organization || !body.customer || body.currentStep === undefined || !body.steps) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing required fields: userToken, data.customerId, data.userId, data.planSlug, data.onboardingToken'
+        statusMessage: 'Missing required fields: Authorization header, onboarding_id, user, plan, organization, customer, steps, currentStep'
       })
     }
 
-    // Prepare the onboarding data
-    const onboardingData: models_CustomerOnboardingRequest = {
-      customer_id: body.data.customerId,
-      user_id: body.data.userId,
-      plan_slug: body.data.planSlug,
-      current_step: body.data.step || 0,
-      completed: false,
-      step_data: body.data.stepData || {}
-    }
-
-    logger.info('Calling backend API for onboarding', { 
-      customerId: body.data.customerId,
-      userId: body.data.userId,
-      planSlug: body.data.planSlug,
-      currentStep: body.data.step,
-      onboardingTokenId: body.data.onboardingToken,
-      apiBaseUrl: config.apiBaseUrl,
-      hasUserToken: !!body.userToken
-    })
-
     // Set the user JWT token for authentication
-    OpenAPI.TOKEN = body.userToken || undefined
-    
-    // Use the onboarding token as part of the URL path
-    const onboardingEndpoint = `/customer/onboarding/${body.data.onboardingToken}`
-    
+    OpenAPI.TOKEN = userToken
+
+    // Use the onboarding_id as part of the URL path
+    const onboardingEndpoint = `/customer/onboarding/${onboarding_id}`
+
     logger.info('Making direct API call with custom endpoint', {
-      endpoint: onboardingEndpoint,
-      hasUserToken: !!body.userToken
+  endpoint: onboardingEndpoint,
+  hasUserToken: !!userToken
     })
 
-    // Make direct API call with onboarding token in URL and proper authorization header
+    // Make direct API call with onboarding_id in URL and proper authorization header
     const response = await __request(OpenAPI, {
       method: 'PUT',
       url: onboardingEndpoint,
       headers: {
-        'Authorization': `Bearer ${body.userToken}`,
+        'Authorization': `Bearer ${userToken}`,
         'Content-Type': 'application/json',
       },
-      body: onboardingData,
+      body: body,
       errors: {
         400: 'Bad Request',
-        401: 'Unauthorized', 
+        401: 'Unauthorized',
         403: 'Forbidden',
         500: 'Internal Server Error',
       },
     }) as models_CustomerOnboarding
 
-    logger.info('Onboarding call successful', { 
-      onboardingId: response.id,
-      currentStep: response.current_step 
+    logger.info('Onboarding call successful', {
+      onboarding_id: response.id,
+      currentStep: response.current_step
     })
 
     // Return success response
