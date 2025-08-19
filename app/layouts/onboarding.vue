@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-100 via-blue-200/80 to-indigo-300/95 dark:from-gray-900 dark:via-purple-900/50 dark:to-pink-900/40 relative overflow-hidden flex flex-col">
+  <div class="min-h-screen bg-gradient-onboarding relative overflow-hidden flex flex-col">
     <!-- Interesting background elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
       <!-- Large gradient orbs -->
-      <div class="absolute -top-40 -right-32 w-96 h-96 bg-gradient-to-br from-blue-400/45 to-indigo-500/35 dark:from-purple-600/30 dark:to-pink-600/25 rounded-full blur-3xl"></div>
-      <div class="absolute top-1/2 -left-48 w-80 h-80 bg-gradient-to-tr from-slate-400/40 to-blue-400/35 dark:from-pink-600/25 dark:to-purple-600/30 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-32 right-1/4 w-72 h-72 bg-gradient-to-tl from-indigo-400/45 to-cyan-400/35 dark:from-indigo-600/25 dark:to-purple-600/25 rounded-full blur-3xl"></div>
+      <div class="absolute -top-40 -right-32 w-96 h-96 bg-gradient-to-br from-blue-300/35 to-indigo-400/25 dark:from-purple-600/20 dark:to-pink-600/15 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/2 -left-48 w-80 h-80 bg-gradient-to-tr from-slate-300/30 to-blue-300/25 dark:from-pink-600/15 dark:to-purple-600/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-32 right-1/4 w-72 h-72 bg-gradient-to-tl from-indigo-300/35 to-cyan-300/25 dark:from-indigo-600/15 dark:to-purple-600/15 rounded-full blur-3xl"></div>
       
       <!-- Subtle geometric pattern overlay -->
       <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]">

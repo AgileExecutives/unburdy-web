@@ -25,11 +25,88 @@
   --color-accent-dark: #1e40af;
   
   --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-success-hover: #059669;
+  --color-success-light: #d1fae5;
+  --color-success-dark: #047857;
   
-
+  --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-warning-dark: #92400e;
+  
+  --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+  --color-error-light: #fee2e2;
+  --color-error-dark: #991b1b;
+  
+  --color-info: #3b82f6;
+  --color-info-hover: #2563eb;
+  --color-info-light: #dbeafe;
+  --color-info-dark: #1e40af;
+  
+  /* Form Elements */
+  --color-input-background: #ffffff;
+  --color-input-border: #d1d5db;
+  --color-input-placeholder: #9ca3af;
+  --color-input-disabled-bg: #f9fafb;
+  --color-input-disabled-text: #6b7280;
+  
+  /* Button Variants */
+  --color-button-primary-bg: var(--color-accent);
+  --color-button-primary-hover: var(--color-accent-hover);
+  --color-button-primary-text: #ffffff;
+  
+  --color-button-secondary-bg: #ffffff;
+  --color-button-secondary-hover: #f9fafb;
+  --color-button-secondary-text: #374151;
+  --color-button-secondary-border: #d1d5db;
+  
+  /* Status Colors */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  
+  /* Blue Variants */
+  --color-blue-100: #dbeafe;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  
+  /* Green Variants */
+  --color-green-500: #10b981;
+  --color-green-600: #059669;
+  --color-green-700: #047857;
+  
+  /* Red Variants */
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  
+  /* Yellow Variants */
+  --color-yellow-300: #fcd34d;
+  --color-yellow-400: #f59e0b;
+  --color-yellow-500: #d97706;
+  --color-yellow-600: #b45309;
+  
+  /* Overlay Colors */
+  --color-overlay-light: rgba(255, 255, 255, 0.8);
+  --color-overlay-dark: rgba(17, 24, 39, 0.8);
+  
+  /* Background Gradients */
+  --gradient-bg-from: #ffffff;
+  --gradient-bg-via: rgba(241, 245, 249, 0.6);
+  --gradient-bg-to: rgba(219, 234, 254, 0.8);
+  
+  --gradient-onboarding-from: #f8fafc;
+  --gradient-onboarding-via: rgba(219, 234, 254, 0.7);
+  --gradient-onboarding-to: rgba(199, 210, 254, 0.9);
 }
 
 /* Dark Mode - Semantische Farbnamen  #293547;  */
@@ -53,9 +130,88 @@
   --color-accent-dark: #1e40af;
   
   --color-success: #10b981;
+  --color-success-hover: #059669;
+  --color-success-light: #064e3b;
+  --color-success-dark: #047857;
+  
   --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
+  --color-warning-light: #78350f;
+  --color-warning-dark: #92400e;
+  
   --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+  --color-error-light: #7f1d1d;
+  --color-error-dark: #991b1b;
+  
   --color-info: #3b82f6;
+  --color-info-hover: #2563eb;
+  --color-info-light: #1e3a8a;
+  --color-info-dark: #1e40af;
+  
+  /* Form Elements */
+  --color-input-background: #1f2937;
+  --color-input-border: #4b5563;
+  --color-input-placeholder: #9ca3af;
+  --color-input-disabled-bg: #374151;
+  --color-input-disabled-text: #9ca3af;
+  
+  /* Button Variants */
+  --color-button-primary-bg: var(--color-accent);
+  --color-button-primary-hover: var(--color-accent-hover);
+  --color-button-primary-text: #ffffff;
+  
+  --color-button-secondary-bg: #1f2937;
+  --color-button-secondary-hover: #374151;
+  --color-button-secondary-text: #d1d5db;
+  --color-button-secondary-border: #4b5563;
+  
+  /* Status Colors - Dark variants */
+  --color-gray-50: #1f2937;
+  --color-gray-100: rgba(17, 24, 39, 0.1);
+  --color-gray-200: #374151;
+  --color-gray-300: #4b5563;
+  --color-gray-400: #6b7280;
+  --color-gray-500: #9ca3af;
+  --color-gray-600: #d1d5db;
+  --color-gray-700: #d1d5db;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #f9fafb;
+  
+  /* Blue Variants - Dark */
+  --color-blue-100: #1e3a8a;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  
+  /* Green Variants - Dark */
+  --color-green-500: #10b981;
+  --color-green-600: #059669;
+  --color-green-700: #047857;
+  
+  /* Red Variants - Dark */
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  
+  /* Yellow Variants - Dark */
+  --color-yellow-300: #b45309;
+  --color-yellow-400: #d97706;
+  --color-yellow-500: #f59e0b;
+  --color-yellow-600: #fcd34d;
+  
+  /* Overlay Colors */
+  --color-overlay-light: rgba(17, 24, 39, 0.1);
+  --color-overlay-dark: rgba(55, 65, 81, 0.8);
+  
+  /* Background Gradients */
+  --gradient-bg-from: #0f172a;
+  --gradient-bg-via: rgba(30, 64, 175, 0.35);
+  --gradient-bg-to: rgba(168, 85, 247, 0.45);
+  
+  --gradient-onboarding-from: #0f172a;
+  --gradient-onboarding-via: rgba(30, 64, 175, 0.4);
+  --gradient-onboarding-to: rgba(168, 85, 247, 0.55);
 }
 
 /* Input Fields mit mehr Padding */
@@ -78,6 +234,7 @@
 .border-default { border-color: var(--color-border); }
 .border-secondary { border-color: var(--color-border-secondary); }
 
+/* Accent Colors */
 .bg-accent { background-color: var(--color-accent) !important; }
 .text-accent { color: var(--color-accent) !important; }
 .text-accent-light { color: var(--color-accent-light) !important; }
@@ -92,14 +249,132 @@
   --tw-ring-color: var(--color-accent); 
 }
 
+/* Status Colors */
 .bg-success { background-color: var(--color-success); }
 .text-success { color: var(--color-success); }
+.hover\:bg-success-hover:hover { background-color: var(--color-success-hover); }
+.bg-success-light { background-color: var(--color-success-light); }
+
 .bg-warning { background-color: var(--color-warning); }
 .text-warning { color: var(--color-warning); }
+.hover\:bg-warning-hover:hover { background-color: var(--color-warning-hover); }
+.bg-warning-light { background-color: var(--color-warning-light); }
+
 .bg-error { background-color: var(--color-error); }
 .text-error { color: var(--color-error); }
+.hover\:bg-error-hover:hover { background-color: var(--color-error-hover); }
+.bg-error-light { background-color: var(--color-error-light); }
+
 .bg-info { background-color: var(--color-info); }
 .text-info { color: var(--color-info); }
+.hover\:bg-info-hover:hover { background-color: var(--color-info-hover); }
+.bg-info-light { background-color: var(--color-info-light); }
+
+/* Gray Scale Utilities */
+.bg-gray-50 { background-color: var(--color-gray-50); }
+.bg-gray-100 { background-color: var(--color-gray-100); }
+.bg-gray-200 { background-color: var(--color-gray-200); }
+.bg-gray-300 { background-color: var(--color-gray-300); }
+.bg-gray-400 { background-color: var(--color-gray-400); }
+.bg-gray-500 { background-color: var(--color-gray-500); }
+.bg-gray-600 { background-color: var(--color-gray-600); }
+.bg-gray-700 { background-color: var(--color-gray-700); }
+.bg-gray-800 { background-color: var(--color-gray-800); }
+.bg-gray-900 { background-color: var(--color-gray-900); }
+
+.text-gray-50 { color: var(--color-gray-50); }
+.text-gray-100 { color: var(--color-gray-100); }
+.text-gray-200 { color: var(--color-gray-200); }
+.text-gray-300 { color: var(--color-gray-300); }
+.text-gray-400 { color: var(--color-gray-400); }
+.text-gray-500 { color: var(--color-gray-500); }
+.text-gray-600 { color: var(--color-gray-600); }
+.text-gray-700 { color: var(--color-gray-700); }
+.text-gray-800 { color: var(--color-gray-800); }
+.text-gray-900 { color: var(--color-gray-900); }
+
+.border-gray-300 { border-color: var(--color-gray-300); }
+.border-gray-600 { border-color: var(--color-gray-600); }
+
+/* Color Scale Utilities */
+.bg-blue-100 { background-color: var(--color-blue-100); }
+.bg-blue-500 { background-color: var(--color-blue-500); }
+.bg-blue-600 { background-color: var(--color-blue-600); }
+.bg-blue-700 { background-color: var(--color-blue-700); }
+.bg-blue-800 { background-color: var(--color-blue-800); }
+
+.text-blue-800 { color: var(--color-blue-800); }
+
+.bg-green-500 { background-color: var(--color-green-500); }
+.bg-green-600 { background-color: var(--color-green-600); }
+.bg-green-700 { background-color: var(--color-green-700); }
+.text-green-500 { color: var(--color-green-500); }
+.hover\:bg-green-700:hover { background-color: var(--color-green-700); }
+
+.bg-red-500 { background-color: var(--color-red-500); }
+.bg-red-600 { background-color: var(--color-red-600); }
+.text-red-500 { color: var(--color-red-500); }
+.text-red-600 { color: var(--color-red-600); }
+
+.bg-yellow-300 { background-color: var(--color-yellow-300); }
+.bg-yellow-400 { background-color: var(--color-yellow-400); }
+.bg-yellow-500 { background-color: var(--color-yellow-500); }
+.bg-yellow-600 { background-color: var(--color-yellow-600); }
+.text-yellow-400 { color: var(--color-yellow-400); }
+.text-yellow-500 { color: var(--color-yellow-500); }
+.border-yellow-300 { border-color: var(--color-yellow-300); }
+.border-yellow-600 { border-color: var(--color-yellow-600); }
+
+/* Form Element Utilities */
+.bg-input { background-color: var(--color-input-background); }
+.border-input { border-color: var(--color-input-border); }
+.placeholder-input { color: var(--color-input-placeholder); }
+.bg-input-disabled { background-color: var(--color-input-disabled-bg); }
+.text-input-disabled { color: var(--color-input-disabled-text); }
+
+/* Button Utilities */
+.btn-primary {
+  background-color: var(--color-button-primary-bg);
+  color: var(--color-button-primary-text);
+}
+.btn-primary:hover {
+  background-color: var(--color-button-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-button-secondary-bg);
+  color: var(--color-button-secondary-text);
+  border-color: var(--color-button-secondary-border);
+}
+.btn-secondary:hover {
+  background-color: var(--color-button-secondary-hover);
+}
+
+/* Overlay Utilities */
+.bg-overlay-light { background-color: var(--color-overlay-light); }
+.bg-overlay-dark { background-color: var(--color-overlay-dark); }
+
+/* Focus Ring Utilities */
+.focus\:ring-green-500:focus { 
+  --tw-ring-opacity: 1; 
+  --tw-ring-color: var(--color-green-500); 
+}
+.focus\:ring-yellow-500:focus { 
+  --tw-ring-opacity: 1; 
+  --tw-ring-color: var(--color-yellow-500); 
+}
+.focus\:ring-offset-2:focus { 
+  --tw-ring-offset-width: 2px; 
+}
+
+/* Background Gradient Utilities */
+.bg-gradient-main {
+  background: linear-gradient(to bottom right, var(--gradient-bg-from), var(--gradient-bg-via), var(--gradient-bg-to));
+}
+
+.bg-gradient-onboarding {
+  background: linear-gradient(to bottom right, var(--gradient-onboarding-from), var(--gradient-onboarding-via), var(--gradient-onboarding-to));
+}
 
 /* Checkbox Styling */
 input[type="checkbox"]:checked {

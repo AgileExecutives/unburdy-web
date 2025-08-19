@@ -1,11 +1,11 @@
 <template>
-  <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+  <footer class="bg-background border-t border-default">
     <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <!-- Logo and Company Info -->
         <div class="flex items-center space-x-4">
           <UnburdyLogo size="sm" />
-          <div class="text-sm text-gray-600 dark:text-gray-400">
+          <div class="text-sm text-secondary">
             © {{ currentYear }} Unburdy. Alle Rechte vorbehalten.
           </div>
         </div>
@@ -14,25 +14,25 @@
         <nav class="flex flex-col sm:flex-row space-x-6 text-sm">
           <NuxtLink 
             to="/legal/kontakt" 
-            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            class="text-tertiary hover:text-secondary transition-colors duration-200"
           >
             Kontakt
           </NuxtLink>
           <NuxtLink 
             to="/legal/impressum" 
-            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            class="text-tertiary hover:text-secondary transition-colors duration-200"
           >
             Impressum
           </NuxtLink>
           <NuxtLink 
             to="/legal/agb" 
-            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            class="text-tertiary hover:text-secondary transition-colors duration-200"
           >
             AGB
           </NuxtLink>
           <NuxtLink 
             to="/legal/datenschutz" 
-            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            class="text-tertiary hover:text-secondary transition-colors duration-200"
           >
             Datenschutzerklärung
           </NuxtLink>
