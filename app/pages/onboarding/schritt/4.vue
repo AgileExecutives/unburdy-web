@@ -23,7 +23,7 @@
                         <svg class="mx-auto h-12 w-12 text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h3 class="text-xl font-medium text-gray-900 mb-2">Abschluss-Formular wird hier eingefügt</h3>
+                        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">Abschluss-Formular wird hier eingefügt</h3>
                         <p class="text-gray-500">
                             Hier werden später die finalen Einstellungen, eine Zusammenfassung 
                             und der Abschluss des Onboarding-Prozesses eingefügt.

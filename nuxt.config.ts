@@ -4,6 +4,13 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/ui', '@nuxt/eslint', '@pinia/nuxt', 'nuxt-umami'],
 
+  // Color mode configuration
+  colorMode: {
+    preference: 'system', // default theme
+    fallback: 'light', // fallback theme on SSR
+    classSuffix: '',
+  },
+
   css: ['~/assets/css/main.css'],
 
   devServer: {

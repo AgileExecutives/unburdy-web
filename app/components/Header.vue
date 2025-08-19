@@ -8,12 +8,17 @@
         </NuxtLink>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <NuxtLink to="/idee-hinter-unburdy" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Idee hinter Unburdy</NuxtLink>
-        <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Preise</NuxtLink>
-        <NuxtLink to="/legal/kontakt" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Kontakt</NuxtLink>
+        <NuxtLink to="/idee-hinter-unburdy" class="text-sm font-semibold leading-6 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-100 transition-colors duration-200">Idee hinter Unburdy</NuxtLink>
+        <NuxtLink to="/preise" class="text-sm font-semibold leading-6 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-100 transition-colors duration-200">Preise</NuxtLink>
+        <NuxtLink to="/legal/kontakt" class="text-sm font-semibold leading-6 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-100 transition-colors duration-200">Kontakt</NuxtLink>
       </div>
-      <div class="lg:flex lg:flex-1 lg:justify-end">
-        <NuxtLink to="/lc/anmelden" class="text-sm font-semibold leading-6 text-gray-400 hover:text-gray-600 transition-colors duration-200">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
+            <!-- Color Mode Toggle - Additional toggle in content area -->
+      <div class="">
+        <ColorModeToggle />
+      </div>
+      <div class="lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
+        <ColorModeToggle />
+        <NuxtLink to="/lc/anmelden" class="text-sm font-semibold leading-6 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-100 transition-colors duration-200">Anmelden <span aria-hidden="true">&rarr;</span></NuxtLink>
       </div>
     </nav>
   </header>

@@ -28,7 +28,12 @@
         </div>
 
         <!-- Success state with registration data -->
-        <div v-else class="flex-1">
+        <div v-else class="flex-1 relative">
+            <!-- Color Mode Toggle - Top Right -->
+            <div class="absolute top-6 right-6 z-50">
+                <ColorModeToggle />
+            </div>
+            
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <!-- Welcome Header -->
                 <div class="text-center mb-12">
@@ -39,10 +44,10 @@
                             </svg>
                         </div>
                     </div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-3">
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-3">
                         Willkommen{{ apiUser?.first_name ? `, ${apiUser.first_name}` : (user?.firstName ? `, ${user.firstName}` : '') }}!
                     </h1>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                         Deine Registrierung war erfolgreich. Jetzt richten wir Unburdy gemeinsam für dich ein.
                     </p>
                 </div>
@@ -52,7 +57,7 @@
                 <!-- Onboarding Steps Overview -->
                 <div class="bg-surface rounded-2xl shadow-sm border border-gray-100 p-8 mb-12">
                     <div class="text-center mb-8">
-                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                             Dein Weg zu Unburdy
                         </h2>
                         <p class="text-gray-600 max-w-2xl mx-auto">
@@ -70,7 +75,7 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     1
                                 </div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Praxisinformationen</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Praxisinformationen</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     Grundlegende Angaben zu deiner Praxis und Fachrichtung
                                 </p>
@@ -81,7 +86,7 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     2
                                 </div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Planung & Kalender</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Planung & Kalender</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     Arbeitszeiten festlegen und Schulferien planen.
                                 </p>
@@ -92,7 +97,7 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     3
                                 </div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Klienten</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Klienten</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     Einen ersten Klienten hinzufügen, um erste Vorteile von Unburdy kennenzulernen
                                 </p>
@@ -103,7 +108,7 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     4
                                 </div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Fertigstellen</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Fertigstellen</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     Finale Einstellungen und los geht's mit Unburdy!
                                 </p>
@@ -154,7 +159,7 @@
                     <details class="text-xs">
                                                 <summary class="cursor-pointer text-gray-300 mb-2">Full Registration Data</summary>
                                                 <client-only>
-                                                    <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto text-gray-900">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
+                                                    <pre class="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs overflow-x-auto text-gray-900 dark:text-gray-100">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
                                                 </client-only>
                     </details>
                 </div>

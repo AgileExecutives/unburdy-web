@@ -6,7 +6,7 @@
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <NuxtLink 
               :to="to" 
-              class="inline-flex items-center rounded-md bg-white px-8 py-4 text-lg font-semibold text-accent shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-colors duration-200"
+              class="inline-flex items-center rounded-md bg-white dark:bg-gray-800 px-8 py-4 text-lg font-semibold text-accent dark:text-accent shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white dark:focus-visible:outline-gray-300 transition-colors duration-200"
             >
               <Icon name="lucide:rocket" class="w-5 h-5 mr-3" />
              {{ text }}

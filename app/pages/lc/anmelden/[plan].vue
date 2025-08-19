@@ -72,7 +72,7 @@
 
                             <!-- Password Validation Errors -->
                             <div v-if="passwordValidation.errors.length > 0" class="mt-2">
-                                <p v-for="error in passwordValidation.errors" :key="error" class="text-sm text-red-600">
+                                <p v-for="error in passwordValidation.errors" :key="error" class="text-sm text-red-600 dark:text-red-400">
                                     {{ error }}
                                 </p>
                             </div>

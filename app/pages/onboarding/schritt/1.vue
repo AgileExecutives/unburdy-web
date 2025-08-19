@@ -142,9 +142,6 @@
                                         {{ stateName }}
                                     </option>
                                 </select>
-                                <p v-if="formData.postalCode && formData.postalCode.length === 5" class="text-xs text-gray-500 mt-1">
-                                    Bundesland wird automatisch anhand der PLZ ermittelt
-                                </p>
                             </div>
 
                             <!-- Focus Areas -->
@@ -185,109 +182,32 @@
                                 />
                             </div>
 
-
-                            <div v-if="formData.holidays" class="lg:col-span-3 mt-8 p-4 bg-gray-500/20 border border-gray-200 rounded">
-                                <div class="flex items-center">
-                                    <span class="text-gray-400 font-semibold">Wir haben die Feiertage für dein Bundesland importiert.</span>
-                                    <a href="#" class="ml-2 text-accent underline" @click.prevent="openHolidaysModal">mehr...</a>
-                                </div>
-                                <div v-if="nearbyProviders && nearbyProviders.length > 0" class="flex items-center mt-2">
-                                    <span class="text-gray-400 font-semibold">Zudem haben wir auch die Jugendämter deiner Region herausgesucht</span>
-                                    <a href="#" class="ml-2 text-accent underline" @click.prevent="openProvidersModal">mehr...</a>
-                                </div>
-                                <div v-if="showHolidaysModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                    <div class="bg-gray-900 text-white p-6 rounded-lg shadow-xl max-w-3xl w-full h-full md:max-h-[60vh] overflow-y-auto border-2 border-white relative">
-                                        <!-- Close X button -->
-                                        <button 
-                                            @click="closeHolidaysModal"
-                                            class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
-                                        >
-                                            ×
-                                        </button>
-                                        <h2 class="text-lg font-bold mb-4 text-gray-100 pr-10">Feiertage für {{ formData.bundesland }}</h2>
-                                        <div v-if="formData.holidays && formData.holidays.school">
-                                            <!-- Tabs for years -->
-                                            <div class="flex space-x-2 mb-4 border-b border-gray-700">
-                                                <button
-                                                    v-for="year in Object.keys(formData.holidays.school)"
-                                                    :key="year"
-                                                    :class="['px-3 py-2 rounded-t text-sm', selectedHolidayYear === year ? 'bg-accent text-white border-b-2 border-accent' : 'bg-gray-800 text-gray-300 hover:bg-gray-700']"
-                                                    @click="selectedHolidayYear = year"
-                                                >
-                                                    {{ year }}
-                                                </button>
-                                            </div>
-                                            <!-- Holidays data for selected year -->
-          .                                   <div v-if="selectedHolidayYear" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <!-- School holidays -->
-                                                <div>
-                                                    <h3 class="text-base font-semibold mb-2 text-accent">Ferientermine</h3>
-                                                    <ul class="space-y-1">
-                                                        <li v-for="(dates, name) in formData.holidays.school[selectedHolidayYear]" :key="name" class="bg-gray-800 p-2 rounded text-sm">
-                                                            <span class="font-semibold text-blue-300">{{ name }}:</span>
-                                                            <div class="text-gray-300 text-xs mt-1">
-                                                                {{ dates[0] }} bis {{ dates[1] }}
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <!-- Public holidays -->
-                                                <div>
-                                                    <h3 class="text-base font-semibold mb-2 text-accent">Feiertage</h3>
-                                                    <div class="grid grid-cols-2 gap-2">
-                                                        <div v-for="(date, name) in formData.holidays.public[selectedHolidayYear]" :key="name" class="bg-gray-800 p-2 rounded text-sm">
-                                                            <span class="font-semibold text-green-300">{{ name }}:</span>
-                                                            <div class="text-gray-300 text-xs mt-1">
-                                                                {{ date }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button class="mt-4 px-4 py-2 bg-accent text-white rounded hover:bg-accent-hover text-sm" @click="closeHolidaysModal">Schließen</button>
-                                    </div>
-                                </div>
-                                <!-- Providers Modal -->
-                                <div v-if="showProvidersModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                    <transition name="bounce">
-                                        <div v-if="showProvidersModal" class="bg-gray-900 text-white p-6 rounded-lg shadow-xl max-w-4xl w-full h-full md:max-h-[70vh] overflow-y-auto border-2 border-white relative">
-                                        <!-- Close X button -->
-                                        <button 
-                                            @click="closeProvidersModal"
-                                            class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
-                                        >
-                                            ×
-                                        </button>
-                                        <h2 class="text-lg font-bold mb-4 text-gray-100 pr-10">Jugendämter in {{ formData.bundesland }}</h2>
-                                        <div v-if="nearbyProviders && nearbyProviders.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                            <div v-for="provider in nearbyProviders" :key="provider.name" class="bg-gray-800 p-3 rounded text-xs">
-                                                <h3 class="font-semibold text-blue-300 mb-2 text-xs">{{ provider.name }}</h3>
-                                                <div class="space-y-1">
-                                                    <div class="text-gray-300">
-                                                        <span class="font-medium text-gray-200">Abteilung:</span> {{ provider.abteilung }}
-                                                    </div>
-                                                    <div class="text-gray-300">
-                                                        <span class="font-medium text-gray-200">Adresse:</span> {{ provider.adresse }}
-                                                    </div>
-                                                    <div class="text-gray-300">
-                                                        <span class="font-medium text-gray-200">Tel:</span> {{ provider.telefon }}
-                                                    </div>
-                                                    <div class="text-gray-300">
-                                                        <span class="font-medium text-gray-200">E-Mail:</span> 
-                                                        <a :href="`mailto:${provider.email}`" class="text-blue-400 hover:text-blue-300 underline ml-1">{{ provider.email }}</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button class="mt-4 px-4 py-2 bg-accent text-white rounded hover:bg-accent-hover text-sm" @click="closeProvidersModal">Schließen</button>
-                                    </div>
-                                    </transition>
-                                </div>
-                            </div>
+                            <!-- Regional Info Box -->
+                            <RegionalInfoBox 
+                                :holidays="formData.holidays"
+                                :nearby-providers="nearbyProviders"
+                                :bundesland-name="getBundeslandName(formData.bundesland)"
+                                @open-holidays="openHolidaysModal"
+                                @open-providers="openProvidersModal"
+                            />
                         </div>
                     </div>
                 </div>
+
+                <!-- Modals (outside form to prevent containment issues) -->
+                <HolidaysModal 
+                    :show="showHolidaysModal"
+                    :holidays="formData.holidays"
+                    :bundesland="getBundeslandName(formData.bundesland)"
+                    @close="closeHolidaysModal"
+                />
+
+                <ProvidersModal 
+                    :show="showProvidersModal"
+                    :providers="nearbyProviders"
+                    :bundesland="getBundeslandName(formData.bundesland)"
+                    @close="closeProvidersModal"
+                />
 
                 <!-- Navigation -->
                 <div class="flex justify-between items-center">
@@ -342,7 +262,7 @@
 
                 <!-- Focus Areas -->
                 <div v-if="identifiedCustomer.selectedFocusAreas && identifiedCustomer.selectedFocusAreas.length" 
-                     class="bg-white/80 p-3 sm:p-4 rounded border">
+                     class="bg-white/80 dark:bg-gray-800/80 p-3 sm:p-4 rounded border">
                     <span class="text-xs sm:text-sm font-medium text-gray-700">Fachbereiche:</span>
                     <div class="mt-2 flex flex-wrap gap-1 sm:gap-2">
                         <span v-for="area in identifiedCustomer.selectedFocusAreas" 
@@ -363,7 +283,7 @@
                     </button>
                     <button 
                         @click="dicardSearchResults"
-                        class="w-full sm:flex-1 bg-white text-gray-700 px-4 py-3 sm:py-2 rounded-md text-sm font-medium border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+                        class="w-full sm:flex-1 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-3 sm:py-2 rounded-md text-sm font-medium border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                     >
                         Manuell eingeben
                     </button>
@@ -387,7 +307,7 @@
                         type="text"
                         maxlength="5"
                         pattern="[0-9]{5}"
-                        class="w-full px-3 py-2 border border-yellow-300 rounded-md shadow-sm placeholder-yellow-500 bg-white focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"
+                        class="w-full px-3 py-2 border border-yellow-300 dark:border-yellow-600 rounded-md shadow-sm placeholder-yellow-500 dark:placeholder-yellow-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"
                         placeholder="PLZ eingeben (z.B. 10117) - automatische Suche ab 3 Stellen"
                         @input="onSearchPostalCodeChanged"
                     />
@@ -558,22 +478,22 @@ const formData = ref({
     notes: '',
     customerSelected: false
 })
-
 // UI state
 const showAddressFields = ref(false)
 const isCheckingCustomers = ref(false)
 const showIdentifiedCustomer = ref(false)
 const showManualSearchCard = ref(false)
 const showHighScoreMatches = ref(false)
-const showHolidaysModal = ref(false)
-const selectedHolidayYear = ref(null)
-const showProvidersModal = ref(false)
 const isManualSearching = ref(false)
 const bundeslaenderData = ref([])
 const isLoadingBundeslaender = ref(false)
 const isLoadingHolidays = ref(false)
 const providers = ref([])
 const isLoadingProviders = ref(false)
+
+// Modal state
+const showHolidaysModal = ref(false)
+const showProvidersModal = ref(false)
 
 // Search state - single source of truth for customer search results
 const searchResults = ref([])
@@ -1093,43 +1013,29 @@ watch(() => formData.value.bundesland, async (newBundesland) => {
   }
 })
 
-// ===== HOLIDAY MODAL FUNCTIONS =====
-function openHolidaysModal() {
-  showHolidaysModal.value = true
-  // Default to first available year
-  if (formData.value.holidays && formData.value.holidays.school) {
-    const years = Object.keys(formData.value.holidays.school)
-    selectedHolidayYear.value = years.length ? years[0] : null
-  }
-  // Add ESC key listener
-  document.addEventListener('keydown', handleEscapeKey)
+// ===== MODAL FUNCTIONS =====
+const openHolidaysModal = () => {
+    showHolidaysModal.value = true
 }
 
-function closeHolidaysModal() {
-  showHolidaysModal.value = false
-  selectedHolidayYear.value = null
-  // Remove ESC key listener
-  document.removeEventListener('keydown', handleEscapeKey)
+const closeHolidaysModal = () => {
+    showHolidaysModal.value = false
 }
 
-function handleEscapeKey(event) {
-  if (event.key === 'Escape' && (showHolidaysModal.value || showProvidersModal.value)) {
-    closeHolidaysModal()
-    closeProvidersModal()
-  }
+const openProvidersModal = () => {
+    showProvidersModal.value = true
 }
 
-// ===== PROVIDER MODAL FUNCTIONS =====
-function openProvidersModal() {
-  showProvidersModal.value = true
-  // Add ESC key listener
-  document.addEventListener('keydown', handleEscapeKey)
+const closeProvidersModal = () => {
+    showProvidersModal.value = false
 }
 
-function closeProvidersModal() {
-  showProvidersModal.value = false
-  // Remove ESC key listener
-  document.removeEventListener('keydown', handleEscapeKey)
+// ===== HELPER FUNCTIONS =====
+const getBundeslandName = (stateCode) => {
+    if (!stateCode || !bundeslaenderData.value.states) {
+        return ''
+    }
+    return bundeslaenderData.value.states[stateCode] || ''
 }
 
 // ===== UI FUNCTIONS =====
@@ -1305,44 +1211,3 @@ onMounted(async () => {
     }
 })
 </script>
-
-<style scoped>
-/* Bounce animation for provider modal */
-.bounce-enter-active {
-    animation: bounce-in 0.6s ease-out;
-}
-
-.bounce-leave-active {
-    animation: bounce-out 0.3s ease-in;
-}
-
-@keyframes bounce-in {
-    0% {
-        transform: scale(0.3) translateY(-50px);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.05) translateY(-10px);
-        opacity: 0.8;
-    }
-    70% {
-        transform: scale(0.95) translateY(5px);
-        opacity: 0.9;
-    }
-    100% {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes bounce-out {
-    0% {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(0.8) translateY(-20px);
-        opacity: 0;
-    }
-}
-</style>

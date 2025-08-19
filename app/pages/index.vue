@@ -65,6 +65,7 @@ const scrollToTestimonials = () => {
     </div>
 
 <ContentContainer>    
+      
       <!-- Hero Section -->
       <div class="mx-auto max-w-7xl py-12 md:py-32 sm:py-48 lg:py-56">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -106,7 +107,7 @@ const scrollToTestimonials = () => {
             <div class="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
               <button 
                 @click="$router.push(trialPlan.anmeldeLink)" 
-                class="cursor-pointer rounded-md px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-accent hover:shadow-lg hover:scale-105 bg-accent transition-all duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent transform active:scale-95"
+                class="cursor-pointer rounded-md px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white dark:hover:bg-gray-800 hover:text-accent hover:shadow-lg hover:scale-105 bg-accent transition-all duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent transform active:scale-95"
               >
                 {{ trialPlan.actionText }}
               </button>
@@ -273,7 +274,7 @@ const scrollToTestimonials = () => {
 
       <!-- Why Unburdy Section -->
       <div class="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 lg:p-12">
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-8 lg:p-12">
           <div class="text-center mb-12">
             <h2 class="text-3xl font-bold tracking-tight text-primary mb-4">
               Die beste Software für selbstständige Lerntherapeutinnen
@@ -336,17 +337,17 @@ const scrollToTestimonials = () => {
 /* Animated Background Gradient */
 @keyframes gradientShift {
   0% {
-    background: linear-gradient(-45deg, #f8fafc, #ffffff, #f1f5f9, #f8fafc);
+    background: linear-gradient(-45deg, #f1f5f9, #e2e8f0, #cbd5e1, #f1f5f9);
     background-size: 200% 200%;
     background-position: 0% 50%;
   }
   50% {
-    background: linear-gradient(-45deg, #f1f5f9, #f8fafc, #ffffff, #f1f5f9);
+    background: linear-gradient(-45deg, #cbd5e1, #f1f5f9, #e2e8f0, #cbd5e1);
     background-size: 200% 200%;
     background-position: 100% 50%;
   }
   100% {
-    background: linear-gradient(-45deg, #f8fafc, #ffffff, #f1f5f9, #f8fafc);
+    background: linear-gradient(-45deg, #f1f5f9, #e2e8f0, #cbd5e1, #f1f5f9);
     background-size: 200% 200%;
     background-position: 0% 50%;
   }
@@ -354,17 +355,17 @@ const scrollToTestimonials = () => {
 
 @keyframes gradientShiftDark {
   0% {
-    background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+    background: linear-gradient(-45deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.8), rgba(31, 41, 55, 0.7));
     background-size: 200% 200%;
     background-position: 0% 50%;
   }
   50% {
-    background: linear-gradient(-45deg, #1f2937, #1e293b, #111827, #1f2937);
+    background: linear-gradient(-45deg, rgba(55, 65, 81, 0.8), rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.8));
     background-size: 200% 200%;
     background-position: 100% 50%;
   }
   100% {
-    background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+    background: linear-gradient(-45deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.8), rgba(31, 41, 55, 0.7));
     background-size: 200% 200%;
     background-position: 0% 50%;
   }
@@ -579,7 +580,7 @@ const scrollToTestimonials = () => {
   
   @media (prefers-color-scheme: dark) {
     .bg-gradient-animated {
-      background: linear-gradient(-45deg, #1e293b, #111827, #1f2937, #1e293b);
+      background: linear-gradient(-45deg, rgba(55, 65, 81, 0.6), rgba(17, 24, 39, 0.8), rgba(31, 41, 55, 0.7), rgba(55, 65, 81, 0.6));
     }
   }
   

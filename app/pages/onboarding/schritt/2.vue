@@ -15,8 +15,8 @@
 
 
                 <!-- Holidays Message -->
-                <div v-if="holidays && holidays.BW" class="mb-6 p-4 bg-green-50 border border-green-200 rounded">
-                    <span class="text-green-700 font-semibold">Wir haben die Ferientage und Feiertage für dein Bundesland geladen.</span>
+                <div v-if="holidays && holidays.BW" class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded">
+                    <span class="text-green-700 dark:text-green-300 font-semibold">Wir haben die Ferientage und Feiertage für dein Bundesland geladen.</span>
                 </div>
 
                 <!-- Content Card -->

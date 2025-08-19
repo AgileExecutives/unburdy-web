@@ -2,7 +2,7 @@
     <div class="relative">
         <!-- Header with Label and Button -->
         <div class="flex items-center justify-between mb-2">
-            <label v-if="label" class="block text-sm font-medium text-gray-700">
+            <label v-if="label" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {{ label }}
             </label>
             
@@ -13,8 +13,8 @@
                 :class="[
                     'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all',
                     showSelector 
-                        ? 'bg-red-100 text-red-700 hover:bg-red-200 focus:ring-red-500' 
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-accent'
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 focus:ring-red-500' 
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-accent'
                 ]"
                 type="button"
             >
@@ -28,7 +28,7 @@
         <!-- Tags Container with Flexible Height (min 3 rows, grows as needed) -->
         <div class="relative">
             <!-- Selected Tags Container (Flexible Height) -->
-            <div class="min-h-[4.5rem] bg-surface rounded-md border-0 border-gray-300 shadow-sm">
+            <div class="min-h-[4.5rem] bg-surface rounded-md border-0 border-gray-300 dark:border-gray-600 shadow-sm">
                 <div class="flex flex-wrap gap-1.5 p-3" :data-tag-selector-container="selectorId">
                     <!-- Selected Tags -->
                     <span 
@@ -146,28 +146,28 @@ const showSelector = ref(false)
 // Color scheme mappings
 const colorSchemes = {
     blue: {
-        selected: 'bg-blue-100 text-blue-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     green: {
-        selected: 'bg-green-100 text-green-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-green-100 dark:bg-green-900/60 text-green-800 dark:text-green-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     purple: {
-        selected: 'bg-purple-100 text-purple-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     orange: {
-        selected: 'bg-orange-100 text-orange-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     pink: {
-        selected: 'bg-pink-100 text-pink-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-pink-100 dark:bg-pink-900/60 text-pink-800 dark:text-pink-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     indigo: {
-        selected: 'bg-indigo-100 text-indigo-800 bg-opacity-80',
-        available: 'bg-gray-100 text-gray-600 bg-opacity-60 hover:bg-gray-200 hover:bg-opacity-80'
+        selected: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-200 bg-opacity-80',
+        available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     }
 }
 

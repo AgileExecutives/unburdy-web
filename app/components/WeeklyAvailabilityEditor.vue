@@ -14,7 +14,7 @@
                         @click="weekViewMode = days"
                         :variant="weekViewMode === days ? 'solid' : 'outline'"
                         size="sm"
-                        :class="weekViewMode === days ? 'bg-green-600/30 text-white border-green-600' : 'bg-white/30 text-white border-green-600'"
+                        :class="weekViewMode === days ? 'bg-green-600/30 text-white border-green-600' : 'bg-white/30 dark:bg-gray-700/30 text-white border-green-600'"
                     >
                         {{ days }}
                     </UButton>
