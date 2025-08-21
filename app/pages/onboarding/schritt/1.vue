@@ -845,7 +845,7 @@ const performManualSearch = async () => {
 
         // Get user data for enhanced search
         const onboardingData = getOnboardingData()
-        const userData = onboardingData?.userData || {}
+        const userData = onboardingData?.user || {}
 
         const searchParams = {
             zip: manualSearchZip.value,

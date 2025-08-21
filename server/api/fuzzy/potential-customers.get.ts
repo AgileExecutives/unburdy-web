@@ -13,13 +13,21 @@ export default defineEventHandler(async (event) => {
       })
     }
     
-    // Build query parameters for the API call
-    const queryParams = new URLSearchParams({
-      zip: zip as string,
-      first_name: (first_name as string) || '',
-      last_name: (last_name as string) || '',
-      email: (email as string) || ''
-    })
+    // Build query parameters for the API call - only include non-empty values
+    const queryParams = new URLSearchParams()
+    
+    if (zip) {
+      queryParams.append('zip', zip as string)
+    }
+    if (first_name) {
+      queryParams.append('first_name', first_name as string)
+    }
+    if (last_name) {
+      queryParams.append('last_name', last_name as string)
+    }
+    if (email) {
+      queryParams.append('email', email as string)
+    }
     
     const response = await $fetch(`/fuzzy/potential_customers?${queryParams.toString()}`, {
       method: 'GET',
