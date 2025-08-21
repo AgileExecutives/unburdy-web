@@ -1,5 +1,5 @@
 <template>
-    <div class="h-20 lg:col-span-3">
+    <div class="h-38 md:h-20 lg:col-span-3">
     <div v-if="holidays || nearbyProviders"
         class="backdrop-blur-sm">
         <div class="relative">
@@ -20,7 +20,7 @@
                     <span class="text-gray-400 w-full font-semibold place-self-left place-content-start text-base">Wir haben die Feiertage für dein Bundesland
                         importiert.</span>
                     <a href="#"
-                        class="ml-3 px-3 py-1 text-xs text-blue-800 dark:text-blue-200 font-medium bg-blue-100/80 dark:bg-blue-900/60 hover:bg-blue-200/80 dark:hover:bg-blue-900/80 rounded-full transition-colors"
+                        class="ml-3 px-3 py-1 text-xs text-primary dark:text-blue-200 font-medium bg-blue-100/80 dark:bg-blue-900/60 hover:bg-blue-200/80 dark:hover:bg-blue-900/80 rounded-full transition-colors"
                         @click.prevent="openHolidaysModal">mehr&nbsp;anzeigen</a>
                 </div>
 
@@ -37,7 +37,7 @@
                     <span class="text-gray-400 w-full font-medium text-base">Zudem haben wir auch die Jugendämter deiner Region
                         herausgesucht</span>
                     <a href="#"
-                        class="ml-3 px-3 py-1 text-xs text-purple-800 dark:text-purple-200 font-medium bg-purple-100/80 dark:bg-purple-900/60 hover:bg-purple-200/80 dark:hover:bg-purple-900/80 rounded-full transition-colors"
+                        class="ml-3 px-3 py-1 text-xs text-primary dark:text-purple-200 font-medium bg-purple-100/80 dark:bg-purple-900/60 hover:bg-purple-200/80 dark:hover:bg-purple-900/80 rounded-full transition-colors"
                         @click.prevent="openProvidersModal">mehr&nbsp;anzeigen</a>
                 </div>
             </div>

@@ -9,51 +9,56 @@
                 <!-- Step Header -->
                 <div class="text-center mb-8">
                     <p class="text-lg text-secondary">
-                        Planung {{ step1Data.practiceName || '' }}
+                        Planung {{ practiceName || '' }}
                     </p>
                 </div>
 
+                <!-- Content Card -->
+                <div class="bg-surface rounded-lg border border-default p-2 sm:p-4 lg:p-6 mb-6">
+                    <AvailabilityManager v-model="formData.availability" />
 
-                <!-- Holidays Message -->
-                <div v-if="holidays && holidays.BW" class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded">
-                    <span class="text-green-700 dark:text-green-300 font-semibold">Wir haben die Ferientage und Feiertage für dein Bundesland geladen.</span>
+                    <!-- Ferien und Feiertage Anzeige -->
+                    <div v-if="holidays && holidays.BW" class="mt-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Ferien Termine -->
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2 text-accent">Ferientermine</h3>
+                                <div v-for="(yearData, year) in holidays.BW.school_holidays" :key="year" class="mb-4">
+                                    <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
+                                    <ul class="list-disc ml-6">
+                                        <li v-for="(dates, name) in yearData" :key="name">
+                                            <span class="font-semibold">{{ name }}:</span>
+                                            <span class="ml-2">{{ dates[0] }} bis {{ dates[1] }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Feiertage -->
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2 text-accent">Feiertage</h3>
+                                <div v-for="(yearData, year) in holidays.BW.public_holidays" :key="year" class="mb-4">
+                                    <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
+                                    <ul class="list-disc ml-6">
+                                        <li v-for="(date, name) in yearData" :key="name">
+                                            <span class="font-semibold">{{ name }}:</span>
+                                            <span class="ml-2">{{ date }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Content Card -->
-
-                                <AvailabilityManager v-model="formData.availability" />
-
-                                <!-- Ferien und Feiertage Anzeige -->
-                                <div v-if="holidays && holidays.BW" class="mt-8">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <!-- Ferien Termine -->
-                                        <div>
-                                            <h3 class="text-lg font-semibold mb-2 text-accent">Ferientermine</h3>
-                                            <div v-for="(yearData, year) in holidays.BW.school_holidays" :key="year" class="mb-4">
-                                                <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
-                                                <ul class="list-disc ml-6">
-                                                    <li v-for="(dates, name) in yearData" :key="name">
-                                                        <span class="font-semibold">{{ name }}:</span>
-                                                        <span class="ml-2">{{ dates[0] }} bis {{ dates[1] }}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <!-- Feiertage -->
-                                        <div>
-                                            <h3 class="text-lg font-semibold mb-2 text-accent">Feiertage</h3>
-                                            <div v-for="(yearData, year) in holidays.BW.public_holidays" :key="year" class="mb-4">
-                                                <h4 class="font-medium text-secondary mb-1">{{ year }}</h4>
-                                                <ul class="list-disc ml-6">
-                                                    <li v-for="(date, name) in yearData" :key="name">
-                                                        <span class="font-semibold">{{ name }}:</span>
-                                                        <span class="ml-2">{{ date }}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- Additional Input Space -->
+                <div class="bg-surface rounded-lg border border-default p-2 sm:p-4 lg:p-6 mb-8">
+                    <div class="space-y-6">
+                        <!-- Placeholder for additional inputs -->
+                        <div class="text-center py-8 text-secondary">
+                            <p class="text-sm">Weitere Einstellungen werden hier hinzugefügt</p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Navigation -->
                 <div class="flex justify-between items-center">
@@ -93,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { onMounted } from 'vue'
 import { useRouter, navigateTo } from '#app'
 import { useOnboarding } from '~/composables/useOnboarding'
@@ -115,6 +120,11 @@ useHead({
 const router = useRouter()
 const { saveStepData, getOnboardingData, setCurrentStep, goBack: goBackStep } = useOnboarding()
 
+const practiceName = ref('')
+const existingData = ref(null)
+const step1Data = ref(null)
+const holidays = ref(null)
+
 // Form data
 const formData = ref({
     availability: {
@@ -127,13 +137,24 @@ const formData = ref({
         sunday: []
     }
 })
+
+// Auto-save availability data when it changes
+watch(() => formData.value.availability, (newAvailability) => {
+    console.log('Availability changed, auto-saving...', newAvailability)
+    saveFormData()
+}, { deep: true })
+
+
 onMounted(() => {
     existingData.value = getOnboardingData()
+    console.log('Existing Data:', existingData.value)   
     // Load existing step 1 data for practice name display (flat structure)
     step1Data.value = Array.isArray(existingData.value?.steps)
         ? existingData.value.steps.find(step => step.stepNumber === 1)
         : {}
-
+    if (step1Data.value) {
+        practiceName.value = step1Data.value.formData?.practiceName || ''
+    }       
     // Load existing step 2 data if available (flat structure)
     const step2Data = Array.isArray(existingData.value?.steps)
         ? existingData.value.steps.find(step => step.stepNumber === 2)
@@ -148,6 +169,7 @@ onMounted(() => {
 
 // Save form data
 const saveFormData = () => {
+    console.log('Saving availability data:', formData.value.availability)
     saveStepData(2, formData.value)
 }
 
@@ -158,11 +180,11 @@ setCurrentStep(2)
 const goBack = async () => {
     saveFormData()
     await goBackStep()
-    await navigateTo('/onboarding/schritt/1')
+    router.push('/onboarding/schritt/1')
 }
 
 const goNext = async () => {
     saveFormData()
-    await navigateTo('/onboarding/schritt/3')
+    router.push('/onboarding/schritt/3')
 }
 </script>

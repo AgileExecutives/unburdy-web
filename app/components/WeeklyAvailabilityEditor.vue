@@ -14,19 +14,19 @@
                         @click="weekViewMode = days"
                         :variant="weekViewMode === days ? 'solid' : 'outline'"
                         size="sm"
-                        :class="weekViewMode === days ? 'bg-green-600/30 text-white border-green-600' : 'bg-white/30 dark:bg-gray-700/30 text-white border-green-600'"
+                        :class="weekViewMode === days ? 'bg-accent text-white border border-accent hover:bg-accent-hover hover:border-accent-hover' : 'bg-surface border border-accent/50 text-accent hover:bg-accent/10 hover:text-accent hover:border-accent'"
                     >
                         {{ days }}
                     </UButton>
                     <UButton
-                        class="ml-4 bg-green-600/30 text-white border-green-600"
+                        class="ml-4 bg-accent text-white border border-accent hover:bg-accent-hover hover:border-accent-hover"
                         size="sm"
                         @click="copyMondayToWeek"
                     >
                         Montag → Woche
                     </UButton>
                     <UButton
-                        class="ml-2 bg-red-600/30 text-white border-red-600"
+                        class="ml-2 bg-transparent text-red-500 border border-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-600 dark:hover:bg-red-900/20"
                         size="sm"
                         @click="clearAllAvailability"
                     >

@@ -70,6 +70,7 @@ export default defineNuxtConfig({
       unburdyApp: process.env.NUXT_UNBURDY_APP || 'https://app.unburdy.de',
       umamiHost: process.env.NUXT_PUBLIC_UMAMI_HOST || 'https://analytics.unburdy.de',
       umamiSiteId: process.env.NUXT_PUBLIC_UMAMI_SITE_ID || '',
+      apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.de',
     }
   },
 

@@ -10,20 +10,20 @@
                 size="sm"
                 :class="[
                     'w-10 h-10 flex items-center justify-center',
-                    weekViewMode === days ? 'bg-green-600/30 text-white border-green-600' : 'bg-white/30 dark:bg-gray-700/30 text-white border-green-600'
+                    weekViewMode === days ? 'bg-accent text-white border border-accent hover:bg-accent-hover hover:border-accent-hover' : 'bg-surface border border-accent/50 text-accent hover:bg-accent/10 hover:text-accent hover:border-accent'
                 ]"
             >
                 <span class="font-bold text-lg">{{ days }}</span>
             </UButton>
             <UButton
-                class="ml-4 bg-green-600/30 text-white border-green-600 w-10 h-10 flex items-center justify-center"
+                class="ml-4 bg-accent text-white border border-accent hover:bg-accent-hover hover:border-accent-hover w-10 h-10 flex items-center justify-center"
                 size="sm"
                 @click="copyMondayToWeek"
             >
                 <CopyMondayIcon />
             </UButton>
             <UButton
-                class="ml-2 bg-red-600/30 text-white border-red-600 w-10 h-10 flex items-center justify-center"
+                class="ml-2 bg-transparent text-red-500 border border-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-600 dark:hover:bg-red-900/20 w-10 h-10 flex items-center justify-center"
                 size="sm"
                 @click="clearAllAvailability"
             >
@@ -47,7 +47,7 @@
                         :key="minute"
                         class="h-8 bg-gray-500/20 cursor-pointer"
                         :class="{ 
-                            'bg-green-50 dark:bg-green-800/80': isSlotBooked(day.key, hour, minute),
+                            'bg-green-200 dark:bg-green-700': isSlotBooked(day.key, hour, minute),
                             'bg-blue-100 dark:bg-blue-800/50': isSlotInDragSelection(day.key, hour, minute)
                         }"
                         :data-day="day.key"

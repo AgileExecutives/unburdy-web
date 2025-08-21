@@ -6,7 +6,7 @@
                 :key="`${day}-${hour}-${minute}`"
                 class="cursor-pointer"
                 :class="{ 
-                    'bg-green-50 dark:bg-green-800/80': isBooked(minute),
+                    'bg-green-200 dark:bg-green-700': isBooked(minute),
                     'bg-blue-400/50': isSelected(minute),
                     'hover:bg-blue-500/30': !isBooked(minute) && !isSelected(minute)
                 }"
@@ -15,11 +15,11 @@
                 @mouseup="$emit('mouseup-quarter', { hour, minute })"
             ></div>
         </div>
-        <div class="absolute top-0 left-1 text-xs text-gray-500 pointer-events-none">
+        <div class="absolute top-0 left-1 text-xs pointer-events-none">
             <div :class="{ 
-                    'text-gray-200': isBooked(0),
+                    'text-primary': isBooked(0),
                     'text-blue-400': isSelected(0),
-                    'hover:text-blue-500': !isBooked(0) && !isSelected(0)
+                    'text-tertiary': !isBooked(0) && !isSelected(0)
                 }">
             {{ hour }}:00</div>
         </div>

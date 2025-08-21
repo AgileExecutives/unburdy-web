@@ -127,6 +127,10 @@ export const useOnboarding = () => {
 
   // Get current step
   const getCurrentStep = () => {
+      if (!onboardingData.value) {
+        const storedOnboardingData = localStorage.getItem('onboardingData')
+        onboardingData.value = JSON.parse(storedOnboardingData)
+      }
     return onboardingData.value.currentStep
   }
 

@@ -81,32 +81,32 @@ const emit = defineEmits(['close'])
 
 const colorConfig = {
     green: {
-        card: 'bg-green-50 dark:bg-green-900/20 border-green-200',
-        icon: 'text-green-600',
-        title: 'text-white',
-        description: 'text-gray-300',
-        closeButton: 'text-green-400 hover:text-green-600'
+        card: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700',
+        icon: 'text-green-600 dark:text-green-400',
+        title: 'text-primary',
+        description: 'text-secondary',
+        closeButton: 'text-green-400 hover:text-green-600 dark:text-green-400 dark:hover:text-green-300'
     },
     yellow: {
-        card: 'bg-yellow-50 dark:bg-yellow-500/20 border-yellow-200',
-        icon: 'text-yellow-600',
-        title: 'text-white',
-        description: 'text-gray-300',
-        closeButton: 'text-yellow-400 hover:text-yellow-600'
+        card: 'bg-yellow-50 dark:bg-yellow-500/40 border-yellow-200 dark:border-yellow-600',
+        icon: 'text-yellow-600 dark:text-yellow-400',
+        title: 'text-primary',
+        description: 'text-secondary',
+        closeButton: 'text-yellow-400 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300'
     },
     blue: {
-        card: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200',
-        icon: 'text-blue-600',
-        title: 'text-white',
-        description: 'text-gray-300',
-        closeButton: 'text-blue-400 hover:text-blue-600'
+        card: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700',
+        icon: 'text-blue-600 dark:text-blue-400',
+        title: 'text-primary',
+        description: 'text-secondary',
+        closeButton: 'text-blue-400 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300'
     },
     red: {
-        card: 'bg-red-50 dark:bg-red-900/20 border-red-200',
-        icon: 'text-red-600',
-        title: 'text-white',
-        description: 'text-gray-300',
-        closeButton: 'text-red-400 hover:text-red-600'
+        card: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700',
+        icon: 'text-red-600 dark:text-red-400',
+        title: 'text-primary',
+        description: 'text-secondary',
+        closeButton: 'text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300'
     }
 }
 

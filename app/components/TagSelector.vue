@@ -146,23 +146,23 @@ const showSelector = ref(false)
 // Color scheme mappings
 const colorSchemes = {
     blue: {
-        selected: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200 bg-opacity-80',
+        selected: 'bg-blue-100 dark:bg-blue-900/60 text-primary dark:text-blue-200 bg-opacity-80',
         available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     green: {
-        selected: 'bg-green-100 dark:bg-green-900/60 text-green-800 dark:text-green-200 bg-opacity-80',
+        selected: 'bg-green-100 dark:bg-green-900/60 text-primary dark:text-green-200 bg-opacity-80',
         available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     purple: {
-        selected: 'bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 bg-opacity-80',
+        selected: 'bg-purple-100 dark:bg-purple-900/60 text-primary dark:text-purple-200 bg-opacity-80',
         available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     orange: {
-        selected: 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-200 bg-opacity-80',
+        selected: 'bg-orange-100 dark:bg-orange-900/60 text-primary dark:text-orange-200 bg-opacity-80',
         available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     pink: {
-        selected: 'bg-pink-100 dark:bg-pink-900/60 text-pink-800 dark:text-pink-200 bg-opacity-80',
+        selected: 'bg-pink-100 dark:bg-pink-900/60 text-primary dark:text-pink-200 bg-opacity-80',
         available: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 bg-opacity-60 hover:bg-gray-200 dark:hover:bg-gray-600 hover:bg-opacity-80'
     },
     indigo: {

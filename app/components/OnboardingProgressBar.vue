@@ -2,12 +2,12 @@
     <div class="border-bpy-2">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             <div class="flex items-center justify-between">
-                <h1 class="text-base md:text-lg md:font-semibold text-primary">Praxiseinrichtung</h1>
+                <h1 class="text-base md:text-lg md:font-semibold text-primary mt-4">Praxiseinrichtung</h1>
                 <div class="text-sm text-secondary"><span class="hidden md:flex">Schritt</span>{{ currentStep }} von {{ totalSteps }}</div>
             </div>
             <!-- Progress Bar with Step Numbers -->
             <div class="relative">
-                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
+                <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2">
                     <div class="bg-accent h-2 rounded-full transition-all duration-300" :style="`width: ${progressPercentage}%`"></div>
                 </div>
                 <!-- Step Indicators -->
@@ -18,7 +18,7 @@
                                 'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
                                 step.number <= currentStep
                                     ? 'bg-accent text-white'
-                                    : 'bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+                                    : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
                             ]"
                         >
                             {{ step.number }}
