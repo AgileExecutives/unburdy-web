@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import HourSlot from './HourSlot.vue'
 
 // Props
@@ -93,6 +93,13 @@ const props = defineProps({
 
 // Reactive Data
 const formData = ref(JSON.parse(JSON.stringify(props.modelValue)))
+
+// Watch for changes in modelValue and update formData
+watch(() => props.modelValue, (newValue) => {
+    if (newValue) {
+        formData.value = JSON.parse(JSON.stringify(newValue))
+    }
+}, { deep: true, immediate: true })
 const weekViewMode = ref(5)
 const selection = ref({
     isActive: false,

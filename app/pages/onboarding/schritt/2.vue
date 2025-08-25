@@ -141,47 +141,35 @@ const formData = ref({
 
 // Auto-save availability data when it changes
 watch(() => formData.value.availability, (newAvailability) => {
-    console.log('Availability changed, auto-saving...', newAvailability)
     saveFormData()
 }, { deep: true })
 
-
 onMounted(() => {
     existingData.value = getOnboardingData()
-    console.log('Existing Data:', existingData.value)   
+    
+    // Filter out empty steps first
+    const validSteps = Array.isArray(existingData.value?.steps)
+        ? existingData.value.steps.filter(step => step && typeof step === 'object' && step.stepNumber)
+        : []
     
     // Load existing step 1 data for practice name display
-    step1Data.value = Array.isArray(existingData.value?.steps)
-        ? existingData.value.steps.find(step => step.stepNumber === 1)
-        : {}
+    step1Data.value = validSteps.find(step => step.stepNumber === 1) || {}
     if (step1Data.value) {
-        // Access practiceName directly from step data, not under formData
         practiceName.value = step1Data.value.practiceName || ''
     }       
     
     // Load existing step 2 data if available
-    const step2Data = Array.isArray(existingData.value?.steps)
-        ? existingData.value.steps.find(step => step.stepNumber === 2)
-        : undefined
+    const step2Data = validSteps.find(step => step.stepNumber === 2)
+    
     if (step2Data && step2Data.availability) {
-        // Only load the availability data, preserve the default structure
         formData.value.availability = { ...step2Data.availability }
-        console.log('Loaded existing availability data:', formData.value.availability)
     }
-
-    console.log('Final form data:', formData.value)
 })
 
 
 // Save form data
 const saveFormData = () => {
-    console.log('Saving availability data:', formData.value.availability)
     saveStepData(2, formData.value)
-    
-    // Verify the data was saved by checking what's in storage
-    const verifyData = getOnboardingData()
-    const savedStep2 = verifyData.steps?.find(step => step.stepNumber === 2)
-    console.log('Verified saved step 2 data:', savedStep2)
 }
 
 // Update current step

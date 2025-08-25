@@ -103,7 +103,11 @@ export const useOnboarding = () => {
 
   // Save data for current step
   const saveStepData = (stepNumber, data) => {
-    const steps = [...onboardingData.value.steps]
+    // Filter out empty objects and invalid steps
+    const steps = [...onboardingData.value.steps].filter(step => 
+      step && typeof step === 'object' && step.stepNumber
+    )
+    
     const existingIndex = steps.findIndex(step => step.stepNumber === stepNumber)
     
     if (existingIndex >= 0) {
@@ -112,7 +116,7 @@ export const useOnboarding = () => {
       steps.push({ stepNumber, ...data })
     }
 
-    console.log('Saving step data:', steps)
+    console.log('Saving step data (filtered):', steps)
 
     onboardingData.value.steps = steps
     saveToStorage()
@@ -138,15 +142,11 @@ export const useOnboarding = () => {
     return onboardingData.value.currentStep
   }
 
-  // Go back one step and delete current step data
+  // Go back one step (without deleting current step data)
   const goBack = () => {
     const currentStep = onboardingData.value.currentStep
     if (currentStep > 1) {
-      // Remove data for current step
-      onboardingData.value.steps = onboardingData.value.steps.filter(
-        step => step.stepNumber !== currentStep
-      )
-      // Go to previous step
+      // Just go to previous step without removing data
       onboardingData.value.currentStep = currentStep - 1
       saveToStorage()
       return currentStep - 1
