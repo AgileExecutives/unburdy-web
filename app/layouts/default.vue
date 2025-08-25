@@ -26,7 +26,7 @@
     </div>
     
     <!-- Header component -->
-    <Header />
+    <PageHeader />
     
     <!-- Main content area -->
     <main class="flex-1">

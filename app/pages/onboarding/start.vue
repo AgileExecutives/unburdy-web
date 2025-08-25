@@ -155,11 +155,11 @@
                             Continue Onboarding
                         </button>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-200 mb-2">Debug Information (Development Only)</h3>
+                    <h3 class="text-sm font-medium text-gray-900 mb-2">Debug Information (Development Only)</h3>
                     <details class="text-xs">
-                                                <summary class="cursor-pointer text-gray-300 mb-2">Full Registration Data</summary>
+                                                <summary class="cursor-pointer text-black mb-2">Full Registration Data</summary>
                                                 <client-only>
-                                                    <pre class="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs overflow-x-auto text-gray-900 dark:text-gray-100">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
+                                                    <pre class="bg-gray-800 p-2 rounded text-xs overflow-x-auto text-gray-100">{{ JSON.stringify(getOnboardingData(), null, 2) }}</pre>
                                                 </client-only>
                     </details>
                 </div>

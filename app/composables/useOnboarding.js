@@ -1,5 +1,6 @@
 // composables/useOnboarding.js
 // Onboarding state management
+import { ref, readonly } from 'vue'
 
 export const useOnboarding = () => {
   // Reactive onboarding state with new structure
@@ -82,12 +83,13 @@ export const useOnboarding = () => {
   // Save to localStorage
   const saveToStorage = () => {
     if (process.client) {
-  localStorage.setItem('onboardingData', JSON.stringify(onboardingData.value))
-  const getOnboardingToken = () => {
-    return onboardingData.value.token
+      localStorage.setItem('onboardingData', JSON.stringify(onboardingData.value))
+    }
   }
 
-    }
+  // Get onboarding token
+  const getOnboardingToken = () => {
+    return onboardingData.value.token
   }
 
   // Update user data
@@ -109,7 +111,9 @@ export const useOnboarding = () => {
     } else {
       steps.push({ stepNumber, ...data })
     }
-    
+
+    console.log('Saving step data:', steps)
+
     onboardingData.value.steps = steps
     saveToStorage()
   }
@@ -220,6 +224,7 @@ export const useOnboarding = () => {
     getOnboardingData,
     getUserData,
     isOnboardingValid,
-    initOnboarding
+    initOnboarding,
+    getOnboardingToken
   }
 }

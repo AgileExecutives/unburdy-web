@@ -14,7 +14,6 @@
       </div>
             <!-- Color Mode Toggle - Additional toggle in content area -->
       <div class="">
-        <ColorModeToggle />
       </div>
       <div class="lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
         <ColorModeToggle />

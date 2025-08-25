@@ -102,6 +102,7 @@ import { ref, watch } from 'vue'
 import { onMounted } from 'vue'
 import { useRouter, navigateTo } from '#app'
 import { useOnboarding } from '~/composables/useOnboarding'
+import AvailabilityManager from '~/components/AvailabilityManager.vue'
 
 // Layout
 definePageMeta({
@@ -148,22 +149,27 @@ watch(() => formData.value.availability, (newAvailability) => {
 onMounted(() => {
     existingData.value = getOnboardingData()
     console.log('Existing Data:', existingData.value)   
-    // Load existing step 1 data for practice name display (flat structure)
+    
+    // Load existing step 1 data for practice name display
     step1Data.value = Array.isArray(existingData.value?.steps)
         ? existingData.value.steps.find(step => step.stepNumber === 1)
         : {}
     if (step1Data.value) {
-        practiceName.value = step1Data.value.formData?.practiceName || ''
+        // Access practiceName directly from step data, not under formData
+        practiceName.value = step1Data.value.practiceName || ''
     }       
-    // Load existing step 2 data if available (flat structure)
+    
+    // Load existing step 2 data if available
     const step2Data = Array.isArray(existingData.value?.steps)
         ? existingData.value.steps.find(step => step.stepNumber === 2)
         : undefined
-    if (step2Data) {
-        formData.value = { ...step2Data }
+    if (step2Data && step2Data.availability) {
+        // Only load the availability data, preserve the default structure
+        formData.value.availability = { ...step2Data.availability }
+        console.log('Loaded existing availability data:', formData.value.availability)
     }
 
-    console.log('Existing Data:', existingData.value)
+    console.log('Final form data:', formData.value)
 })
 
 
@@ -171,6 +177,11 @@ onMounted(() => {
 const saveFormData = () => {
     console.log('Saving availability data:', formData.value.availability)
     saveStepData(2, formData.value)
+    
+    // Verify the data was saved by checking what's in storage
+    const verifyData = getOnboardingData()
+    const savedStep2 = verifyData.steps?.find(step => step.stepNumber === 2)
+    console.log('Verified saved step 2 data:', savedStep2)
 }
 
 // Update current step

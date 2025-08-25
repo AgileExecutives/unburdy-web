@@ -971,6 +971,7 @@ watch(() => formData.value.bundesland, async (newBundesland) => {
         })
         if (response && response.data.download_url) {
             invoiceDownloadUrl.value = response.data.download_url
+            formData.value.invoice_url = response.data.download_url 
         } else {
             console.warn('No invoice URL returned from API')
         }
@@ -1213,7 +1214,12 @@ const initializeFormData = () => {
         Object.assign(formData.value, existingStep1)
         formData.value.customerSelected = true
         formData.value.contactPerson = contactPerson
+    } if (existingStep1 &&
+        existingStep1.invoice_url) {
+        formData.value.invoice_url = existingStep1.invoice_url
+        invoiceDownloadUrl.value = existingStep1.invoice_url
     }
+
 }
 
 // ===== INITIALIZATION =====
