@@ -60,7 +60,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Private keys (only available on server-side)
-    apiToken: process.env.NUXT_API_TOKEN,
+    apiToken: process.env.NUXT_API_TOKEN || 'fallback-token-change-in-production',
     apiBaseUrl: process.env.NUXT_API_BASE_URL || 'https://api.unburdy.de',
     csrfSecret: process.env.NUXT_CSRF_SECRET || 'fallback-secret-change-in-production',
     logLevel: process.env.NUXT_LOG_LEVEL || 'debug', // debug, info, warn, error

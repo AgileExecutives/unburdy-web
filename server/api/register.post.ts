@@ -231,8 +231,9 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
     })
 
     logger.info('Registration successful', { 
-      customerId: response.customer_id,
-      organizationId: response.organization_id 
+      customerId: response.customer?.id,
+      organizationId: response.organization?.id,
+      onboardingId: response.onboarding_id
     })
 
     // Return the full API response with success flag

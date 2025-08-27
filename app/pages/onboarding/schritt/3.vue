@@ -87,7 +87,7 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { saveStepData, setCurrentStep, getOnboardingData, updateUserData } = useOnboarding()
+const { saveStepData, setCurrentStep, getOnboardingData, updateUserData, saveOnboardingToDatabase } = useOnboarding()
 
 onMounted(() => {
     const onboardingData = getOnboardingData()
@@ -104,12 +104,14 @@ setCurrentStep(3)
 
 // Methods
 const goBack = async () => {
-    // Save any form data here before navigating
+    // Save to database before navigating
+    await saveOnboardingToDatabase()
     await navigateTo('/onboarding/schritt/2')
 }
 
 const goNext = async () => {
-    // Save any form data here before navigating
+    // Save to database before navigating
+    await saveOnboardingToDatabase()
     await navigateTo('/onboarding/schritt/4')
 }
 </script>

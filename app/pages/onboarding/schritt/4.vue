@@ -88,7 +88,7 @@ useHead({
 // Composables
 const router = useRouter()
 const config = useRuntimeConfig()
-const { saveStepData, setCurrentStep, clearOnboardingData, getOnboardingData, updateUserData } = useOnboarding()
+const { saveStepData, setCurrentStep, clearOnboardingData, getOnboardingData, updateUserData, saveOnboardingToDatabase } = useOnboarding()
 
 onMounted(() => {
     const onboardingData = getOnboardingData()
@@ -105,12 +105,17 @@ setCurrentStep(4)
 
 // Methods
 const goBack = async () => {
+    // Save to database before navigating
+    await saveOnboardingToDatabase()
     await navigateTo('/onboarding/schritt/3')
 }
 
 const finish = async () => {
-    // Save completion status and clear onboarding data
+    // Save completion status
     saveStepData(4, { completed: true })
+    
+    // Save final state to database
+    await saveOnboardingToDatabase()
     
     // Show success message or redirect to app
     // For now, redirect to external app

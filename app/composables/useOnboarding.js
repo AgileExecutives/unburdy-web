@@ -1,6 +1,7 @@
 // composables/useOnboarding.js
 // Onboarding state management
 import { ref, readonly } from 'vue'
+import { useAuth } from './useAuth'
 
 export const useOnboarding = () => {
   // Reactive onboarding state with new structure
@@ -92,12 +93,149 @@ export const useOnboarding = () => {
     return onboardingData.value.token
   }
 
+  // Save onboarding data to database
+  const saveOnboardingToDatabase = async () => {
+    // Get token from useAuth instead of onboarding data
+    const { getToken } = useAuth()
+    const token = getToken()
+    const onboardingId = onboardingData.value.onboarding_id
+    
+    // Try to get plan slug from plan data or fallback to a default
+    let planSlug = onboardingData.value.plan?.slug
+    if (!planSlug && process.client) {
+      // Try to get from URL if we're on an onboarding page
+      const currentPath = window.location.pathname
+      const planMatch = currentPath.match(/\/lc\/anmelden\/([^\/]+)/)
+      if (planMatch) {
+        planSlug = planMatch[1]
+      }
+    }
+    planSlug = planSlug || 'standard' // Final fallback
+    
+    console.log('Attempting to save onboarding data to database:', {
+      hasToken: !!token,
+      onboardingId: onboardingId,
+      planSlug: planSlug,
+      currentStep: onboardingData.value.currentStep,
+      stepsCount: onboardingData.value.steps?.length || 0,
+      planData: onboardingData.value.plan,
+      userData: onboardingData.value.user,
+      organizationData: onboardingData.value.organization,
+      customerData: onboardingData.value.customer
+    })
+    
+    if (!token) {
+      console.warn('Cannot save to database: missing authentication token')
+      return { success: false, message: 'Missing authentication token' }
+    }
+    
+    if (!onboardingId) {
+      console.warn('Cannot save to database: missing onboarding_id (this is normal during development/testing)')
+      return { success: false, message: 'Missing onboarding ID - skipping database save' }
+    }
+
+    try {
+      const response = await $fetch('/api/onboarding/save', {
+        method: 'PUT',
+        body: {
+          onboarding_id: onboardingId,
+          user: onboardingData.value.user || {},
+          plan: { slug: planSlug, ...onboardingData.value.plan },
+          organization: onboardingData.value.organization || {},
+          customer: onboardingData.value.customer || {},
+          currentStep: onboardingData.value.currentStep,
+          steps: onboardingData.value.steps,
+          userToken: token
+        }
+      })
+      
+      console.log('Onboarding data saved to database successfully:', response)
+      return response
+    } catch (error) {
+      console.error('Failed to save onboarding data to database:', error)
+      return { 
+        success: false, 
+        message: error.data?.message || 'Failed to save to database' 
+      }
+    }
+  }
+
+  // Create onboarding scheduling
+  const createOnboardingScheduling = async () => {
+    // Get token from useAuth
+    const { getToken } = useAuth()
+    const token = getToken()
+    
+    // Get required data
+    const organizationId = onboardingData.value.organization?.id
+    let planSlug = onboardingData.value.plan?.slug
+    
+    // Try to get plan slug from URL if not available
+    if (!planSlug && process.client) {
+      const currentPath = window.location.pathname
+      const planMatch = currentPath.match(/\/lc\/anmelden\/([^\/]+)/)
+      if (planMatch) {
+        planSlug = planMatch[1]
+      }
+    }
+    planSlug = planSlug || 'standard' // Final fallback
+    
+    console.log('Attempting to create onboarding scheduling:', {
+      hasToken: !!token,
+      organizationId: organizationId,
+      planSlug: planSlug,
+      currentStep: onboardingData.value.currentStep
+    })
+    
+    if (!token) {
+      console.warn('Cannot create scheduling: missing authentication token')
+      return { success: false, message: 'Missing authentication token' }
+    }
+    
+    if (!organizationId) {
+      console.warn('Cannot create scheduling: missing organization_id')
+      return { success: false, message: 'Missing organization ID' }
+    }
+
+    try {
+      const response = await $fetch('/api/onboarding/scheduling', {
+        method: 'POST',
+        body: {
+          organization_id: organizationId,
+          plan_slug: planSlug,
+          current_step: onboardingData.value.currentStep,
+          step_data: {
+            steps: onboardingData.value.steps,
+            user: onboardingData.value.user || {},
+            customer: onboardingData.value.customer || {}
+          },
+          userToken: token
+        }
+      })
+      
+      console.log('Onboarding scheduling created successfully:', response)
+      return response
+    } catch (error) {
+      console.error('Failed to create onboarding scheduling:', error)
+      return { 
+        success: false, 
+        message: error.data?.message || 'Failed to create scheduling' 
+      }
+    }
+  }
+
   // Update user data
   const updateUserData = (userData) => {
     onboardingData.value.user = {
       ...onboardingData.value.user,
       ...userData
     }
+    saveToStorage()
+  }
+
+  // Set onboarding ID (useful for development/testing)
+  const setOnboardingId = (id) => {
+    onboardingData.value.onboarding_id = id
     saveToStorage()
   }
 
@@ -213,6 +351,7 @@ export const useOnboarding = () => {
     
     // Methods
     updateUserData,
+    setOnboardingId,
     saveStepData,
     getStepData,
     setCurrentStep,
@@ -225,6 +364,8 @@ export const useOnboarding = () => {
     getUserData,
     isOnboardingValid,
     initOnboarding,
-    getOnboardingToken
+    getOnboardingToken,
+    saveOnboardingToDatabase,
+    createOnboardingScheduling
   }
 }

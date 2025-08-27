@@ -401,7 +401,7 @@ useHead({
 
 // Composables
 const router = useRouter()
-const { saveStepData, getOnboardingData, setCurrentStep, goBack: goBackStep } = useOnboarding()
+const { saveStepData, getOnboardingData, setCurrentStep, goBack: goBackStep, saveOnboardingToDatabase } = useOnboarding()
 const { focusAreas, serviceOffers, isLoading, error, loadEnumerations } = useEnumerations()
 
 // ===== STATE =====
@@ -1116,37 +1116,17 @@ const goNext = async () => {
         // Save data locally first
         saveFormData()
 
-        // Get current onboarding data for API call
-        const onboardingData = getOnboardingData()
-
-        // Use onboarding_id from top-level onboardingData
-        const onboarding_id = onboardingData.onboarding_id
-        if (!onboarding_id) {
-            console.error('No onboarding_id found in onboardingData')
-            // Optionally block or show error to user
-            return
-        }
-
-        // Call API to save onboarding data
-        // Get token from useAuth composable
-        const { getToken } = useAuth()
-        const token = getToken()
-        const response = await $fetch(`/api/onboarding`, {
-            method: 'POST',
-            body: onboardingData,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-
+        // Save to database using the new streamlined method
+        const response = await saveOnboardingToDatabase()
+        
         if (response.success) {
             console.log('Step 1 data saved successfully:', response)
         } else {
-            console.warn('API response indicates failure:', response)
+            console.warn('Database save response indicates failure:', response)
         }
 
     } catch (error) {
-        console.error('Failed to save step 1 data to API:', error)
+        console.error('Failed to save step 1 data to database:', error)
         // Don't block navigation on API failure
     }
 
