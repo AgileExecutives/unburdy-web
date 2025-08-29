@@ -14,8 +14,12 @@
                 </div>
 
                 <!-- Content Card -->
-                <div class="glass-effect rounded-lg border border-default/50 p-2 sm:p-4 lg:p-6 mb-6 shadow-xl">
-                    <AvailabilityManager v-model="formData.availability" />
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 mb-8 shadow-xl">
+                    <AvailabilityManager 
+                        v-model="formData.availability" 
+                        :week-view-mode="formData.weekViewMode"
+                        @update:week-view-mode="formData.weekViewMode = $event"
+                    />
 
                     <!-- Ferien und Feiertage Anzeige -->
                     <div v-if="holidays && holidays.BW" class="mt-8">
@@ -51,7 +55,7 @@
                 </div>
 
                 <!-- Additional Input Space -->
-                <div class="glass-card rounded-lg border border-default/50 p-2 sm:p-4 lg:p-6 mb-8 shadow-xl">
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 mb-8 shadow-xl">
                     <div class="space-y-6">
                         <!-- Scheduling Try-out Section -->
                         <div class="text-center py-8">
@@ -180,6 +184,7 @@ const schedulingResult = ref(null)
 
 // Form data
 const formData = ref({
+    weekViewMode: 5,
     availability: {
         monday: [],
         tuesday: [],
@@ -195,6 +200,11 @@ const formData = ref({
 watch(() => formData.value.availability, (newAvailability) => {
     saveFormData()
 }, { deep: true })
+
+// Auto-save week view mode when it changes
+watch(() => formData.value.weekViewMode, (newWeekViewMode) => {
+    saveFormData()
+})
 
 onMounted(() => {
     existingData.value = getOnboardingData()
@@ -213,8 +223,13 @@ onMounted(() => {
     // Load existing step 2 data if available
     const step2Data = validSteps.find(step => step.stepNumber === 2)
     
-    if (step2Data && step2Data.availability) {
-        formData.value.availability = { ...step2Data.availability }
+    if (step2Data) {
+        if (step2Data.availability) {
+            formData.value.availability = { ...step2Data.availability }
+        }
+        if (step2Data.weekViewMode !== undefined) {
+            formData.value.weekViewMode = step2Data.weekViewMode
+        }
     }
 })
 
@@ -257,6 +272,8 @@ const tryScheduling = async () => {
         
         if (result.success && result.scheduling_data?.url) {
             console.log('Scheduling created successfully, URL:', result.scheduling_data.url)
+            // Automatically open the scheduling URL in a new tab
+            window.open(result.scheduling_data.url, '_blank')
         }
     } catch (error) {
         console.error('Error creating scheduling:', error)

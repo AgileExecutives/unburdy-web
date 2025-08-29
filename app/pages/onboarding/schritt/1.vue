@@ -5,17 +5,16 @@
 
         <!-- Main Content -->
         <div class="flex-1 relative">
-            <div class="max-w-4xl mx-auto px-1 sm:px-6 lg:px-8 py-4">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Compact Step Header -->
-                <div class="text-center mb-8 mt-6">
-                    <p class="text-base text-secondary">
+                <div class="text-center mb-8">
+                    <p class="text-lg text-secondary">
                         Erzähle uns etwas über deine Praxis und deine grundlegenden Einstellungen
                     </p>
                 </div>
 
-
                 <!-- Content Card -->
-                <div class="bg-surface rounded-lg border border-default p-2 sm:p-4 lg:p-6 mb-6">
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 mb-8 shadow-xl">
 
                     <!-- Loading state -->
                     <div v-if="isLoading" class="text-center py-12">

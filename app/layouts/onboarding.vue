@@ -6,10 +6,10 @@
       <div class="absolute inset-0 bg-gradient-mesh opacity-30"></div>
       
       <!-- Elegant floating gradient orbs inspired by unburdy.de -->
-      <div class="absolute -top-40 -right-32 w-96 h-96 bg-gradient-to-br from-indigo-500/20 to-purple-600/15 rounded-full blur-3xl animate-pulse opacity-60"></div>
-      <div class="absolute top-1/2 -left-48 w-80 h-80 bg-gradient-to-tr from-pink-400/15 to-violet-500/20 rounded-full blur-3xl animate-pulse opacity-50" style="animation-delay: 2s;"></div>
-      <div class="absolute -bottom-32 right-1/4 w-72 h-72 bg-gradient-to-tl from-cyan-400/20 to-blue-500/15 rounded-full blur-3xl animate-pulse opacity-60" style="animation-delay: 4s;"></div>
-      <div class="absolute top-1/4 right-1/3 w-64 h-64 bg-gradient-to-br from-violet-400/15 to-indigo-500/20 rounded-full blur-3xl animate-pulse opacity-40" style="animation-delay: 6s;"></div>
+      <div class="absolute -top-40 -right-32 w-96 h-96 rounded-full blur-3xl animate-pulse opacity-60 bg-gradient-to-br from-indigo-500/20 to-purple-600/15 dark:from-indigo-500/20 dark:to-purple-600/15"></div>
+      <div class="absolute top-1/2 -left-48 w-80 h-80 rounded-full blur-3xl animate-pulse opacity-50 bg-gradient-to-tr from-pink-400/15 to-violet-500/20 dark:from-pink-400/15 dark:to-violet-500/20" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-32 right-1/4 w-72 h-72 rounded-full blur-3xl animate-pulse opacity-60 bg-gradient-to-tl from-cyan-400/20 to-blue-500/15 dark:from-cyan-400/20 dark:to-blue-500/15" style="animation-delay: 4s;"></div>
+      <div class="absolute top-1/4 right-1/3 w-64 h-64 rounded-full blur-3xl animate-pulse opacity-40 bg-gradient-to-br from-violet-400/15 to-indigo-500/20 dark:from-violet-400/15 dark:to-indigo-500/20" style="animation-delay: 6s;"></div>
       
       <!-- Refined geometric pattern with reduced opacity -->
       <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]">

@@ -221,10 +221,11 @@ export default defineEventHandler(async (event): Promise<RegisterResponse> => {
         password: '[REDACTED]'
       },
       apiBaseUrl: config.apiBaseUrl,
-      hasApiToken: !!config.apiToken
+      hasApiToken: !!config.apiToken,
+      usingApiToken: true
     })
 
-    // Use the typed AuthService for registration  
+    // Always use the API token for registration
     const response = await AuthService.postAuthRegister({
       user: registrationData,
       authorization: 'Bearer ' + config.apiToken

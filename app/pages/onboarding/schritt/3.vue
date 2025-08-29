@@ -8,23 +8,19 @@
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Step Header -->
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-                        3
-                    </div>
-                    <h2 class="text-3xl font-bold text-primary mb-2">Klienten</h2>
                     <p class="text-lg text-secondary">
                         Richte deine Klientenverwaltung ein und füge erste Klienten hinzu
                     </p>
                 </div>
 
                 <!-- Content Card -->
-                <div class="bg-surface rounded-lg border border-default p-8 mb-8">
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 mb-8 shadow-xl">
                     <div class="text-center py-12">
                         <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">Klienten-Formular wird hier eingefügt</h3>
-                        <p class="text-gray-500">
+                        <h3 class="text-xl font-medium text-primary mb-2">Klienten-Formular wird hier eingefügt</h3>
+                        <p class="text-secondary">
                             Hier werden später die Felder für Klientendaten, Kontaktinformationen, 
                             Kostenträger und Elternkontakte eingefügt.
                         </p>

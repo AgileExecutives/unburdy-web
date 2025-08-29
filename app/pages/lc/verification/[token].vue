@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+  <div class="min-h-screen bg-gradient-unburdy">
     <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="text-center">
@@ -11,7 +11,7 @@
       </div>
 
       <div class="sm:mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
-        <div class="sm:bg-background-secondary sm:py-8 px-4 shadow sm:rounded-lg sm:px-10 sm:border border-default">
+        <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 shadow-xl">
           <!-- Loading State -->
           <div v-if="isVerifying" class="text-center py-8">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
@@ -107,7 +107,7 @@ interface VerificationResponse {
 
 // Define page meta
 definePageMeta({
-  layout: 'default',
+  layout: 'onboarding',
   title: 'E-Mail-Bestätigung | Unburdy'
 })
 

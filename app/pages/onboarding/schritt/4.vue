@@ -8,23 +8,19 @@
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Step Header -->
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-                        4
-                    </div>
-                    <h2 class="text-3xl font-bold text-primary mb-2">Fertigstellen</h2>
                     <p class="text-lg text-secondary">
                         Letzte Einstellungen und Abschluss der Einrichtung
                     </p>
                 </div>
 
                 <!-- Content Card -->
-                <div class="bg-surface rounded-lg border border-default p-8 mb-8">
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 lg:p-8 mb-8 shadow-xl">
                     <div class="text-center py-12">
                         <svg class="mx-auto h-12 w-12 text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">Abschluss-Formular wird hier eingefügt</h3>
-                        <p class="text-gray-500">
+                        <h3 class="text-xl font-medium text-primary mb-2">Abschluss-Formular wird hier eingefügt</h3>
+                        <p class="text-secondary">
                             Hier werden später die finalen Einstellungen, eine Zusammenfassung 
                             und der Abschluss des Onboarding-Prozesses eingefügt.
                         </p>

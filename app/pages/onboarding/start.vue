@@ -34,33 +34,31 @@
                 <ColorModeToggle />
             </div>
             
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <!-- Welcome Header -->
-                <div class="text-center mb-12">
+                <div class="text-center mb-8">
                     <div class="mb-6">
-                        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full mb-4">
+                            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                         </div>
                     </div>
-                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                    <h1 class="text-4xl font-bold text-primary mb-3">
                         Willkommen{{ apiUser?.first_name ? `, ${apiUser.first_name}` : (user?.firstName ? `, ${user.firstName}` : '') }}!
                     </h1>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    <p class="text-xl text-secondary max-w-2xl mx-auto">
                         Deine Registrierung war erfolgreich. Jetzt richten wir Unburdy gemeinsam für dich ein.
                     </p>
                 </div>
 
-
-
                 <!-- Onboarding Steps Overview -->
-                <div class="bg-surface rounded-2xl shadow-sm border border-gray-100 p-8 mb-12">
+                <div class="glass-card rounded-lg border border-default/50 p-6 sm:p-8 mb-8 shadow-xl">
                     <div class="text-center mb-8">
-                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                        <h2 class="text-2xl font-semibold text-primary mb-2">
                             Dein Weg zu Unburdy
                         </h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto">
+                        <p class="text-secondary max-w-2xl mx-auto">
                             Wir führen dich in 4 kurzen Schritten durch die Einrichtung. Das dauert nur wenige Minuten.
                         </p>
                     </div>
@@ -75,8 +73,8 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     1
                                 </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Praxisinformationen</h3>
-                                <p class="text-sm text-gray-600 leading-relaxed">
+                                <h3 class="font-semibold text-primary mb-2">Praxisinformationen</h3>
+                                <p class="text-sm text-secondary leading-relaxed">
                                     Grundlegende Angaben zu deiner Praxis und Fachrichtung
                                 </p>
                             </div>
@@ -86,8 +84,8 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     2
                                 </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Planung & Kalender</h3>
-                                <p class="text-sm text-gray-600 leading-relaxed">
+                                <h3 class="font-semibold text-primary mb-2">Planung & Kalender</h3>
+                                <p class="text-sm text-secondary leading-relaxed">
                                     Arbeitszeiten festlegen und Schulferien planen.
                                 </p>
                             </div>
@@ -97,7 +95,7 @@
                                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-xl font-bold mb-4 relative z-10">
                                     3
                                 </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Klienten</h3>
+                                <h3 class="font-semibold text-primary mb-2">Klienten</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     Einen ersten Klienten hinzufügen, um erste Vorteile von Unburdy kennenzulernen
                                 </p>

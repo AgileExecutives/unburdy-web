@@ -88,6 +88,10 @@ const props = defineProps({
             saturday: [],
             sunday: []
         })
+    },
+    weekViewMode: {
+        type: Number,
+        default: 5
     }
 })
 
@@ -100,7 +104,12 @@ watch(() => props.modelValue, (newValue) => {
         formData.value = JSON.parse(JSON.stringify(newValue))
     }
 }, { deep: true, immediate: true })
-const weekViewMode = ref(5)
+
+const weekViewMode = computed({
+    get: () => props.weekViewMode,
+    set: (value) => emit('update:weekViewMode', value)
+})
+
 const selection = ref({
     isActive: false,
     dayKey: null,
@@ -108,7 +117,7 @@ const selection = ref({
 })
 
 // Emits
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'update:weekViewMode'])
 
 // Days of the week
 const allDays = ref([
